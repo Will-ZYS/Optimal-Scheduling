@@ -33,12 +33,4 @@ public class TaskNode {
     public int getWeight() {
         return _weight;
     }
-
-    public void setWeight(int weight) {
-        _weight = weight;
-    }
-
-    public String getName() {
-        return _name;
-    }
 }

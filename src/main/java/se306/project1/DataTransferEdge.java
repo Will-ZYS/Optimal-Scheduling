@@ -1,26 +1,21 @@
 package se306.project1;
 
 public class DataTransferEdge {
+    private TaskNode _sourceTaskNode;
+    private TaskNode _desTaskNode;
+    private int _dataTransferTime;
 
-    private TaskNode sourceTask;
-    private TaskNode destinationTask;
-    private int weight;
-
-    public DataTransferEdge(TaskNode sourceTask, TaskNode destinationTask, int weight) {
-        this.sourceTask = sourceTask;
-        this.destinationTask = destinationTask;
-        this.weight = weight;
+    public DataTransferEdge(TaskNode sourceTaskNode, TaskNode desTaskNode, int dataTransferTime) {
+        _sourceTaskNode = sourceTaskNode;
+        _desTaskNode = desTaskNode;
+        _dataTransferTime = dataTransferTime;
     }
 
-    public TaskNode getSourceTask() {
-        return this.sourceTask;
+    public TaskNode getSourceNode() {
+        return _sourceTaskNode;
     }
 
-    public TaskNode getDestinationTask() {
-        return this.destinationTask;
-    }
-
-    public int getWeight() {
-        return this.weight;
+    public TaskNode getDestinationNode() {
+        return _desTaskNode;
     }
 }
