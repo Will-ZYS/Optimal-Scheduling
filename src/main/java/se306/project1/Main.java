@@ -1,5 +1,7 @@
 package se306.project1;
 
+import java.io.IOException;
+
 public class Main {
     public static void main(String[] args) {
         System.out.println("Hello, SOFTENG306 project 1!");
@@ -49,6 +51,14 @@ public class Main {
         }
 
         // create input reader...
+        try {
+            // dummy path, will change it later
+            InputReader inputFile = new InputReader("C:\\Kevin Ge\\UOA\\year3\\semester 2\\SOFTENG 306\\project 1\\dot file\\test.dot");
+            inputFile.readInputFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         // InputReader ip = new InputReader();
     }
 }
