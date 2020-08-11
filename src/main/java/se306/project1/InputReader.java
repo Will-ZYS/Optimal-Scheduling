@@ -37,7 +37,6 @@ public class InputReader {
 
             if(attributeInfo.contains("->")){
                 // process as edge
-
             }else{
                 // process as node
 
