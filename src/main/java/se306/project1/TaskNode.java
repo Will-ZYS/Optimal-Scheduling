@@ -33,4 +33,12 @@ public class TaskNode {
     public int getWeight() {
         return _weight;
     }
+
+    public List<DataTransferEdge> getOutgoingEdges() {
+        return _outgoingEdges;
+    }
+
+    public List<DataTransferEdge> getIncomingEdges() {
+        return _incomingEdges;
+    }
 }
