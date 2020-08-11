@@ -9,8 +9,16 @@ public class TaskNode {
         this.name = name;
     }
 
+    public TaskNode(String name) {
+        this.name = name;
+    }
+
     public int getWeight() {
         return this.weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
     }
 
     public String getName() {

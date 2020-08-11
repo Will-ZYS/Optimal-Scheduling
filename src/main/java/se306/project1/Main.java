@@ -52,7 +52,6 @@ public class Main {
 
         // create input reader...
         try {
-            // dummy path, will change it later
             InputReader inputFile = new InputReader(args[0]);
             inputFile.readInputFile();
         } catch (IOException e) {
