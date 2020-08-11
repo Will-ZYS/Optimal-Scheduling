@@ -1,9 +1,23 @@
 package se306.project1;
 
+import java.util.List;
+import java.util.Map;
+
 public class SolutionTree {
     private int _bestTime = Integer.MAX_VALUE; // best time
     private SolutionNode _bestSolution;
     private SolutionNode _root;
+
+    private int numberOfProcessors;     // dummy data
+    private List<TaskNode> _tasks;
+    private Map<TaskNode, List<DataTransferEdge>> _adjacentList;
+
+    public SolutionTree ( Map<TaskNode, List<DataTransferEdge>> adjacencyList, List<TaskNode> taskList, int numOfProcesser) {
+        this._adjacentList = adjacencyList;
+        this._tasks = taskList;
+        this.numberOfProcessors = numOfProcesser;
+    }
+
 
     public SolutionNode DFSBranchAndBound () {
 

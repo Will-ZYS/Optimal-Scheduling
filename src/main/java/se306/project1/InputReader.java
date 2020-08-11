@@ -11,9 +11,12 @@ import java.util.Map;
 public class InputReader {
 
     private String pathToDotFile;
+    private SolutionTree solutionTree;
+    private int numOfProcessor;
 
-    public InputReader ( String path ){
+    public InputReader ( String path, int processors ){
         pathToDotFile = path;
+        numOfProcessor = processors;
     }
 
     public void readInputFile() throws IOException {
@@ -88,7 +91,11 @@ public class InputReader {
 
         dotFile.close();
 
-        List<TaskNode> taskList = new ArrayList<>(taskNodeMap.values()); // list of tasks
+        // list of tasks
+        List<TaskNode> taskList = new ArrayList<>(taskNodeMap.values());
+
+        // new a solution tree object which will be used later
+        solutionTree = new SolutionTree( adjacencyList, taskList, numOfProcessor);
 
     }
 }

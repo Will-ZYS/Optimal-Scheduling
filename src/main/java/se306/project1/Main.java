@@ -21,9 +21,10 @@ public class Main {
 
         // check if the second argument is a positive integer
         boolean isPositiveInt = false;
+        int numOfProcessor = 0;
         try {
-            int numOfProcessor = Integer.parseInt(args[1]);
-            isPositiveInt = numOfProcessor <= 0 ? false : true;
+            numOfProcessor = Integer.parseInt(args[1]);
+            isPositiveInt = numOfProcessor > 0;
         } catch (NumberFormatException e) {
 
         }
@@ -52,7 +53,7 @@ public class Main {
 
         // create input reader...
         try {
-            InputReader inputFile = new InputReader(args[0]);
+            InputReader inputFile = new InputReader(args[0], numOfProcessor);
             inputFile.readInputFile();
         } catch (IOException e) {
             e.printStackTrace();
