@@ -52,6 +52,65 @@ public class SolutionNode {
             // modify value of Hashmap[currentProcessor]
             // we find
 
+            Map<Processor, Integer> candidateStartTimes = new HashMap<>();
+
+            // Instantiate all the processors
+            for (Processor p : _processors) {
+                candidateStartTimes.put(p, null);
+            }
+
+            // Put all the values of parents to the hashmap
+            for (Processor lastProcessor : _processors) {
+                int time = lastProcessor.getEndTime();
+                for (DataTransferEdge edge : taskNode.getIncomingEdges()) {
+                    TaskNode parentTask = edge.getSourceNode();
+                    Integer parentTaskStartTime = lastProcessor.getTasks().get(parentTask);
+                    if (parentTaskStartTime != null && parentTaskStartTime +
+                            parentTask.getWeight() + edge.getDataTransferTime() > time) {
+                        time = parentTaskStartTime + parentTask.getWeight() + edge.getDataTransferTime();
+                    }
+                }
+                candidateStartTimes.put(lastProcessor, time);
+
+            }
+
+            Processor firstProcessor = null;
+            Processor secondProcessor;
+            int max = 0;
+            int secondMax = 0;
+
+            for (Map.Entry<Processor, Integer> entry : candidateStartTimes.entrySet()) {
+                if (entry.getValue() > max) {
+                    secondMax = max;
+                    max = entry.getValue();
+                    secondProcessor = firstProcessor;
+                    firstProcessor = entry.getKey();
+                }
+                if (entry.getValue() > secondMax) {
+                    secondMax = entry.getValue();
+                    secondProcessor = entry.getKey();
+                }
+            }
+
+            // copy the list of processors
+            List<Processor> processors = new ArrayList<>();
+            for (Processor processor : _processors) {
+                processors.add(new Processor(processor));
+            }
+
+            int time;
+
+            // for each processor create child solution node based on this desTaskNode
+            for (Processor processor : processors) {
+                if (processor != firstProcessor) {
+                    time = max;
+                } else {
+                    time = Math.max(processor.getEndTime(), secondMax);
+                }
+
+
+
+            /**
 
             // copy the list of processors
             List<Processor> processors = new ArrayList<>();
@@ -76,6 +135,7 @@ public class SolutionNode {
                         }
                     }
                 }
+             */
                 // add task and start time of task to the processor
                 processor.addTask(taskNode, time);
 
@@ -98,8 +158,6 @@ public class SolutionNode {
                 _childNodes.add(childNode);
 
             }
-
-
         }
     }
 
