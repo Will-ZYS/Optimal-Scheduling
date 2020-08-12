@@ -86,8 +86,21 @@ public class InputReader {
         List<TaskNode> taskList = new ArrayList<>(taskNodeMap.values());
 
         // new a solution tree object which will be used later
-        solutionTree = new SolutionTree(taskList, numOfProcessor);
+        solutionTree = new SolutionTree(taskList, generateProcessors());
 
     }
+
+    // generate a list of processors, the id starts with 1
+    private List<Processor> generateProcessors() {
+
+        List<Processor> processorList = new ArrayList<Processor>();
+
+        for (int i=1; i<= numOfProcessor ;i++ ){
+            processorList.add(new Processor(i));
+        }
+
+        return processorList;
+    }
+
 
 }

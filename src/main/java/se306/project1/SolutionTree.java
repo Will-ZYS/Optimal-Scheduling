@@ -8,12 +8,12 @@ public class SolutionTree {
     private SolutionNode _bestSolution;
     private SolutionNode _root;
 
-    private int numberOfProcessors;     // dummy data
+    private List<Processor> _processorList;     // dummy data
     private List<TaskNode> _tasks;
 
-    public SolutionTree (List<TaskNode> taskList, int numOfProcessor) {
+    public SolutionTree (List<TaskNode> taskList, List<Processor> processorList) {
         this._tasks = taskList;
-        this.numberOfProcessors = numOfProcessor;
+        this._processorList = processorList;
     }
 
     public SolutionNode DFSBranchAndBound () {
