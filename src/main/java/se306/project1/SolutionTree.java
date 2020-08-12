@@ -1,6 +1,5 @@
 package se306.project1;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class SolutionTree {
@@ -12,7 +11,8 @@ public class SolutionTree {
     private List<TaskNode> _tasks;
     private Map<TaskNode, List<DataTransferEdge>> _adjacentList;
 
-    public SolutionTree() {
+    public SolutionTree(List<TaskNode> allTasks, List<Processor> processors) {
+        _root = new SolutionNode(processors, allTasks, null);
         _adjacentList = new HashMap<>();
         _tasks = new ArrayList<>();
         generateDummyData();
@@ -31,7 +31,6 @@ public class SolutionTree {
             }
         }
 
-        _root = new SolutionNode(unvisitedTasksAndParents);
 
     }
 
@@ -70,29 +69,6 @@ public class SolutionTree {
         _adjacentList.put(d, adjacentEdgeForNodeD);
     }
 
-    private void createChildren( SolutionNode root ) {
-        List<TaskNode> children = new ArrayList<>();
-        TaskNode parentTask = root.getTask();
-        Map<TaskNode, List<TaskNode>> unvisitedTasksAndParents = root.getUnvisitedTasksAndParents();
-
-        // find all executable child tasks and remove the parent tasks
-        for (Map.Entry<TaskNode, List<TaskNode>> entry : unvisitedTasksAndParents.entrySet()) {
-            List<TaskNode> parents = entry.getValue();
-            TaskNode child = entry.getKey();
-
-            parents.remove(parentTask);
-            if (parents.isEmpty()) {
-                // this child task is executable
-                children.add(child);
-
-                // remove this entry from the map to save memory space
-                unvisitedTasksAndParents.remove(child);
-            }
-        }
-
-        
-
-    }
 
     public SolutionNode DFSBranchAndBound () {
 
@@ -117,8 +93,8 @@ public class SolutionTree {
             node.createChildNodes();
             // check if this node has child
             if ( node.hasChild() ) {
-                for ( int i = 0; i < node.getChild().size(); i++ ) {
-                    algorithm( node.getChild().get(i) );
+                for ( int i = 0; i < node.getChildNodes().size(); i++ ) {
+                    algorithm( node.getChildNodes().get(i) );
                 }
             } else {
                 // compare the actual time of the leaf to the best time

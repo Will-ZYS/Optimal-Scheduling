@@ -18,4 +18,8 @@ public class DataTransferEdge {
     public TaskNode getDestinationNode() {
         return _desTaskNode;
     }
+
+    public int getDataTransferTime() {
+        return _dataTransferTime;
+    }
 }
