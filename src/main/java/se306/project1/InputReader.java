@@ -26,7 +26,6 @@ public class InputReader {
         BufferedReader brFile = new BufferedReader(dotFile);
 
         Map<String, TaskNode> taskNodeMap = new HashMap<>(); // map between task name and its TaskNode object
-        Map<TaskNode, List<DataTransferEdge>> adjacencyList = new HashMap<>(); // adjacency list
 
         // read the file line by line and get desired information from each line
         String line;
@@ -43,8 +42,7 @@ public class InputReader {
             String weightInfo = lineArray[1].trim().split("=")[1];
             int weight = Integer.parseInt(weightInfo.substring(0, weightInfo.length()-2));
 
-            if (attributeInfo.contains("->")) {
-                // process as edge
+            if (attributeInfo.contains("->")) { // process as edge
                 String[] nodeInfo = attributeInfo.split("->");
                 String sourceName = nodeInfo[0].trim();
                 String destinationName = nodeInfo[1].trim();
@@ -68,20 +66,13 @@ public class InputReader {
 
                 // create the DataTransferEdge and write to adjacency list
                 DataTransferEdge edge = new DataTransferEdge(sourceNode, destinationNode, weight);
-                if (adjacencyList.containsKey(sourceNode)) {
-                    adjacencyList.get(sourceNode).add(edge);
-                } else {
-                    List<DataTransferEdge> newList = new ArrayList<>();
-                    newList.add(edge);
-                    adjacencyList.put(sourceNode, newList);
-                }
+                sourceNode.addOutgoingEdge(edge);
+                destinationNode.addIncomingEdge(edge);
 
-            } else {
-                // process as node
+            } else { // process as node
                 if (!taskNodeMap.containsKey(attributeInfo)) {
                     TaskNode node = new TaskNode(weight, attributeInfo);
                     taskNodeMap.put(attributeInfo, node);
-                    adjacencyList.put(node, new ArrayList<>());
                 } else {
                     taskNodeMap.get(attributeInfo).setWeight(weight);
                 }
@@ -95,7 +86,8 @@ public class InputReader {
         List<TaskNode> taskList = new ArrayList<>(taskNodeMap.values());
 
         // new a solution tree object which will be used later
-        solutionTree = new SolutionTree( adjacencyList, taskList, numOfProcessor);
+        solutionTree = new SolutionTree(taskList, numOfProcessor);
 
     }
+
 }

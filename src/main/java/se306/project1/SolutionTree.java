@@ -10,14 +10,11 @@ public class SolutionTree {
 
     private int numberOfProcessors;     // dummy data
     private List<TaskNode> _tasks;
-    private Map<TaskNode, List<DataTransferEdge>> _adjacentList;
 
-    public SolutionTree ( Map<TaskNode, List<DataTransferEdge>> adjacencyList, List<TaskNode> taskList, int numOfProcesser) {
-        this._adjacentList = adjacencyList;
+    public SolutionTree (List<TaskNode> taskList, int numOfProcessor) {
         this._tasks = taskList;
-        this.numberOfProcessors = numOfProcesser;
+        this.numberOfProcessors = numOfProcessor;
     }
-
 
     public SolutionNode DFSBranchAndBound () {
 
