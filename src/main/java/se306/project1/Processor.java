@@ -1,10 +1,11 @@
 package se306.project1;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Processor {
-
     private Map<TaskNode, Integer> _tasks;
     private int _endTime;
     private final int PROCESSOR_ID;
@@ -41,6 +42,4 @@ public class Processor {
     public int getID(){
         return PROCESSOR_ID;
     }
-
-
 }

@@ -1,6 +1,5 @@
 package se306.project1;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class SolutionTree {
@@ -12,7 +11,8 @@ public class SolutionTree {
     private List<TaskNode> _tasks;
     private Map<TaskNode, List<DataTransferEdge>> _adjacentList;
 
-    public SolutionTree() {
+    public SolutionTree(List<TaskNode> allTasks, List<Processor> processors) {
+        _root = new SolutionNode(processors, allTasks, null);
         _adjacentList = new HashMap<>();
         _tasks = new ArrayList<>();
         generateDummyData();
@@ -31,7 +31,6 @@ public class SolutionTree {
             }
         }
 
-        _root = new SolutionNode(unvisitedTasksAndParents);
 
     }
 
@@ -114,8 +113,8 @@ public class SolutionTree {
             node.createChildNodes();
             // check if this node has child
             if ( node.hasChild() ) {
-                for ( int i = 0; i < node.getChild().size(); i++ ) {
-                    algorithm( node.getChild().get(i) );
+                for ( int i = 0; i < node.getChildNodes().size(); i++ ) {
+                    algorithm( node.getChildNodes().get(i) );
                 }
             } else {
                 // compare the actual time of the leaf to the best time
