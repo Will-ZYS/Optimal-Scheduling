@@ -118,7 +118,7 @@ public class SolutionTree {
                 }
             } else {
                 // compare the actual time of the leaf to the best time
-                if ( node.getTime() < _bestTime ) {
+                if ( node.getEndTime() < _bestTime ) {
                     _bestSolution = node;
                     _bestTime = getTotalTime( node );
                 }

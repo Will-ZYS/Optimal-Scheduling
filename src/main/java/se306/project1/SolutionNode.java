@@ -8,6 +8,7 @@ public class SolutionNode {
     private List<TaskNode> _unvisitedTaskNodes;
     private List<SolutionNode> _childNodes = new ArrayList<>();
     private List<SolutionNode> _parentNodes = new ArrayList<>();
+    private int _endTime;
 
     public SolutionNode(List<Processor> processors, List<TaskNode> unvisitedTaskNodes, TaskNode currentTask) {
         _processors = processors;
@@ -75,11 +76,25 @@ public class SolutionNode {
                         }
                     }
                 }
+                // add task and start time of task to the processor
                 processor.addTask(taskNode, time);
+
+                //set end time of the processor
+                processor.setEndTime(time + taskNode.getWeight());
+
+                // update unvisited task node in the child node by removing
+                // the current task in the child node that is being created
                 List<TaskNode> unvisitedTaskNodes = new ArrayList<>(_unvisitedTaskNodes);
                 unvisitedTaskNodes.remove(taskNode);
+
+                //Instantiate the child solution node
                 SolutionNode childNode = new SolutionNode(processors, unvisitedTaskNodes, taskNode);
+
+                // add end time and parent to the child node
+                childNode.setEndTime(time + taskNode.getWeight());
                 childNode.addParentNodes(this);
+
+                // add the child node to the list of child node in the current node
                 _childNodes.add(childNode);
 
             }
@@ -127,11 +142,7 @@ public class SolutionNode {
     }
 
     public boolean hasChild() {
-        return false;
-    }
-
-    public int getTime() {
-        return 0;
+        return !_childNodes.isEmpty();
     }
 
     public TaskNode getTask() {
@@ -148,5 +159,13 @@ public class SolutionNode {
 
     public void addParentNodes(SolutionNode parentNodes) {
         this._parentNodes.add(parentNodes);
+    }
+
+    public int getEndTime() {
+        return _endTime;
+    }
+
+    public void setEndTime(int _endTime) {
+        this._endTime = _endTime;
     }
 }
