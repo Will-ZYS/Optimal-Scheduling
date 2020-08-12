@@ -7,7 +7,7 @@ public class SolutionNode {
     private TaskNode _currentTask;
     private List<TaskNode> _unvisitedTaskNodes;
     private List<SolutionNode> _childNodes = new ArrayList<>();
-    private List<SolutionNode> _parentNodes = new ArrayList<>();
+    private SolutionNode _parentNode;
     private int _endTime;
 
     public SolutionNode(List<Processor> processors, List<TaskNode> unvisitedTaskNodes, TaskNode currentTask) {
@@ -61,7 +61,7 @@ public class SolutionNode {
 
             // Put all the values of parents to the hashmap
             for (Processor lastProcessor : _processors) {
-                int time = lastProcessor.getEndTime();
+                int time = 0;
                 for (DataTransferEdge edge : taskNode.getIncomingEdges()) {
                     TaskNode parentTask = edge.getSourceNode();
                     Integer parentTaskStartTime = lastProcessor.getTasks().get(parentTask);
@@ -71,11 +71,9 @@ public class SolutionNode {
                     }
                 }
                 candidateStartTimes.put(lastProcessor, time);
-
             }
 
-            Processor firstProcessor = null;
-            Processor secondProcessor;
+            Processor latestProcessor = null;
             int max = 0;
             int secondMax = 0;
 
@@ -83,59 +81,31 @@ public class SolutionNode {
                 if (entry.getValue() > max) {
                     secondMax = max;
                     max = entry.getValue();
-                    secondProcessor = firstProcessor;
-                    firstProcessor = entry.getKey();
+                    latestProcessor = entry.getKey();
                 }
                 if (entry.getValue() > secondMax) {
                     secondMax = entry.getValue();
-                    secondProcessor = entry.getKey();
                 }
             }
 
-            // copy the list of processors
-            List<Processor> processors = new ArrayList<>();
-            for (Processor processor : _processors) {
-                processors.add(new Processor(processor));
-            }
 
             int time;
-
             // for each processor create child solution node based on this desTaskNode
-            for (Processor processor : processors) {
-                if (processor != firstProcessor) {
-                    time = max;
+            for (int i = 0; i < _processors.size(); i++) {
+
+                // copy the list of processors
+                List<Processor> processors = new ArrayList<>();
+                for (Processor processor : _processors) {
+                    processors.add(new Processor(processor));
+                }
+
+                Processor processor = processors.get(i);
+                if (processor != latestProcessor) {
+                    time = Math.max(processor.getEndTime(), max);
                 } else {
                     time = Math.max(processor.getEndTime(), secondMax);
                 }
 
-
-
-            /**
-
-            // copy the list of processors
-            List<Processor> processors = new ArrayList<>();
-            for (Processor processor : _processors) {
-                processors.add(new Processor(processor));
-            }
-
-            // for each processor create child solution node based on this desTaskNode
-            for (Processor processor : processors) {
-                // get processor endTime
-                int time = processor.getEndTime();
-
-                for (Processor lastProcessor : _processors) {
-                    if (lastProcessor.getID() != processor.getID()) {
-                        for (DataTransferEdge edge : taskNode.getIncomingEdges()) {
-                            TaskNode parentTask = edge.getSourceNode();
-                            Integer parentTaskStartTime = lastProcessor.getTasks().get(parentTask);
-                            if (parentTaskStartTime != null && parentTaskStartTime +
-                                    parentTask.getWeight() + edge.getDataTransferTime() > time) {
-                                time = parentTaskStartTime + parentTask.getWeight() + edge.getDataTransferTime();
-                            }
-                        }
-                    }
-                }
-             */
                 // add task and start time of task to the processor
                 processor.addTask(taskNode, time);
 
@@ -151,8 +121,8 @@ public class SolutionNode {
                 SolutionNode childNode = new SolutionNode(processors, unvisitedTaskNodes, taskNode);
 
                 // add end time and parent to the child node
-                childNode.setEndTime(time + taskNode.getWeight());
-                childNode.addParentNodes(this);
+                childNode.setEndTime(Math.max(time + taskNode.getWeight(), getParentNode().getEndTime()));
+                childNode.setParentNode(this);
 
                 // add the child node to the list of child node in the current node
                 _childNodes.add(childNode);
@@ -211,12 +181,12 @@ public class SolutionNode {
         return _childNodes;
     }
 
-    public List<SolutionNode> getParentNodes() {
-        return _parentNodes;
+    public SolutionNode getParentNode() {
+        return _parentNode;
     }
 
-    public void addParentNodes(SolutionNode parentNodes) {
-        this._parentNodes.add(parentNodes);
+    public void setParentNode(SolutionNode parentNode) {
+        this._parentNode = parentNode;
     }
 
     public int getEndTime() {

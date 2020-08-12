@@ -5,32 +5,12 @@ import java.util.*;
 public class SolutionTree {
     private int _bestTime = Integer.MAX_VALUE; // best time
     private SolutionNode _bestSolution;
-    private SolutionNode _root;
-
-    private int numberOfProcessors = 2;     // dummy data
     private List<TaskNode> _tasks;
-    private Map<TaskNode, List<DataTransferEdge>> _adjacentList;
+    private SolutionNode _root;
 
     public SolutionTree(List<TaskNode> allTasks, List<Processor> processors) {
         _root = new SolutionNode(processors, allTasks, null);
-        _adjacentList = new HashMap<>();
-        _tasks = new ArrayList<>();
-        generateDummyData();
-
-        Map<TaskNode, List<TaskNode>> unvisitedTasksAndParents = new HashMap<>();
-        for (TaskNode task : _tasks) {
-            unvisitedTasksAndParents.put(task, new ArrayList<>());
-        }
-        for (Map.Entry<TaskNode, List<DataTransferEdge>> entry : _adjacentList.entrySet()) {
-            List<DataTransferEdge> edges = entry.getValue();
-            for (DataTransferEdge edge : edges ) {
-                TaskNode sourceNode = edge.getSourceNode();
-                TaskNode desNode = edge.getDestinationNode();
-                List<TaskNode> parents = unvisitedTasksAndParents.get(desNode);
-                parents.add(sourceNode);
-            }
-        }
-
+        _tasks = allTasks;
 
     }
 
@@ -94,7 +74,7 @@ public class SolutionTree {
 
         // get the root
         if ( _root.hasChild() ) {
-                algorithm(_root);
+            algorithm(_root);
         } else {
             _bestTime = 0;
             _bestSolution = _root;
@@ -106,9 +86,7 @@ public class SolutionTree {
 
     private void algorithm( SolutionNode node ) {
         // check the lower bound (estimation) of this node
-        if ( node.getLowerBound() >= _bestTime ) {
-            System.out.print("Ignored" + node);
-        } else {
+        if ( node.getLowerBound() < _bestTime ) {
             // create its child nodes
             node.createChildNodes();
             // check if this node has child
@@ -120,14 +98,9 @@ public class SolutionTree {
                 // compare the actual time of the leaf to the best time
                 if ( node.getEndTime() < _bestTime ) {
                     _bestSolution = node;
-                    _bestTime = getTotalTime( node );
+                    _bestTime = node.getEndTime();
                 }
             }
         }
     }
-
-    private int getTotalTime(SolutionNode node) {
-        return 0;
-    }
-
 }
