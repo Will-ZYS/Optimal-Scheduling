@@ -96,8 +96,6 @@ public class InputReader {
         // new a solution tree object which will be used later
         SolutionTree solutionTree = new SolutionTree(taskList, generateProcessors());
         return solutionTree;
-
-
     }
 
     // generate a list of processors, the id starts with 1
@@ -115,6 +113,5 @@ public class InputReader {
     public LinkedHashMap<String, String> getInputRowsRaw() {
         return _inputRowsRaw;
     }
-
 
 }

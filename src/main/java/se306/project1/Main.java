@@ -61,12 +61,9 @@ public class Main {
 
             // Generating output
             OutputGenerator outputGenerator = new OutputGenerator(bestSolution, outputName, inputFile.getInputRowsRaw());
-
+            outputGenerator.writeOutput();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
-
-
 }

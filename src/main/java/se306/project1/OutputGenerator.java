@@ -7,10 +7,9 @@ public class OutputGenerator {
     private SolutionNode _bestSolution;
     private List<Processor> _processors;
     private String _outputName;
-    private String[] _outputStrings;
     private LinkedHashMap<String, String> _outputRowsRaw;
 
-
+    // Constructor to make the Output generator
     public OutputGenerator (SolutionNode bestSolution, String outputName, LinkedHashMap<String, String> inputRowsRaw) throws IOException {
         _bestSolution = bestSolution;
         _outputName = outputName;
@@ -20,16 +19,20 @@ public class OutputGenerator {
             System.err.println("Something went wrong, the solution wasn't valid");
         }
         preparingStringOutput();
-        writeOutput();
     }
 
+    /**
+     * This function validates is if the solution node is a valid solution
+     * 1) checking if there are still any unvisited nodes
+     * @return boolean true if the solution is valid
+     */
     public Boolean preCheckSolution(){
-        if (_bestSolution.getUnvisitedTaskNodes().size() != 0 ) {
-            return false;
-        }
-        return true;
+        return _bestSolution.getUnvisitedTaskNodes().size() == 0;
     }
 
+    /**
+     * This function prepares the output strings to be written to the file
+     */
     private void preparingStringOutput(){
         Map<TaskNode, Integer> tasks;
         for (Processor processor : _processors){
@@ -40,11 +43,13 @@ public class OutputGenerator {
                 String data = "["+_outputRowsRaw.get(task.getName())+",Start="+startTime+",Processor="+ processor.getID()+"];";
                 _outputRowsRaw.replace(task.getName(), data);
             }
-
         }
     }
 
-    private void writeOutput() throws IOException {
+    /**
+     * This function writes the prepared strings to the file line by line
+     */
+    public void writeOutput() throws IOException {
         // Deleting the pre-existing file
         File file = new File(_outputName+".dot");
         if (file.exists()){ file.delete(); }
@@ -54,6 +59,7 @@ public class OutputGenerator {
         myWriter.write(String.format("digraph \""+_outputName+"\" {"+"%n"));
 
         for (Map.Entry<String, String> entry : _outputRowsRaw.entrySet()) {
+            // Formatted to align the columns
             myWriter.write(String.format("\t%-15s%-15s%n", entry.getKey(), entry.getValue()));
         }
         myWriter.write("}");
