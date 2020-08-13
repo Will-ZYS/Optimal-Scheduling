@@ -6,6 +6,6 @@ public class MainTest {
 
     @Test
     public void testMain() {
-        Main.main(new String[]{});
+        Main.main(new String[]{ "abc.dot", "3" });
     }
 }

@@ -1,9 +1,20 @@
 package se306.project1;
 
+import java.util.List;
+import java.util.Map;
+
 public class SolutionTree {
     private int _bestTime = Integer.MAX_VALUE; // best time
     private SolutionNode _bestSolution;
     private SolutionNode _root;
+
+    private List<Processor> _processorList;     // dummy data
+    private List<TaskNode> _tasks;
+
+    public SolutionTree (List<TaskNode> taskList, List<Processor> processorList) {
+        this._tasks = taskList;
+        this._processorList = processorList;
+    }
 
     public SolutionNode DFSBranchAndBound () {
 
