@@ -49,6 +49,23 @@ _Reason for change:_
 
 <hr/>
 
+**11/08/2020**
+- Pair programming section between Tommy and Kevin (Jiawei) 
+- Working on handling program argument and .dot file input
+
+_Changes made to the plan:_  
+- Add code to verify that user inputs the correct program argument in the right format
+- Get the number of processors and output file name from the argument
+- Implement an InputReader to read the input .dot file line by line
+- A list of tasks, and an adjacency list representing the graph were created and passed to the SolutionTree   
+
+_Reason for change:_
+- To ensure user enters the correct argument on the command line while running the program, and give correct usage instruction
+- Convert the plain .dot file to some useful format represented by Object (i.e. TaskNode, DataTransferEdge) to make the
+  algorithm implementation easier
+
+<hr/>
+
 **12/08/2020**
 - Meeting among Emily(Ziwei), Martin and Will. 
 - Finished implementation on the algorithm
@@ -63,6 +80,25 @@ _Reason for change:_
 - When a new task is added into a processor, the program needs to look for all its parent tasks and the corresponsding 
   processors to decide the start time of this new task.
   If the solutionNode doesn't have any information on parents tasks, it is hard to calculate the start time. 
+  
+<hr/>
+
+**12/08/2020**
+- Pair programming section between Tommy and Kevin (Jiawei) 
+- Change the InputReader implementation requested by Emily
+
+_Changes made to the design:_  
+- Instead of representing the graph with an adjacency list, each TaskNode now has its list of incoming edges and outgoing
+  edges.
+- InputReader now initialise a list of empty Processor objects according to the input argument and pass the list to the 
+  SolutionTree
+- Change the readInputFile() function in InputReader so it returns a SolutionTree object so the main function can make 
+  the algorithm call
+  
+_Reason for change:_
+- Emily, Will and Martin, who are implementing the algorithm, felt that using lists of incoming and outgoing edges, 
+  and initialise the Processor list early can help them implement the algorithm easier
+- The main function needs to know the SolutionTree that the InputReader created to invoke the algorithm and write output
   
 <hr/>
   
