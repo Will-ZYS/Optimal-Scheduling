@@ -1,6 +1,8 @@
 package se306.project1;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
@@ -57,9 +59,13 @@ public class Main {
             SolutionTree solutionTree = inputFile.readInputFile();
 
             SolutionNode bestSolution = solutionTree.findOptimalSolution();
-            System.out.println(bestSolution);
+            SolutionNode.printSolutionNode(bestSolution);
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+
 }
