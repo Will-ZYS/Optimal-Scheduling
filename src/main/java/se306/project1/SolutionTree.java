@@ -13,7 +13,7 @@ public class SolutionTree {
         _tasks = allTasks;
     }
 
-    /*
+    /**
      * DFS branch and bound algorithm used to find the best solution
      * @return the optimal partial solution
      */
