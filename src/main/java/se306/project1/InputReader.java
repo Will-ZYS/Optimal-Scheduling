@@ -55,12 +55,16 @@ public class InputReader {
                 } else if (taskNodeMap.containsKey(sourceName)) {
                     sourceNode = taskNodeMap.get(sourceName);
                     destinationNode = new TaskNode(destinationName);
+                    taskNodeMap.put(destinationName, destinationNode);
                 } else if (taskNodeMap.containsKey(destinationName)) {
                     sourceNode = new TaskNode(sourceName);
+                    taskNodeMap.put(sourceName, sourceNode);
                     destinationNode = taskNodeMap.get(destinationName);
                 } else {
                     sourceNode = new TaskNode(sourceName);
                     destinationNode = new TaskNode(destinationName);
+                    taskNodeMap.put(sourceName, sourceNode);
+                    taskNodeMap.put(destinationName,destinationNode);
                 }
 
                 // create the DataTransferEdge and write to adjacency list
