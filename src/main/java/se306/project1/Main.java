@@ -52,19 +52,19 @@ public class Main {
         }
 
         // create input reader...
-        SolutionNode bestSolution = null;
         try {
             InputReader inputFile = new InputReader(args[0], numOfProcessor);
             SolutionTree solutionTree = inputFile.readInputFile();
-            bestSolution = solutionTree.findOptimalSolution();
+
+            SolutionNode bestSolution = solutionTree.findOptimalSolution();
             SolutionNode.printSolutionNode(bestSolution);
+
+            // Generating output
+            OutputGenerator outputGenerator = new OutputGenerator(bestSolution, outputName, inputFile.getInputRowsRaw());
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        // Generating output
-        OutputGenerator outputGenerator = new OutputGenerator(bestSolution, outputName);
 
     }
 

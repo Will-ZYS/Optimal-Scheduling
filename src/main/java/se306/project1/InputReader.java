@@ -3,15 +3,14 @@ package se306.project1;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class InputReader {
 
     private String pathToDotFile;
     private int numOfProcessor;
+
+    private LinkedHashMap<String, String> _inputRowsRaw = new LinkedHashMap<String, String>();
 
     public InputReader ( String path, int processors ){
         pathToDotFile = path;
@@ -42,6 +41,9 @@ public class InputReader {
             int weight = Integer.parseInt(weightInfo.substring(0, weightInfo.length()-2));
 
             if (attributeInfo.contains("->")) { // process as edge
+                // Store as an edge in LinkedMap (preserved order)
+                _inputRowsRaw.put(attributeInfo, "["+lineArray[1]);
+
                 String[] nodeInfo = attributeInfo.split("->");
                 String sourceName = nodeInfo[0].trim();
                 String destinationName = nodeInfo[1].trim();
@@ -68,11 +70,15 @@ public class InputReader {
                 }
 
                 // create the DataTransferEdge and write to adjacency list
-                DataTransferEdge edge = new DataTransferEdge(sourceNode, destinationNode, weight);
+                DataTransferEdge edge = new DataTransferEdge(sourceNode, destinationNode, weight, attributeInfo);
                 sourceNode.addOutgoingEdge(edge);
                 destinationNode.addIncomingEdge(edge);
 
             } else { // process as node
+                // Store as an node in LinkedMap (preserved order)
+                String nodeData = lineArray[1].replace("];","");
+                _inputRowsRaw.put(attributeInfo,nodeData);
+
                 if (!taskNodeMap.containsKey(attributeInfo)) {
                     TaskNode node = new TaskNode(weight, attributeInfo);
                     taskNodeMap.put(attributeInfo, node);
@@ -82,7 +88,6 @@ public class InputReader {
             }
 
         }
-
         dotFile.close();
 
         // list of tasks
@@ -91,6 +96,8 @@ public class InputReader {
         // new a solution tree object which will be used later
         SolutionTree solutionTree = new SolutionTree(taskList, generateProcessors());
         return solutionTree;
+
+
     }
 
     // generate a list of processors, the id starts with 1
@@ -103,6 +110,10 @@ public class InputReader {
         }
 
         return processorList;
+    }
+
+    public LinkedHashMap<String, String> getInputRowsRaw() {
+        return _inputRowsRaw;
     }
 
 

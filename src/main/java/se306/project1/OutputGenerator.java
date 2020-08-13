@@ -1,24 +1,25 @@
 package se306.project1;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class OutputGenerator {
     private SolutionNode _bestSolution;
     private List<Processor> _processors;
     private String _outputName;
     private String[] _outputStrings;
+    private LinkedHashMap<String, String> _inputRowsRaw;
 
-    public OutputGenerator (SolutionNode bestSolution, String outputName){
+
+    public OutputGenerator (SolutionNode bestSolution, String outputName, LinkedHashMap<String, String> inputRowsRaw){
         _bestSolution = bestSolution;
         _outputName = outputName;
         _processors = _bestSolution.getProcessors();
+        _inputRowsRaw = inputRowsRaw;
         if (!preCheckSolution()){
             System.err.println("Something went wrong, the solution wasn't valid");
         }
+        preparingStringOutput();
     }
 
     public Boolean preCheckSolution(){
@@ -31,8 +32,16 @@ public class OutputGenerator {
     }
 
     private void preparingStringOutput(){
+        Map<TaskNode, Integer> tasks;
         for (Processor processor : _processors){
-            processor.getTasks();
+            tasks = processor.getTasks();
+            for (Map.Entry<TaskNode, Integer> entry : tasks.entrySet()) {
+                Integer startTime = entry.getValue();
+                TaskNode task = entry.getKey();
+                System.out.println(startTime);
+                System.out.println(task.getName());
+            }
+
         }
     }
 
