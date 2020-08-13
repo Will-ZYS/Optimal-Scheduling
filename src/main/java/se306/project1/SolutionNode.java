@@ -189,4 +189,8 @@ public class SolutionNode {
     public void setEndTime(int _endTime) {
         this._endTime = _endTime;
     }
+
+    public List<Processor> getProcessors() {
+        return _processors;
+    }
 }
