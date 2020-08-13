@@ -18,6 +18,7 @@ public class Main {
             System.err.println("Usage: java -jar scheduler.jar INPUT.dot P [OPTION]");
             System.exit(1);
         }
+        String inputName = args[0].substring(0, args0Length - 4);
 
         // check if the second argument is a positive integer
         boolean isPositiveInt = false;
@@ -34,7 +35,7 @@ public class Main {
         }
 
         // loop through option and check stuffs
-        String outputName = "output";
+        String outputName = inputName + "-output";
         for (int i = 2; i < args.length; i++) {
             if (args[i].equals("-v")) {
                 System.out.println("Sorry, the visualiser has not been implemented yet");
