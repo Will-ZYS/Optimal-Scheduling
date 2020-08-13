@@ -109,4 +109,15 @@ _Reason for change:_
 
 <hr/>
 
+**14/08/2020**
+- Bug fix and enhancement of the main method by Tommy
+
+_Changes made to the design:_
+- Fix the default output file name to INPUT-output
+- Change the usage message to be more intuitive and useful
+
+_Reason for change:_
+- The previous default output file name does not match the one in the project description
+- To improve user experience when the users make the error
+
   
