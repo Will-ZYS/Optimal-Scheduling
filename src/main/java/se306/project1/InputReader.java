@@ -10,18 +10,18 @@ import java.util.Map;
 
 public class InputReader {
 
-    private String pathToDotFile;
-    private int numOfProcessor;
+    private String _pathToDotFile;
+    private int _numOfProcessor;
 
     public InputReader ( String path, int processors ){
-        pathToDotFile = path;
-        numOfProcessor = processors;
+        _pathToDotFile = path;
+        _numOfProcessor = processors;
     }
 
     public SolutionTree readInputFile() throws IOException {
 
         // read the file with provided path
-        FileReader dotFile = new FileReader(pathToDotFile);
+        FileReader dotFile = new FileReader( _pathToDotFile );
         BufferedReader brFile = new BufferedReader(dotFile);
 
         Map<String, TaskNode> taskNodeMap = new HashMap<>(); // map between task name and its TaskNode object
@@ -98,7 +98,7 @@ public class InputReader {
 
         List<Processor> processorList = new ArrayList<Processor>();
 
-        for (int i=1; i<= numOfProcessor ;i++ ){
+        for ( int i = 1; i<= _numOfProcessor; i++ ){
             processorList.add(new Processor(i));
         }
 
