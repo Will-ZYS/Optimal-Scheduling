@@ -118,7 +118,12 @@ public class SolutionNode {
                 SolutionNode childSolutionNode = new SolutionNode(processors, unvisitedTaskNodes, taskNode);
 
                 // add end time and parent to the child node
-                childSolutionNode.setEndTime(Math.max(time + taskNode.getWeight(), getParentNode().getEndTime()));
+                if (_parentNode != null) {
+                    childSolutionNode.setEndTime(Math.max(time + taskNode.getWeight(), _parentNode.getEndTime()));
+                }
+                else {
+                    childSolutionNode.setEndTime(time + taskNode.getWeight());
+                }
                 childSolutionNode.setParentNode(this);
 
                 // add the child node to the list of child node in the current node
