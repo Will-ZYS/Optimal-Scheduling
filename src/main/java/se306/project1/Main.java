@@ -59,11 +59,11 @@ public class Main {
             SolutionNode bestSolution = solutionTree.findOptimalSolution();
             SolutionNode.printSolutionNode(bestSolution);
 
-
+            // Generating output
+            OutputGenerator outputGenerator = new OutputGenerator(bestSolution, outputName, inputFile.getInputRowsRaw());
+            outputGenerator.writeOutput();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-
 }
