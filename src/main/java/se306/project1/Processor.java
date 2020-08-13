@@ -20,6 +20,7 @@ public class Processor {
         _tasks = processor.getTasks();
         _endTime = processor.getEndTime();
     }
+
     public Map<TaskNode, Integer> getTasks() {
         return _tasks;
     }
