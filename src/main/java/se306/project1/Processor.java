@@ -1,6 +1,5 @@
 package se306.project1;
 
-import javax.imageio.stream.IIOByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
