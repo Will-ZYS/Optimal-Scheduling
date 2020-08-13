@@ -9,14 +9,14 @@ public class TaskNode {
     private List<DataTransferEdge> _incomingEdges;
     private List<DataTransferEdge> _outgoingEdges;
 
-    public TaskNode(int weight, String name) {
-        _weight = weight;
+    public TaskNode(String name) {
         _name = name;
         _incomingEdges = new ArrayList<>();
         _outgoingEdges = new ArrayList<>();
     }
 
-    public TaskNode(String name) {
+    public TaskNode(int weight, String name) {
+        _weight = weight;
         _name = name;
         _incomingEdges = new ArrayList<>();
         _outgoingEdges = new ArrayList<>();
@@ -38,7 +38,11 @@ public class TaskNode {
         _weight = weight;
     }
 
-    public String getName() {
-        return _name;
+    public List<DataTransferEdge> getOutgoingEdges() {
+        return _outgoingEdges;
+    }
+
+    public List<DataTransferEdge> getIncomingEdges() {
+        return _incomingEdges;
     }
 }

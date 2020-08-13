@@ -1,60 +1,51 @@
 package se306.project1;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SolutionTree {
     private int _bestTime = Integer.MAX_VALUE; // best time
     private SolutionNode _bestSolution;
+    private List<TaskNode> _tasks;
     private SolutionNode _root;
 
-    private List<Processor> _processorList;     // dummy data
-    private List<TaskNode> _tasks;
-
-    public SolutionTree (List<TaskNode> taskList, List<Processor> processorList) {
-        this._tasks = taskList;
-        this._processorList = processorList;
+    public SolutionTree(List<TaskNode> allTasks, List<Processor> processors) {
+        _root = new SolutionNode(processors, allTasks, null);
+        _tasks = allTasks;
     }
 
-    public SolutionNode DFSBranchAndBound () {
+    /**
+     * DFS branch and bound algorithm used to find the best solution
+     * @return the optimal partial solution
+     */
+    public SolutionNode findOptimalSolution() {
 
-        // get the root
-
-        if ( _root.hasChild() ) {
-                algorithm(_root);
+        if (!_tasks.isEmpty()) {
+            DFSBranchAndBoundAlgorithm(_root);
         } else {
             _bestTime = 0;
             _bestSolution = _root;
         }
 
         return _bestSolution;
-
     }
 
-    private void algorithm( SolutionNode node ) {
+    private void DFSBranchAndBoundAlgorithm(SolutionNode solutionNode) {
         // check the lower bound (estimation) of this node
-        if ( node.getLowerBound() >= _bestTime ) {
-            System.out.print("Ignored" + node);
-        } else {
+        if (solutionNode.getLowerBound() < _bestTime) {
             // create its child nodes
-            node.createChildNodes();
+            solutionNode.createChildNodes();
             // check if this node has child
-            if ( node.hasChild() ) {
-                for ( int i = 0; i < node.getChild().size(); i++ ) {
-                    algorithm( node.getChild().get(i) );
+            if (solutionNode.hasChild()) {
+                for (int i = 0; i < solutionNode.getChildNodes().size(); i++) {
+                    DFSBranchAndBoundAlgorithm(solutionNode.getChildNodes().get(i));
                 }
             } else {
                 // compare the actual time of the leaf to the best time
-                if ( node.getTime() < _bestTime ) {
-                    _bestSolution = node;
-                    _bestTime = getTotalTime( node );
+                if (solutionNode.getEndTime() < _bestTime) {
+                    _bestSolution = solutionNode;
+                    _bestTime = solutionNode.getEndTime();
                 }
             }
         }
     }
-
-    private int getTotalTime(SolutionNode node) {
-        return 0;
-    }
-
 }

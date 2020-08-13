@@ -55,6 +55,9 @@ public class Main {
         try {
             InputReader inputFile = new InputReader(args[0], numOfProcessor);
             SolutionTree solutionTree = inputFile.readInputFile();
+
+            SolutionNode bestSolution = solutionTree.findOptimalSolution();
+            System.out.println(bestSolution);
         } catch (IOException e) {
             e.printStackTrace();
         }

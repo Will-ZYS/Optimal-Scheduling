@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Processor {
-
     private Map<TaskNode, Integer> _tasks;
     private int _endTime;
     private final int PROCESSOR_ID;
@@ -21,6 +20,7 @@ public class Processor {
         _tasks = processor.getTasks();
         _endTime = processor.getEndTime();
     }
+
     public Map<TaskNode, Integer> getTasks() {
         return _tasks;
     }
@@ -41,6 +41,4 @@ public class Processor {
     public int getID(){
         return PROCESSOR_ID;
     }
-
-
 }
