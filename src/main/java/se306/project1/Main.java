@@ -64,7 +64,7 @@ public class Main {
         }
 
         // Generating output
-        OutputGenerator outputGenerator = new OutputGenerator(bestSolution);
+        OutputGenerator outputGenerator = new OutputGenerator(bestSolution, outputName);
 
     }
 
