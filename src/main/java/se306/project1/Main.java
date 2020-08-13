@@ -54,7 +54,7 @@ public class Main {
         // create input reader...
         try {
             InputReader inputFile = new InputReader(args[0], numOfProcessor);
-            inputFile.readInputFile();
+            SolutionTree solutionTree = inputFile.readInputFile();
         } catch (IOException e) {
             e.printStackTrace();
         }

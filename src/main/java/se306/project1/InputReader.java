@@ -11,7 +11,6 @@ import java.util.Map;
 public class InputReader {
 
     private String pathToDotFile;
-    private SolutionTree solutionTree;
     private int numOfProcessor;
 
     public InputReader ( String path, int processors ){
@@ -19,7 +18,7 @@ public class InputReader {
         numOfProcessor = processors;
     }
 
-    public void readInputFile() throws IOException {
+    public SolutionTree readInputFile() throws IOException {
 
         // read the file with provided path
         FileReader dotFile = new FileReader(pathToDotFile);
@@ -86,8 +85,8 @@ public class InputReader {
         List<TaskNode> taskList = new ArrayList<>(taskNodeMap.values());
 
         // new a solution tree object which will be used later
-        solutionTree = new SolutionTree(taskList, generateProcessors());
-
+        SolutionTree solutionTree = new SolutionTree(taskList, generateProcessors());
+        return solutionTree;
     }
 
     // generate a list of processors, the id starts with 1
