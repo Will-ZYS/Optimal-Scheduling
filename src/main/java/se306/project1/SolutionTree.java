@@ -11,38 +11,39 @@ public class SolutionTree {
     public SolutionTree(List<TaskNode> allTasks, List<Processor> processors) {
         _root = new SolutionNode(processors, allTasks, null);
         _tasks = allTasks;
-
     }
 
-    public SolutionNode DFSBranchAndBound () {
+    /**
+     * DFS branch and bound algorithm used to find the best solution
+     * @return the optimal partial solution
+     */
+    public SolutionNode findOptimalSolution() {
 
-        // get the root
-        if ( _root.hasChild() ) {
-            algorithm(_root);
+        if (!_tasks.isEmpty()) {
+            DFSBranchAndBoundAlgorithm(_root);
         } else {
             _bestTime = 0;
             _bestSolution = _root;
         }
 
         return _bestSolution;
-
     }
 
-    private void algorithm( SolutionNode node ) {
+    private void DFSBranchAndBoundAlgorithm(SolutionNode solutionNode) {
         // check the lower bound (estimation) of this node
-        if ( node.getLowerBound() < _bestTime ) {
+        if (solutionNode.getLowerBound() < _bestTime) {
             // create its child nodes
-            node.createChildNodes();
+            solutionNode.createChildNodes();
             // check if this node has child
-            if ( node.hasChild() ) {
-                for ( int i = 0; i < node.getChildNodes().size(); i++ ) {
-                    algorithm( node.getChildNodes().get(i) );
+            if (solutionNode.hasChild()) {
+                for (int i = 0; i < solutionNode.getChildNodes().size(); i++) {
+                    DFSBranchAndBoundAlgorithm(solutionNode.getChildNodes().get(i));
                 }
             } else {
                 // compare the actual time of the leaf to the best time
-                if ( node.getEndTime() < _bestTime ) {
-                    _bestSolution = node;
-                    _bestTime = node.getEndTime();
+                if (solutionNode.getEndTime() < _bestTime) {
+                    _bestSolution = solutionNode;
+                    _bestTime = solutionNode.getEndTime();
                 }
             }
         }
