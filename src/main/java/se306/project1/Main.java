@@ -57,9 +57,13 @@ public class Main {
             SolutionTree solutionTree = inputFile.readInputFile();
 
             SolutionNode bestSolution = solutionTree.findOptimalSolution();
-            System.out.println(bestSolution);
+            SolutionNode.printSolutionNode(bestSolution);
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+
 }

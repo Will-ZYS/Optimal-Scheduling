@@ -17,29 +17,18 @@ public class SolutionNode {
     }
 
     /**
-     * Create child solution nodes
+     * This function try to create child solution nodes for every unvisited Task nodes.
      */
     public void createChildNodes() {
-
-        // if the current task is empty, the solution node is the root
-        if (_currentTask == null) {
-            // Loop through all task nodes to create child solution nodes that
-            // can be created (No incoming edges)
-            for (TaskNode taskNode: _unvisitedTaskNodes) {
-                createChildNode(taskNode);
-            }
-        } else {
-
-            // loop through edges of current task to find the child tasks
-            List<DataTransferEdge> outgoingEdges = _currentTask.getOutgoingEdges();
-            for (DataTransferEdge outgoingEdge : outgoingEdges) {
-                TaskNode desTaskNode = outgoingEdge.getDestinationNode();
-                createChildNode(desTaskNode);
-            }
+        for (TaskNode taskNode: _unvisitedTaskNodes) {
+            createChildNode(taskNode);
         }
-
     }
 
+    /**
+     * This function creates a SolutionNode for every processor for a single given task
+     * @param taskNode The task to be allocated to processors to create SolutionNodes
+     */
     private void createChildNode(TaskNode taskNode) {
         // check this taskNode has no incoming edges
         if (canCreateNode(taskNode)) {
@@ -80,11 +69,10 @@ public class SolutionNode {
                     max = entry.getValue();
                     latestProcessor = entry.getKey();
                 }
-                if (entry.getValue() > secondMax) {
+                else if (entry.getValue() > secondMax) {
                     secondMax = entry.getValue();
                 }
             }
-
 
             int time;
             // loop through all processors as the taskNode can be put on any processor
@@ -97,7 +85,10 @@ public class SolutionNode {
                 }
 
                 Processor processor = processors.get(i);
-                if (processor != latestProcessor) {
+                if (latestProcessor == null) {
+                    time = processor.getEndTime();
+                }
+                else if (processor.getID() != latestProcessor.getID()) {
                     time = Math.max(processor.getEndTime(), max);
                 } else {
                     time = Math.max(processor.getEndTime(), secondMax);
@@ -197,5 +188,37 @@ public class SolutionNode {
 
     public List<Processor> getProcessors() {
         return _processors;
+    }
+
+    public List<TaskNode> getUnvisitedTaskNodes() {
+        return _unvisitedTaskNodes;
+    }
+
+    /**
+     * This function print out the details of a given SolutionNode in the terminal
+     * @param solutionNode The SolutionNode to be print out
+     */
+    public static void printSolutionNode(SolutionNode solutionNode) {
+        System.out.println();
+        System.out.println("Printing out details of Solution Node:");
+        List<TaskNode> unvisitedTasks = solutionNode.getUnvisitedTaskNodes();
+        System.out.println("Unvisited Tasks :");
+        for (TaskNode task : unvisitedTasks) {
+            System.out.print(task.getName() + " ");
+        }
+        System.out.println();
+
+        List<Processor> processors = solutionNode.getProcessors();
+        for (Processor processor : processors) {
+            System.out.println("Processor: " + processor.getID());
+            System.out.println("Tasks :");
+            Map<TaskNode, Integer> tasks = processor.getTasks();
+            for (TaskNode task : tasks.keySet()) {
+                System.out.print(task.getName() + " start at ");
+                System.out.print(tasks.get(task) + "\n");
+            }
+            System.out.println();
+        }
+        System.out.println("End Time: " + solutionNode.getEndTime());
     }
 }

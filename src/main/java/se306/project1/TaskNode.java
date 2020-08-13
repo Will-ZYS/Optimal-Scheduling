@@ -45,4 +45,8 @@ public class TaskNode {
     public List<DataTransferEdge> getIncomingEdges() {
         return _incomingEdges;
     }
+
+    public String getName() {
+        return _name;
+    }
 }

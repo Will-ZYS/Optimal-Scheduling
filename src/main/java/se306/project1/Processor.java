@@ -17,7 +17,7 @@ public class Processor {
     // Create a copy of a given processor
     public Processor(Processor processor) {
         PROCESSOR_ID = processor.getID();
-        _tasks = processor.getTasks();
+        _tasks = new HashMap<>(processor.getTasks());
         _endTime = processor.getEndTime();
     }
 

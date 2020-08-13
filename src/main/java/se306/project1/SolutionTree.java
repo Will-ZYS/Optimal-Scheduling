@@ -30,6 +30,7 @@ public class SolutionTree {
     }
 
     private void DFSBranchAndBoundAlgorithm(SolutionNode solutionNode) {
+
         // check the lower bound (estimation) of this node
         if (solutionNode.getLowerBound() < _bestTime) {
             // create its child nodes
