@@ -8,24 +8,23 @@ public class OutputGenerator {
     private List<Processor> _processors;
     private String _outputName;
     private String[] _outputStrings;
-    private LinkedHashMap<String, String> _inputRowsRaw;
+    private LinkedHashMap<String, String> _outputRowsRaw;
 
 
-    public OutputGenerator (SolutionNode bestSolution, String outputName, LinkedHashMap<String, String> inputRowsRaw){
+    public OutputGenerator (SolutionNode bestSolution, String outputName, LinkedHashMap<String, String> inputRowsRaw) throws IOException {
         _bestSolution = bestSolution;
         _outputName = outputName;
         _processors = _bestSolution.getProcessors();
-        _inputRowsRaw = inputRowsRaw;
+        _outputRowsRaw = inputRowsRaw;
         if (!preCheckSolution()){
             System.err.println("Something went wrong, the solution wasn't valid");
         }
         preparingStringOutput();
+        writeOutput();
     }
 
     public Boolean preCheckSolution(){
-        if (_bestSolution.get_unvisitedTaskNodes().size() != 0 ) {
-            return false;
-        } else if (false){
+        if (_bestSolution.getUnvisitedTaskNodes().size() != 0 ) {
             return false;
         }
         return true;
@@ -38,8 +37,8 @@ public class OutputGenerator {
             for (Map.Entry<TaskNode, Integer> entry : tasks.entrySet()) {
                 Integer startTime = entry.getValue();
                 TaskNode task = entry.getKey();
-                System.out.println(startTime);
-                System.out.println(task.getName());
+                String data = "["+_outputRowsRaw.get(task.getName())+",Start="+startTime+",Processor="+ processor.getID()+"];";
+                _outputRowsRaw.replace(task.getName(), data);
             }
 
         }
@@ -52,11 +51,14 @@ public class OutputGenerator {
 
         // Writing to the new file
         FileWriter myWriter = new FileWriter(_outputName+".dot");
+        myWriter.write(String.format("digraph \""+_outputName+"\" {"+"%n"));
 
-        // Writing the prepared strings to the new file
-        for (String line: _outputStrings){
-            myWriter.write(String.format(line+"%n"));
+        for (Map.Entry<String, String> entry : _outputRowsRaw.entrySet()) {
+            myWriter.write(String.format("\t%-15s%-15s%n", entry.getKey(), entry.getValue()));
         }
+        myWriter.write("}");
         myWriter.close();
+
     }
+
 }
