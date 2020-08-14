@@ -1,16 +1,19 @@
 package se306.project1;
 
+import java.awt.*;
 import java.io.*;
 import java.util.*;
+import java.util.List;
 
 public class OutputGenerator {
     private SolutionNode _bestSolution;
     private List<Processor> _processors;
     private String _outputName;
+    private String _graphName;
     private LinkedHashMap<String, String> _outputRowsRaw;
 
     // Constructor to make the Output generator
-    public OutputGenerator (SolutionNode bestSolution, String outputName, LinkedHashMap<String, String> inputRowsRaw) throws IOException {
+    public OutputGenerator (SolutionNode bestSolution, String outputName, LinkedHashMap<String, String> inputRowsRaw, String graphName) throws IOException {
         _bestSolution = bestSolution;
         _outputName = outputName;
         _processors = _bestSolution.getProcessors();
@@ -19,6 +22,9 @@ public class OutputGenerator {
             System.err.println("Something went wrong, the solution wasn't valid");
         }
         preparingStringOutput();
+
+        // the first letter of the graph name will be capitalized
+        _graphName = "output" + graphName.substring(0,1).toUpperCase() + graphName.substring(1);
     }
 
     /**
@@ -56,7 +62,7 @@ public class OutputGenerator {
 
         // Writing to the new file
         FileWriter myWriter = new FileWriter(_outputName+".dot");
-        myWriter.write(String.format("digraph \""+_outputName+"\" {"+"%n"));
+        myWriter.write(String.format("digraph \""+ _graphName +"\" {"+"%n"));
 
         for (Map.Entry<String, String> entry : _outputRowsRaw.entrySet()) {
             // Formatted to align the columns
