@@ -57,14 +57,19 @@ public class Main {
 
         // create input reader...
         try {
+            // read the input file and return it as a solutionTree object
             InputReader inputFile = new InputReader(args[0], numOfProcessor);
+
             SolutionTree solutionTree = inputFile.readInputFile();
+
+            // get the graphName from the input file
+            String graphName = inputFile.getGraphName();
 
             SolutionNode bestSolution = solutionTree.findOptimalSolution();
             SolutionNode.printSolutionNode(bestSolution);
 
             // Generating output
-            OutputGenerator outputGenerator = new OutputGenerator(bestSolution, outputName, inputFile.getInputRowsRaw());
+            OutputGenerator outputGenerator = new OutputGenerator(bestSolution, outputName, inputFile.getInputRowsRaw(), graphName);
             outputGenerator.writeOutput();
         } catch (IOException e) {
             e.printStackTrace();

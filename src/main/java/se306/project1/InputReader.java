@@ -4,11 +4,14 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class InputReader {
 
     private String _pathToDotFile;
     private int _numOfProcessor;
+    private String _graphName;
 
     private LinkedHashMap<String, String> _inputRowsRaw = new LinkedHashMap<String, String>();
 
@@ -31,6 +34,14 @@ public class InputReader {
 
             // ignore the line without the symbol '['
             if (!line.contains("[")) {
+                // if the line is the first line which contains the graph name
+                if (line.contains("\"")) {
+                    Pattern doubleQuotes = Pattern.compile("\"([^\"]*)\"");
+                    Matcher findDoubleQuotes = doubleQuotes.matcher(line);
+                    while (findDoubleQuotes.find()) {
+                        _graphName = findDoubleQuotes.group(1);
+                    }
+                }
                 continue;
             }
 
@@ -112,6 +123,10 @@ public class InputReader {
 
     public LinkedHashMap<String, String> getInputRowsRaw() {
         return _inputRowsRaw;
+    }
+
+    public String getGraphName() {
+        return _graphName;
     }
 
 }
