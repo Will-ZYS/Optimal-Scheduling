@@ -33,6 +33,7 @@ public class SolutionNode {
         // check this taskNode has no incoming edges
         if (canCreateNode(taskNode)) {
 
+            System.out.println("Creating SolutionNode Based on task: " + taskNode.getName());
             Map<Processor, Integer> candidateStartTimes = new HashMap<>();
 
             // Instantiate all the processors

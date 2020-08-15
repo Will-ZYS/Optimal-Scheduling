@@ -1,9 +1,11 @@
 package se306.project1;
 
-import java.awt.*;
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OutputGenerator {
     private SolutionNode _bestSolution;

@@ -11,7 +11,7 @@ public class InputReader {
 
     private String _pathToDotFile;
     private int _numOfProcessor;
-    private String _graphName;
+    private String _graphName = "exampleGraph";
 
     private LinkedHashMap<String, String> _inputRowsRaw = new LinkedHashMap<String, String>();
 
