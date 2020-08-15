@@ -81,8 +81,7 @@ public class InputReader {
                 }
 
                 // create the DataTransferEdge and write to adjacency list
-                DataTransferEdge edge = new DataTransferEdge(sourceNode, destinationNode, weight, attributeInfo);
-                sourceNode.addOutgoingEdge(edge);
+                DataTransferEdge edge = new DataTransferEdge(sourceNode, weight);
                 destinationNode.addIncomingEdge(edge);
 
             } else { // process as node

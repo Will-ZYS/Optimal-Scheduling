@@ -4,25 +4,28 @@ import java.util.*;
 
 public class SolutionNode {
     private List<Processor> _processors;
-    private TaskNode _currentTask;  // the last task that is being put into the SolutionNode
     private List<TaskNode> _unvisitedTaskNodes;
     private List<SolutionNode> _childNodes = new ArrayList<>();
     private SolutionNode _parentNode;
     private int _endTime;   // maximum end time for this partial solution
 
-    public SolutionNode(List<Processor> processors, List<TaskNode> unvisitedTaskNodes, TaskNode currentTask) {
+    public SolutionNode(List<Processor> processors, List<TaskNode> unvisitedTaskNodes) {
         _processors = processors;
         _unvisitedTaskNodes = unvisitedTaskNodes;
-        _currentTask = currentTask;
     }
 
     /**
      * This function try to create child solution nodes for every unvisited Task nodes.
      */
     public void createChildNodes() {
+
+//        System.out.println("Unvisited Tasks:");
         for (TaskNode taskNode: _unvisitedTaskNodes) {
+//            System.out.print(taskNode.getName() + " ");
             createChildNode(taskNode);
         }
+
+//        System.out.println();
     }
 
     /**
@@ -33,7 +36,6 @@ public class SolutionNode {
         // check this taskNode has no incoming edges
         if (canCreateNode(taskNode)) {
 
-            System.out.println("Creating SolutionNode Based on task: " + taskNode.getName());
             Map<Processor, Integer> candidateStartTimes = new HashMap<>();
 
             // Instantiate all the processors
@@ -107,7 +109,7 @@ public class SolutionNode {
                 unvisitedTaskNodes.remove(taskNode);
 
                 //Instantiate the child solution node
-                SolutionNode childSolutionNode = new SolutionNode(processors, unvisitedTaskNodes, taskNode);
+                SolutionNode childSolutionNode = new SolutionNode(processors, unvisitedTaskNodes);
 
                 // add end time and parent to the child node
                 if (_parentNode != null) {
@@ -169,10 +171,6 @@ public class SolutionNode {
 
     public List<SolutionNode> getChildNodes() {
         return _childNodes;
-    }
-
-    public SolutionNode getParentNode() {
-        return _parentNode;
     }
 
     public void setParentNode(SolutionNode parentNode) {
