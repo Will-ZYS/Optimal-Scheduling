@@ -5,12 +5,19 @@ import java.util.*;
 public class SolutionTree {
     private int _bestTime = Integer.MAX_VALUE; // best time
     private SolutionNode _bestSolution;
+<<<<<<< HEAD
     private final List<TaskNode> _tasks;
     private final SolutionNode _root;
+=======
+    private List<TaskNode> _tasks;
+    private SolutionNode _root;
+    private int _numberOfProcessors;
+>>>>>>> [LUCK-012] decrease memory usage
 
     public SolutionTree(List<TaskNode> allTasks, List<Processor> processors) {
         _root = new SolutionNode(processors, allTasks);
         _tasks = allTasks;
+        _numberOfProcessors = processors.size();
     }
 
     /**
@@ -32,12 +39,30 @@ public class SolutionTree {
 
         // check the lower bound (estimation) of this node
         if (solutionNode.getLowerBound() < _bestTime) {
-            // create its child nodes
-            solutionNode.createChildNodes();
-            // check if this node has child
-            if (solutionNode.hasChild()) {
-                for (int i = 0; i < solutionNode.getChildNodes().size(); i++) {
-                    DFSBranchAndBoundAlgorithm(solutionNode.getChildNodes().get(i));
+
+            // get the unvisited nodes of this solutionNode
+            List<TaskNode> unvisitedTaskNodes = solutionNode.getUnvisitedTaskNodes();
+
+            // if this solutionNode still has unvisited task node
+            if (!unvisitedTaskNodes.isEmpty()) {
+                // loop through all the unvisited task nodes
+                for (TaskNode taskNode: unvisitedTaskNodes) {
+                    // if this task node can be used to create a partial solution
+                    if (solutionNode.canCreateNode(taskNode)) {
+                        // find the possible start time for this taskNode
+                        solutionNode.calculateStartTime(taskNode);
+
+                        // loop through all processors
+                        for (int i = 0; i < _numberOfProcessors; i++) {
+                            // call create child nodes by giving the id of processor as a parameter
+                            // get the returned child solutionNodes
+                            SolutionNode childSolutionNode = solutionNode.createChildNode(taskNode, i);
+
+                            // call algorithm based on this child solutionNodes
+                            DFSBranchAndBoundAlgorithm(childSolutionNode);
+                        }
+
+                    }
                 }
             } else {
                 SolutionNode.printSolutionNode(solutionNode);
@@ -48,6 +73,7 @@ public class SolutionTree {
                     _bestTime = solutionNode.getEndTime();
                 }
             }
+
         }
 //        else {
 //            System.out.println("Ignored " + solutionNode.getLowerBound());

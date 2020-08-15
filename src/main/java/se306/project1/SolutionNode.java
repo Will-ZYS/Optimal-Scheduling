@@ -4,116 +4,96 @@ import java.util.*;
 
 public class SolutionNode {
     private final List<Processor> _processors;
+    private final TaskNode _currentTask;  // the last task that is being put into the SolutionNode
     private final List<TaskNode> _unvisitedTaskNodes;
-    private final List<SolutionNode> _childNodes = new ArrayList<>();
-    private SolutionNode _parentNode;
     private int _endTime;   // maximum end time for this partial solution
 
-    public SolutionNode(List<Processor> processors, List<TaskNode> unvisitedTaskNodes) {
+    // these three fields below are used to find the possible start time of a new taskNode
+    Processor _latestProcessor = null;
+    int _maxEndTime = 0;
+    int _secondMaxEndTime = 0;
+
+    public SolutionNode(List<Processor> processors, List<TaskNode> unvisitedTaskNodes, TaskNode currentTask) {
         _processors = processors;
         _unvisitedTaskNodes = unvisitedTaskNodes;
+        _currentTask = currentTask;
+        _endTime = -1;
     }
 
-    /**
-     * This function try to create child solution nodes for every unvisited Task nodes.
-     */
-    public void createChildNodes() {
+    public void calculateStartTime(TaskNode taskNode) {
 
-//        System.out.println("Unvisited Tasks:");
-        for (TaskNode taskNode: _unvisitedTaskNodes) {
-//            System.out.print(taskNode.getName() + " ");
-            createChildNode(taskNode);
+        // Put all the values of parents to the hashmap
+        for (Processor lastProcessor : _processors) {
+            int time = 0;
+
+            // loop through all its parents on a specific processor
+            // find out the earliest start time based on its parents on this processor
+            // assuming this task is put on a different processor from its parents
+            for (DataTransferEdge edge : taskNode.getIncomingEdges()) {
+                TaskNode parentTask = edge.getSourceNode();
+                Integer parentTaskStartTime = lastProcessor.getTasks().get(parentTask);
+                if (parentTaskStartTime != null && parentTaskStartTime +
+                        parentTask.getWeight() + edge.getDataTransferTime() > time) {
+                    time = parentTaskStartTime + parentTask.getWeight() + edge.getDataTransferTime();
+                }
+            }
+                if (time > _maxEndTime) {
+                    _secondMaxEndTime = _maxEndTime;
+                    _maxEndTime = time;
+                    _latestProcessor = lastProcessor;
+                }
+                else if (time > _secondMaxEndTime) {
+                    _secondMaxEndTime = time;
+                }
+            }
         }
-
-//        System.out.println();
     }
 
     /**
      * This function creates a SolutionNode for every processor for a single given task
      * @param taskNode The task to be allocated to processors to create SolutionNodes
      */
-    private void createChildNode(TaskNode taskNode) {
-        // check this taskNode has no incoming edges
-        if (canCreateNode(taskNode)) {
+    public SolutionNode createChildNode(TaskNode taskNode, int processorIndex) {
 
-            // find the processor that has the maximum candidateStartTime
-            Processor latestProcessor = null;
-            int max = 0;
-            int secondMax = 0;
+        int time;
 
-            // Put all the values of parents to the hashmap
-            for (Processor lastProcessor : _processors) {
-                int time = 0;
-
-                // loop through all its parents on a specific processor
-                // find out the earliest start time based on its parents on this processor
-                // assuming this task is put on a different processor from its parents
-                for (DataTransferEdge edge : taskNode.getIncomingEdges()) {
-                    TaskNode parentTask = edge.getSourceNode();
-                    Integer parentTaskStartTime = lastProcessor.getTasks().get(parentTask);
-                    if (parentTaskStartTime != null && parentTaskStartTime +
-                            parentTask.getWeight() + edge.getDataTransferTime() > time) {
-                        time = parentTaskStartTime + parentTask.getWeight() + edge.getDataTransferTime();
-                    }
-                }
-                if (time > max) {
-                    secondMax = max;
-                    max = time;
-                    latestProcessor = lastProcessor;
-                }
-                else if (time > secondMax) {
-                    secondMax = time;
-                }
-            }
-
-            int time;
-            // loop through all processors as the taskNode can be put on any processor
-            for (int i = 0; i < _processors.size(); i++) {
-
-                // deep copy of the list of processors
-                List<Processor> processors = new ArrayList<>();
-                for (Processor processor : _processors) {
-                    processors.add(new Processor(processor));
-                }
-
-                Processor processor = processors.get(i);
-                if (latestProcessor == null) {
-                    time = processor.getEndTime();
-                }
-                else if (processor.getID() != latestProcessor.getID()) {
-                    time = Math.max(processor.getEndTime(), max);
-                } else {
-                    time = Math.max(processor.getEndTime(), secondMax);
-                }
-
-                // add task and start time of task to the processor
-                processor.addTask(taskNode, time);
-
-                //set end time of the processor
-                processor.setEndTime(time + taskNode.getWeight());
-
-                // update unvisited task node in the child node by removing
-                // the current task in the child node that is being created
-                List<TaskNode> unvisitedTaskNodes = new ArrayList<>(_unvisitedTaskNodes);
-                unvisitedTaskNodes.remove(taskNode);
-
-                //Instantiate the child solution node
-                SolutionNode childSolutionNode = new SolutionNode(processors, unvisitedTaskNodes);
-
-                // add end time and parent to the child node
-                if (_parentNode != null) {
-                    childSolutionNode.setEndTime(Math.max(time + taskNode.getWeight(), _parentNode.getEndTime()));
-                }
-                else {
-                    childSolutionNode.setEndTime(time + taskNode.getWeight());
-                }
-                childSolutionNode.setParentNode(this);
-
-                // add the child node to the list of child node in the current node
-                _childNodes.add(childSolutionNode);
-
-            }
+        // deep copy of the list of processors
+        List<Processor> processors = new ArrayList<>();
+        for (Processor processor : _processors) {
+            processors.add(new Processor(processor));
         }
+
+        Processor processor = processors.get(processorIndex);
+        if (_latestProcessor == null) {
+            time = processor.getEndTime();
+        } else if (processor.getID() != _latestProcessor.getID()) {
+            time = Math.max(processor.getEndTime(), _maxEndTime);
+        } else {
+            time = Math.max(processor.getEndTime(), _secondMaxEndTime);
+        }
+
+        // add task and start time of task to the processor
+        processor.addTask(taskNode, time);
+
+        //set end time of the processor
+        processor.setEndTime(time + taskNode.getWeight());
+
+        // update unvisited task node in the child node by removing
+        // the current task in the child node that is being created
+        List<TaskNode> unvisitedTaskNodes = new ArrayList<>(_unvisitedTaskNodes);
+        unvisitedTaskNodes.remove(taskNode);
+
+        //Instantiate the child solution node
+        SolutionNode childSolutionNode = new SolutionNode(processors, unvisitedTaskNodes, taskNode);
+
+        // add end time to the child node
+        if (_endTime != - 1) {
+            childSolutionNode.setEndTime(Math.max(time + taskNode.getWeight(), _endTime));
+        } else {
+            childSolutionNode.setEndTime(time + taskNode.getWeight());
+        }
+
+        return childSolutionNode;
     }
 
     /**
@@ -152,18 +132,6 @@ public class SolutionNode {
             }
         }
         return (maxEndTime + (sumOfUnvisitedNodeWeight / _processors.size()));
-    }
-
-    public boolean hasChild() {
-        return !_childNodes.isEmpty();
-    }
-
-    public List<SolutionNode> getChildNodes() {
-        return _childNodes;
-    }
-
-    public void setParentNode(SolutionNode parentNode) {
-        this._parentNode = parentNode;
     }
 
     public int getEndTime() {
