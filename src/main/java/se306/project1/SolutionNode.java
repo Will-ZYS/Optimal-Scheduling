@@ -36,12 +36,10 @@ public class SolutionNode {
         // check this taskNode has no incoming edges
         if (canCreateNode(taskNode)) {
 
-            Map<Processor, Integer> candidateStartTimes = new HashMap<>();
-
-            // Instantiate all the processors
-            for (Processor p : _processors) {
-                candidateStartTimes.put(p, null);
-            }
+            // find the processor that has the maximum candidateStartTime
+            Processor latestProcessor = null;
+            int max = 0;
+            int secondMax = 0;
 
             // Put all the values of parents to the hashmap
             for (Processor lastProcessor : _processors) {
@@ -58,22 +56,13 @@ public class SolutionNode {
                         time = parentTaskStartTime + parentTask.getWeight() + edge.getDataTransferTime();
                     }
                 }
-                candidateStartTimes.put(lastProcessor, time);
-            }
-
-            // find the processor that has the maximum candidateStartTime
-            Processor latestProcessor = null;
-            int max = 0;
-            int secondMax = 0;
-
-            for (Map.Entry<Processor, Integer> entry : candidateStartTimes.entrySet()) {
-                if (entry.getValue() > max) {
+                if (time > max) {
                     secondMax = max;
-                    max = entry.getValue();
-                    latestProcessor = entry.getKey();
+                    max = time;
+                    latestProcessor = lastProcessor;
                 }
-                else if (entry.getValue() > secondMax) {
-                    secondMax = entry.getValue();
+                else if (time > secondMax) {
+                    secondMax = time;
                 }
             }
 
