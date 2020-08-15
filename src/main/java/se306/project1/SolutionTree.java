@@ -5,8 +5,8 @@ import java.util.*;
 public class SolutionTree {
     private int _bestTime = Integer.MAX_VALUE; // best time
     private SolutionNode _bestSolution;
-    private List<TaskNode> _tasks;
-    private SolutionNode _root;
+    private final List<TaskNode> _tasks;
+    private final SolutionNode _root;
 
     public SolutionTree(List<TaskNode> allTasks, List<Processor> processors) {
         _root = new SolutionNode(processors, allTasks);

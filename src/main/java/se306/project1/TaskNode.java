@@ -5,8 +5,8 @@ import java.util.List;
 
 public class TaskNode {
     private int _weight;
-    private String _name;
-    private List<DataTransferEdge> _incomingEdges;
+    private final String _name;
+    private final List<DataTransferEdge> _incomingEdges;
 
     public TaskNode(String name) {
         _name = name;

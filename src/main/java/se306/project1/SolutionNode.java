@@ -3,9 +3,9 @@ package se306.project1;
 import java.util.*;
 
 public class SolutionNode {
-    private List<Processor> _processors;
-    private List<TaskNode> _unvisitedTaskNodes;
-    private List<SolutionNode> _childNodes = new ArrayList<>();
+    private final List<Processor> _processors;
+    private final List<TaskNode> _unvisitedTaskNodes;
+    private final List<SolutionNode> _childNodes = new ArrayList<>();
     private SolutionNode _parentNode;
     private int _endTime;   // maximum end time for this partial solution
 

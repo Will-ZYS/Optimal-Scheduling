@@ -9,13 +9,13 @@ public class InputFileGenerator {
     public static void main(String[] args) throws IOException {
 
 
-        int numOfTasks = 10; // max 26
+        int numOfTasks = 13; // max 26
         int weightLimit = 4;
         String[] alphabet = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
 
         Random rand = new Random(); //instance of random class
 
-        List<String> inputs = new ArrayList<>(Arrays.asList(alphabet));
+        List<String> inputs = new ArrayList<>(Arrays.asList(alphabet).subList(0, numOfTasks));
 
         for (int i = 0; i < numOfTasks; i++){
             for (int j = i + 1; j < numOfTasks; j++){
@@ -26,7 +26,11 @@ public class InputFileGenerator {
         }
 
         File file = new File("INPUT0.dot");
-        if (file.exists()){ file.delete(); }
+        if (file.exists()) {
+            if (file.delete()) {
+                System.out.println("Old Input File Deleted");
+            }
+        }
 
         // Writing to the new file
         FileWriter myWriter = new FileWriter("INPUT0.dot");
