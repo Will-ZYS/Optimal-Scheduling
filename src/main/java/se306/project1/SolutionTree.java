@@ -5,14 +5,9 @@ import java.util.*;
 public class SolutionTree {
     private int _bestTime = Integer.MAX_VALUE; // best time
     private SolutionNode _bestSolution;
-<<<<<<< HEAD
     private final List<TaskNode> _tasks;
     private final SolutionNode _root;
-=======
-    private List<TaskNode> _tasks;
-    private SolutionNode _root;
     private int _numberOfProcessors;
->>>>>>> [LUCK-012] decrease memory usage
 
     public SolutionTree(List<TaskNode> allTasks, List<Processor> processors) {
         _root = new SolutionNode(processors, allTasks);

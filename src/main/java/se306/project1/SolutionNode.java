@@ -4,7 +4,6 @@ import java.util.*;
 
 public class SolutionNode {
     private final List<Processor> _processors;
-    private final TaskNode _currentTask;  // the last task that is being put into the SolutionNode
     private final List<TaskNode> _unvisitedTaskNodes;
     private int _endTime;   // maximum end time for this partial solution
 
@@ -13,10 +12,9 @@ public class SolutionNode {
     int _maxEndTime = 0;
     int _secondMaxEndTime = 0;
 
-    public SolutionNode(List<Processor> processors, List<TaskNode> unvisitedTaskNodes, TaskNode currentTask) {
+    public SolutionNode(List<Processor> processors, List<TaskNode> unvisitedTaskNodes) {
         _processors = processors;
         _unvisitedTaskNodes = unvisitedTaskNodes;
-        _currentTask = currentTask;
         _endTime = -1;
     }
 
@@ -37,14 +35,12 @@ public class SolutionNode {
                     time = parentTaskStartTime + parentTask.getWeight() + edge.getDataTransferTime();
                 }
             }
-                if (time > _maxEndTime) {
-                    _secondMaxEndTime = _maxEndTime;
-                    _maxEndTime = time;
-                    _latestProcessor = lastProcessor;
-                }
-                else if (time > _secondMaxEndTime) {
-                    _secondMaxEndTime = time;
-                }
+            if (time > _maxEndTime) {
+                _secondMaxEndTime = _maxEndTime;
+                _maxEndTime = time;
+                _latestProcessor = lastProcessor;
+            } else if (time > _secondMaxEndTime) {
+                _secondMaxEndTime = time;
             }
         }
     }
@@ -84,7 +80,7 @@ public class SolutionNode {
         unvisitedTaskNodes.remove(taskNode);
 
         //Instantiate the child solution node
-        SolutionNode childSolutionNode = new SolutionNode(processors, unvisitedTaskNodes, taskNode);
+        SolutionNode childSolutionNode = new SolutionNode(processors, unvisitedTaskNodes);
 
         // add end time to the child node
         if (_endTime != - 1) {
