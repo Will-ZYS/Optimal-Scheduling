@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Processor {
-    private Map<TaskNode, Integer> _tasks;
+    private final Map<TaskNode, Integer> _tasks;
     private int _endTime;
     private final int PROCESSOR_ID;
 

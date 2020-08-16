@@ -1,19 +1,21 @@
 package se306.project1;
 
-import java.awt.*;
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OutputGenerator {
-    private SolutionNode _bestSolution;
-    private List<Processor> _processors;
-    private String _outputName;
-    private String _graphName;
-    private LinkedHashMap<String, String> _outputRowsRaw;
+    private final SolutionNode _bestSolution;
+    private final List<Processor> _processors;
+    private final String _outputName;
+    private final String _graphName;
+    private final LinkedHashMap<String, String> _outputRowsRaw;
 
     // Constructor to make the Output generator
-    public OutputGenerator (SolutionNode bestSolution, String outputName, LinkedHashMap<String, String> inputRowsRaw, String graphName) throws IOException {
+    public OutputGenerator (SolutionNode bestSolution, String outputName, LinkedHashMap<String, String> inputRowsRaw, String graphName) {
         _bestSolution = bestSolution;
         _outputName = outputName;
         _processors = _bestSolution.getProcessors();
@@ -58,7 +60,11 @@ public class OutputGenerator {
     public void writeOutput() throws IOException {
         // Deleting the pre-existing file
         File file = new File(_outputName+".dot");
-        if (file.exists()){ file.delete(); }
+        if (file.exists()) {
+            if (file.delete()) {
+                System.out.println("Old Output File Deleted");
+            }
+        }
 
         // Writing to the new file
         FileWriter myWriter = new FileWriter(_outputName+".dot");

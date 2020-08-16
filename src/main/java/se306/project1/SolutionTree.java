@@ -5,11 +5,11 @@ import java.util.*;
 public class SolutionTree {
     private int _bestTime = Integer.MAX_VALUE; // best time
     private SolutionNode _bestSolution;
-    private List<TaskNode> _tasks;
-    private SolutionNode _root;
+    private final List<TaskNode> _tasks;
+    private final SolutionNode _root;
 
     public SolutionTree(List<TaskNode> allTasks, List<Processor> processors) {
-        _root = new SolutionNode(processors, allTasks, null);
+        _root = new SolutionNode(processors, allTasks);
         _tasks = allTasks;
     }
 
@@ -25,7 +25,6 @@ public class SolutionTree {
             _bestTime = 0;
             _bestSolution = _root;
         }
-
         return _bestSolution;
     }
 
@@ -41,12 +40,18 @@ public class SolutionTree {
                     DFSBranchAndBoundAlgorithm(solutionNode.getChildNodes().get(i));
                 }
             } else {
+                SolutionNode.printSolutionNode(solutionNode);
                 // compare the actual time of the leaf to the best time
                 if (solutionNode.getEndTime() < _bestTime) {
                     _bestSolution = solutionNode;
+//                    SolutionNode.printSolutionNode(solutionNode);
                     _bestTime = solutionNode.getEndTime();
                 }
             }
         }
+//        else {
+//            System.out.println("Ignored " + solutionNode.getLowerBound());
+//        }
+//        System.gc();
     }
 }

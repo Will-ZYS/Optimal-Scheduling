@@ -9,11 +9,11 @@ import java.util.regex.Pattern;
 
 public class InputReader {
 
-    private String _pathToDotFile;
-    private int _numOfProcessor;
-    private String _graphName;
+    private final String _pathToDotFile;
+    private final int _numOfProcessor;
+    private String _graphName = "exampleGraph";
 
-    private LinkedHashMap<String, String> _inputRowsRaw = new LinkedHashMap<String, String>();
+    private final LinkedHashMap<String, String> _inputRowsRaw = new LinkedHashMap<>();
 
     public InputReader ( String path, int processors ){
         _pathToDotFile = path;
@@ -81,8 +81,7 @@ public class InputReader {
                 }
 
                 // create the DataTransferEdge and write to adjacency list
-                DataTransferEdge edge = new DataTransferEdge(sourceNode, destinationNode, weight, attributeInfo);
-                sourceNode.addOutgoingEdge(edge);
+                DataTransferEdge edge = new DataTransferEdge(sourceNode, weight);
                 destinationNode.addIncomingEdge(edge);
 
             } else { // process as node
@@ -105,14 +104,13 @@ public class InputReader {
         List<TaskNode> taskList = new ArrayList<>(taskNodeMap.values());
 
         // new a solution tree object which will be used later
-        SolutionTree solutionTree = new SolutionTree(taskList, generateProcessors());
-        return solutionTree;
+        return new SolutionTree(taskList, generateProcessors());
     }
 
     // generate a list of processors, the id starts with 1
     private List<Processor> generateProcessors() {
 
-        List<Processor> processorList = new ArrayList<Processor>();
+        List<Processor> processorList = new ArrayList<>();
 
         for ( int i = 1; i<= _numOfProcessor; i++ ){
             processorList.add(new Processor(i));

@@ -27,7 +27,7 @@ public class Main {
         try {
             numOfProcessor = Integer.parseInt(args[1]);
             isPositiveInt = numOfProcessor > 0;
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException ignored) {
 
         }
         if (!isPositiveInt) {
@@ -39,19 +39,23 @@ public class Main {
         // loop through option and check stuffs
         String outputName = inputName + "-output";
         for (int i = 2; i < args.length; i++) {
-            if (args[i].equals("-v")) {
-                System.out.println("Sorry, the visualiser has not been implemented yet, you can find the result in the output file");
-            } else if (args[i].equals("-p")) {
-                System.out.println("Sorry, the parallel version has not been implemented yet, the algorithm will be run in sequential");
-                i++;
-            } else if (args[i].equals("-o")) {
-                if (i == args.length - 1) {
-                    System.err.println("Usage: java -jar scheduler.jar INPUT.dot P [-p N] [-v] [-o OUTPUT]");
-                    System.err.println("You need to specify the output file name");
-                    System.exit(1);
-                }
-                outputName = args[i + 1];
-                i++;
+            switch (args[i]) {
+                case "-v":
+                    System.out.println("Sorry, the visualiser has not been implemented yet, you can find the result in the output file");
+                    break;
+                case "-p":
+                    System.out.println("Sorry, the parallel version has not been implemented yet, the algorithm will be run in sequential");
+                    i++;
+                    break;
+                case "-o":
+                    if (i == args.length - 1) {
+                        System.err.println("Usage: java -jar scheduler.jar INPUT.dot P [-p N] [-v] [-o OUTPUT]");
+                        System.err.println("You need to specify the output file name");
+                        System.exit(1);
+                    }
+                    outputName = args[i + 1];
+                    i++;
+                    break;
             }
         }
 
