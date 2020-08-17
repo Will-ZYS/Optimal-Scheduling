@@ -4,38 +4,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TaskNode {
-    private int _weight;
-    private final String _name;
-    private final List<DataTransferEdge> _incomingEdges;
+	private int _weight;
+	private final String NAME;
+	private final List<DataTransferEdge> INCOMING_EDGES;
 
-    public TaskNode(String name) {
-        _name = name;
-        _incomingEdges = new ArrayList<>();
-    }
+	public TaskNode(String name) {
+		NAME = name;
+		INCOMING_EDGES = new ArrayList<>();
+	}
 
-    public TaskNode(int weight, String name) {
-        _weight = weight;
-        _name = name;
-        _incomingEdges = new ArrayList<>();
-    }
+	public TaskNode(int weight, String name) {
+		_weight = weight;
+		NAME = name;
+		INCOMING_EDGES = new ArrayList<>();
+	}
 
-    public void addIncomingEdge(DataTransferEdge edge) {
-        _incomingEdges.add(edge);
-    }
+	public void addIncomingEdge(DataTransferEdge edge) {
+		INCOMING_EDGES.add(edge);
+	}
 
-    public int getWeight() {
-        return _weight;
-    }
+	public int getWeight() {
+		return _weight;
+	}
 
-    public void setWeight(int weight) {
-        _weight = weight;
-    }
+	public void setWeight(int weight) {
+		_weight = weight;
+	}
 
-    public List<DataTransferEdge> getIncomingEdges() {
-        return _incomingEdges;
-    }
+	public List<DataTransferEdge> getIncomingEdges() {
+		return INCOMING_EDGES;
+	}
 
-    public String getName() {
-        return _name;
-    }
+	public String getName() {
+		return NAME;
+	}
 }
