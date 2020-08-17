@@ -1,4 +1,8 @@
-package se306.project1;
+package output;
+
+import algorithm.Processor;
+import algorithm.SolutionNode;
+import algorithm.TaskNode;
 
 import java.io.File;
 import java.io.FileWriter;

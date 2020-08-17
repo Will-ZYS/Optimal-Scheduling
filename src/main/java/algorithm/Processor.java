@@ -1,4 +1,4 @@
-package se306.project1;
+package algorithm;
 
 import java.util.HashMap;
 import java.util.Map;

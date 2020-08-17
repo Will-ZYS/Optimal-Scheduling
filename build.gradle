@@ -4,11 +4,11 @@ plugins {
 
 jar {
     manifest {
-        attributes "Main-Class": 'se306.project1.Main'
+        attributes "Main-Class": 'main.Scheduler'
     }
 }
 
-group 'se306.project1'
+group 'main'
 version '1.0-SNAPSHOT'
 
 repositories {

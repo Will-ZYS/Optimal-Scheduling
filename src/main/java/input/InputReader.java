@@ -1,4 +1,9 @@
-package se306.project1;
+package input;
+
+import algorithm.DataTransferEdge;
+import algorithm.Processor;
+import algorithm.SolutionTree;
+import algorithm.TaskNode;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

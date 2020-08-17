@@ -1,4 +1,4 @@
-package se306.project1;
+package algorithm;
 
 public class DataTransferEdge {
     private final TaskNode _sourceTaskNode;
