@@ -16,8 +16,11 @@ public class Scheduler {
 		Scheduler scheduler = new Scheduler();
 		scheduler.readUserInput(args);
 
+		// read the input file and return it as a solutionTree object
 		try {
-			// read the input file and return it as a solutionTree object
+			// the current branch and bound algorithm cannot handle more than 22 tasks, therefore,
+			// all tasks are put into the same processor for milestone 1
+			// @todo refactor the algorithm to increase its efficiency
 			InputReader inputFile = new InputReader(args[0], 1);
 
 			SolutionTree solutionTree = inputFile.readInputFile();
