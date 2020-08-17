@@ -120,4 +120,17 @@ _Reason for change:_
 - The previous default output file name does not match the one in the project description
 - To improve user experience when the users make the error
 
-  
+<hr/>
+
+**17/08/2020**
+- Bug fix to trim spaces in the output done by Lucas
+- Added comments and Java Docs
+- Removed printings in the console
+
+_Changes made to the design:_
+- Refactored the file structure of the source files into different packages
+- Only scheduling all tasks onto one processor for Milestone 1 release
+
+_Reason for change:_
+- To have a clear file structure.
+- Scheduling all tasks onto one processor to ensure the program will produce an output.

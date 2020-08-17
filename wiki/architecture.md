@@ -11,7 +11,7 @@
       To store meeting notes, pseudocode, UML diagram, etc
     - Trello 
 - Communication tools:
-    - Facebook massager group
+    - Facebook Messenger group chat
     - Zoom
 
 **Operating System:**
