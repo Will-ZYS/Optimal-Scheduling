@@ -86,7 +86,7 @@ public class InputReader {
 
             } else { // process as node
                 // Store as an node in LinkedMap (preserved order)
-                String nodeData = lineArray[1].replace("];","");
+                String nodeData = lineArray[1].trim().replace("];","");
                 _inputRowsRaw.put(attributeInfo,nodeData);
 
                 if (!taskNodeMap.containsKey(attributeInfo)) {
