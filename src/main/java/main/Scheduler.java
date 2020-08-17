@@ -18,7 +18,7 @@ public class Scheduler {
 
 		try {
 			// read the input file and return it as a solutionTree object
-			InputReader inputFile = new InputReader(args[0], _numOfProcessor);
+			InputReader inputFile = new InputReader(args[0], 1);
 
 			SolutionTree solutionTree = inputFile.readInputFile();
 
