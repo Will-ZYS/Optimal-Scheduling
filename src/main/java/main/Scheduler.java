@@ -8,7 +8,6 @@ import output.OutputGenerator;
 import java.io.IOException;
 
 public class Scheduler {
-	private static int _numOfProcessor = 0;
 	private static String _outputName;
 
 	public static void main(String[] args) {
@@ -63,8 +62,8 @@ public class Scheduler {
 		// check if the second argument is a positive integer
 		boolean isPositiveInt = false;
 		try {
-			_numOfProcessor = Integer.parseInt(args[1]);
-			isPositiveInt = _numOfProcessor > 0;
+			int numOfProcessor = Integer.parseInt(args[1]);
+			isPositiveInt = numOfProcessor > 0;
 		} catch (NumberFormatException ignored) {
 
 		}
