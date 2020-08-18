@@ -134,3 +134,16 @@ _Changes made to the design:_
 _Reason for change:_
 - To have a clear file structure.
 - Scheduling all tasks onto one processor to ensure the program will produce an output.
+
+<hr/>
+
+**18/08/2020**
+- Update Gradle build script by Tommy
+
+_Changes made to the design:_
+- Change the Gradle project build script 
+- Write a simple README file for running the project
+
+_Reason for change:_
+- The project can be easily cloned, compiled and run
+- To provide detailed instruction for running the application
