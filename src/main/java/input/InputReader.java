@@ -6,6 +6,7 @@ import algorithm.SolutionTree;
 import algorithm.TaskNode;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
@@ -35,7 +36,14 @@ public class InputReader {
 	public SolutionTree readInputFile() throws IOException {
 
 		// read the file with provided path
-		FileReader dotFile = new FileReader(PATH_TO_DOT_FILE);
+		FileReader dotFile = null;
+		try {
+			dotFile = new FileReader(PATH_TO_DOT_FILE);
+		} catch (FileNotFoundException fnfe) {
+			System.err.println("Error: Cannot find the file " + PATH_TO_DOT_FILE + ", please enter the correct file name");
+			System.exit(1);
+		}
+
 		BufferedReader brFile = new BufferedReader(dotFile);
 
 		// map between task name and its TaskNode object
