@@ -58,6 +58,13 @@ public class InputReader {
 				continue;
 			}
 
+			// check if the line contains actual information of a node or a edge
+			String nodePattern = "\\s*\\w+\\s*\\[Weight=\\d+\\];";
+			String edgePattern = "\\s*\\w+\\s->\\s\\w+\\s*\\[Weight=\\d+\\];";
+			if (!line.matches(nodePattern) && !line.matches(edgePattern)) {
+				continue;
+			}
+
 			// get the weight and task node name from lines
 			String[] lineArray = line.split("\\[");
 			String attributeInfo = lineArray[0].trim();
