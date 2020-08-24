@@ -6,6 +6,7 @@ import algorithm.SolutionTree;
 import algorithm.TaskNode;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
@@ -35,7 +36,14 @@ public class InputReader {
 	public SolutionTree readInputFile() throws IOException {
 
 		// read the file with provided path
-		FileReader dotFile = new FileReader(PATH_TO_DOT_FILE);
+		FileReader dotFile = null;
+		try {
+			dotFile = new FileReader(PATH_TO_DOT_FILE);
+		} catch (FileNotFoundException fnfe) {
+			System.err.println("Error: Cannot find the file " + PATH_TO_DOT_FILE + ", please enter the correct file name");
+			System.exit(1);
+		}
+
 		BufferedReader brFile = new BufferedReader(dotFile);
 
 		// map between task name and its TaskNode object
@@ -45,16 +53,20 @@ public class InputReader {
 		String line;
 		while ((line = brFile.readLine()) != null) {
 
-			// ignore the line without the symbol '['
-			if (! line.contains("[")) {
-				// if the line is the first line which contains the graph name
-				if (line.contains("\"")) {
-					Pattern doubleQuotes = Pattern.compile("\"([^\"]*)\"");
-					Matcher findDoubleQuotes = doubleQuotes.matcher(line);
-					while (findDoubleQuotes.find()) {
-						_graphName = findDoubleQuotes.group(1);
-					}
+			// if the line is the first line which contains the graph name
+			if (line.contains("\"") && line.contains("digraph")) {
+				Pattern doubleQuotes = Pattern.compile("\"([^\"]*)\"");
+				Matcher findDoubleQuotes = doubleQuotes.matcher(line);
+				while (findDoubleQuotes.find()) {
+					_graphName = findDoubleQuotes.group(1);
 				}
+				continue;
+			}
+
+			// check if the line contains actual information of a node or a edge
+			String nodePattern = "\\s*\\w+\\s*\\[Weight=\\d+\\];";
+			String edgePattern = "\\s*\\w+\\s->\\s\\w+\\s*\\[Weight=\\d+\\];";
+			if (!line.matches(nodePattern) && !line.matches(edgePattern)) {
 				continue;
 			}
 

@@ -147,3 +147,16 @@ _Changes made to the design:_
 _Reason for change:_
 - The project can be easily cloned, compiled and run
 - To provide detailed instruction for running the application
+
+<hr/>
+
+**24/08/2020**
+- Bug fix in InputReader class by Tommy
+
+_Changes made to the design:_
+- Add regex match when reading lines from the .dot file
+- Catch FileNotFoundException when reading .dot file, display intuitive error message
+
+_Reason for change:_
+- To make the InputReader more robust
+- Improve user experience on error handling
