@@ -45,15 +45,12 @@ public class InputReader {
 		String line;
 		while ((line = brFile.readLine()) != null) {
 
-			// ignore the line without the symbol '['
-			if (! line.contains("[")) {
-				// if the line is the first line which contains the graph name
-				if (line.contains("\"")) {
-					Pattern doubleQuotes = Pattern.compile("\"([^\"]*)\"");
-					Matcher findDoubleQuotes = doubleQuotes.matcher(line);
-					while (findDoubleQuotes.find()) {
-						_graphName = findDoubleQuotes.group(1);
-					}
+			// if the line is the first line which contains the graph name
+			if (line.contains("\"") && line.contains("digraph")) {
+				Pattern doubleQuotes = Pattern.compile("\"([^\"]*)\"");
+				Matcher findDoubleQuotes = doubleQuotes.matcher(line);
+				while (findDoubleQuotes.find()) {
+					_graphName = findDoubleQuotes.group(1);
 				}
 				continue;
 			}
