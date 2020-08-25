@@ -54,6 +54,9 @@ public class SolutionTree {
 			if (! unvisitedTaskNodes.isEmpty()) {
 				// loop through all the unvisited task nodes
 				for (TaskNode taskNode : unvisitedTaskNodes) {
+					// optimisation: if more than one empty processor, only allocate a task to one
+					boolean hasSeenEmpty = false;
+
 					// if this task node can be used to create a partial solution
 					if (solutionNode.canCreateNode(taskNode)) {
 
@@ -62,14 +65,29 @@ public class SolutionTree {
 
 						// loop through all processors
 						for (int i = 0; i < NUMBER_OF_PROCESSORS; i++) {
-							// call create child nodes by giving the id of processor as a parameter
-							// get the returned child solutionNodes
-							SolutionNode childSolutionNode = solutionNode.createChildNode(taskNode, i);
+							// if the processor is empty
+							if (solutionNode.getProcessors().get(i).getEndTime() == 0) {
+								if (!hasSeenEmpty) { // first instance of a processor with no tasks
+									// call create child nodes by giving the id of processor as a parameter
+									// get the returned child solutionNodes
+									SolutionNode childSolutionNode = solutionNode.createChildNode(taskNode, i);
 
-							// call algorithm based on this child solutionNodes
-							DFSBranchAndBoundAlgorithm(childSolutionNode);
+									// call algorithm based on this child solutionNodes
+									DFSBranchAndBoundAlgorithm(childSolutionNode);
+
+									// now that we have allocated a task to an empty processor, there is no need
+									// to allocate to another empty processor - eliminating identical states
+									hasSeenEmpty = true;
+								}
+							} else {
+								// call create child nodes by giving the id of processor as a parameter
+								// get the returned child solutionNodes
+								SolutionNode childSolutionNode = solutionNode.createChildNode(taskNode, i);
+
+								// call algorithm based on this child solutionNodes
+								DFSBranchAndBoundAlgorithm(childSolutionNode);
+							}
 						}
-
 					}
 				}
 			} else {
