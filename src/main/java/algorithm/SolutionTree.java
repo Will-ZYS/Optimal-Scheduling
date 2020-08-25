@@ -120,6 +120,13 @@ public class SolutionTree {
 		}
 	}
 
+	/**
+	 * Upon initialisation, will check for identical TaskNodes.
+	 * A task is identical to another task if it has the same weight, parent, children and
+	 * data transfer times of both ingoing and outgoing edges.
+	 * This will set a Hashmap in each task with the key of the identical task, allowing for
+	 * O(1) lookups.
+	 */
 	private void markIdenticalTasks() {
 		for (TaskNode taskA : TASKS) {
 			for (TaskNode taskB : TASKS) {

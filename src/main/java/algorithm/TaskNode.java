@@ -66,6 +66,17 @@ public class TaskNode {
 		return _bottomLevel;
 	}
 
+	/**
+	 * Checks if a TaskNode is identical to another. This helps optimisation,
+	 * reducing the number of states we need to explore.
+	 * For two tasks to be identical, they need to satisfy:
+	 * - weight is equal
+	 * - same parent and children
+	 * - incoming DataTransferEdges are the same
+	 * - outgoing DataTransferEdges are the same
+	 * @param other TaskNode we are comparing to
+	 * @return true if identical. False otherwise.
+	 */
 	public boolean isIdenticalTo(TaskNode other) {
 		// Weight of the task node have to be the same
 		if (_weight != other.getWeight()) {
