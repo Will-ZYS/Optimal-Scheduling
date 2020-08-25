@@ -24,10 +24,14 @@ public class SolutionNode {
 	 * @param taskNode the task to be scheduled
 	 */
 	public void calculateStartTime(TaskNode taskNode) {
+		_latestProcessor = null;
+		_maxEndTime = 0;
+		_secondMaxEndTime = 0;
 
 		// Put all the values of parents to the hashmap
 		for (Processor lastProcessor : PROCESSORS) {
 			int time = 0;
+
 
 			// loop through all its parents on a specific processor
 			// find out the earliest start time based on its parents on this processor
