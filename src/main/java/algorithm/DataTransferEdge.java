@@ -17,6 +17,15 @@ public class DataTransferEdge {
 		return DATA_TRANSFER_TIME;
 	}
 
+	/**
+	 * Checks if a DataTransferEdge is identical to another. This helps optimisation,
+	 * reducing the number of states we need to explore.
+	 * For a DataTransferEdge to be identical:
+	 * - must have the same source
+	 * - must have the same data transfer time
+	 * @param other - other DataTransferEdge we are comparing
+	 * @return true - if identical. false otherwise
+	 */
 	public boolean isIdenticalTo(DataTransferEdge other) {
 		String sourceA = SOURCE_TASK_NODE.getName();
 		String sourceB = other.getSourceNode().getName();
