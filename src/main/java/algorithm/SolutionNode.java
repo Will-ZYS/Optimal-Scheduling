@@ -131,18 +131,16 @@ public class SolutionNode {
 	 *
 	 * @return the estimated earliest end time
 	 */
-	public int getLowerBound() {
-		int sumOfUnvisitedNodeWeight = 0;
-		for (TaskNode unvisitedNode : UNVISITED_TASK_NODES) {
-			sumOfUnvisitedNodeWeight += unvisitedNode.getWeight();
-		}
-		int maxEndTime = 0;
+	public int getLowerBound(int totalTaskWeight) {
+		// heuristic equation one: (total weight of all tasks + total idle time) / number of processors
+		int totalIdleTime = 0;
 		for (Processor processor : PROCESSORS) {
-			if (processor.getEndTime() > maxEndTime) {
-				maxEndTime = processor.getEndTime();
-			}
+			totalIdleTime += processor.getIdleTime();
 		}
-		return (maxEndTime + (sumOfUnvisitedNodeWeight / PROCESSORS.size()));
+
+		//@todo heuristic equation 2: max((start time + bottom level) of each allocated task)
+
+		return ((totalTaskWeight + totalIdleTime)/ PROCESSORS.size());
 	}
 
 	public int getEndTime() {

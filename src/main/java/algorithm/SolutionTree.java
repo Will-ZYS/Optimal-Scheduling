@@ -8,11 +8,17 @@ public class SolutionTree {
 	private final List<TaskNode> TASKS;
 	private final SolutionNode ROOT;
 	private final int NUMBER_OF_PROCESSORS;
+	private final int TOTAL_TASK_WEIGHT;
 
 	public SolutionTree(List<TaskNode> allTasks, List<Processor> processors) {
 		ROOT = new SolutionNode(processors, allTasks);
 		TASKS = allTasks;
 		NUMBER_OF_PROCESSORS = processors.size();
+		int total_task_weight = 0;
+		for (TaskNode taskNode : allTasks) {
+			total_task_weight += taskNode.getWeight();
+		}
+		TOTAL_TASK_WEIGHT = total_task_weight;
 	}
 
 	/**
@@ -39,7 +45,7 @@ public class SolutionTree {
 	private void DFSBranchAndBoundAlgorithm(SolutionNode solutionNode) {
 
 		// check the lower bound (estimation) of this node
-		if (solutionNode.getLowerBound() < _bestTime) {
+		if (solutionNode.getLowerBound(TOTAL_TASK_WEIGHT) < _bestTime) {
 
 			// get the unvisited nodes of this solutionNode
 			List<TaskNode> unvisitedTaskNodes = solutionNode.getUnvisitedTaskNodes();
