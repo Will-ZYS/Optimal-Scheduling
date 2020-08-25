@@ -19,6 +19,7 @@ public class SolutionTree {
 			total_task_weight += taskNode.getWeight();
 		}
 		TOTAL_TASK_WEIGHT = total_task_weight;
+		markIdenticalTasks();
 	}
 
 	/**
@@ -43,6 +44,10 @@ public class SolutionTree {
 	 * @param solutionNode the node to perform DFS branch and bound
 	 */
 	private void DFSBranchAndBoundAlgorithm(SolutionNode solutionNode) {
+		// Optimisation: HashMap of Tasks to Processors that are to be allocated this round.
+		// If we have two or more TaskNodes that are identical then we only have to schedule them to a processor once.
+		// i.e. if A and B are identical tasks, no need to schedule them on Processor 1.
+		Map<TaskNode, Integer> taskToProcessor = new HashMap<>();
 
 		// check the lower bound (estimation) of this node
 		if (solutionNode.getLowerBound(TOTAL_TASK_WEIGHT) < _bestTime) {
@@ -54,6 +59,17 @@ public class SolutionTree {
 			if (! unvisitedTaskNodes.isEmpty()) {
 				// loop through all the unvisited task nodes
 				for (TaskNode taskNode : unvisitedTaskNodes) {
+					// check in the hashmap if an identical tasknode has been allocated
+					boolean isIdenticalToTask = false;
+					for (TaskNode other : taskToProcessor.keySet()) {
+						if (taskNode.isIdenticalTo(other)) {
+							System.out.println(taskNode.getName() + " is identical to " + other.getName());
+							isIdenticalToTask = true;
+							break;
+						}
+					}
+					if (isIdenticalToTask) continue; // if identical, skip this task
+
 					// optimisation: if more than one empty processor, only allocate a task to one
 					boolean hasSeenEmpty = false;
 
@@ -87,6 +103,8 @@ public class SolutionTree {
 								// call algorithm based on this child solutionNodes
 								DFSBranchAndBoundAlgorithm(childSolutionNode);
 							}
+
+							taskToProcessor.put(taskNode, i);
 						}
 					}
 				}
@@ -99,6 +117,20 @@ public class SolutionTree {
 				}
 			}
 
+		}
+	}
+
+	private void markIdenticalTasks() {
+		for (TaskNode taskA : TASKS) {
+			for (TaskNode taskB : TASKS) {
+				if (taskA == taskB) continue; // don't compare task A with task A
+
+				if (!taskA.isIdenticalTo(taskB)) continue;
+
+				// task A and B are identical
+				taskA.setIdenticalNode(taskB);
+				taskB.setIdenticalNode(taskA);
+			}
 		}
 	}
 }
