@@ -16,4 +16,17 @@ public class DataTransferEdge {
 	public int getDataTransferTime() {
 		return DATA_TRANSFER_TIME;
 	}
+
+	public boolean isIdenticalTo(DataTransferEdge other) {
+		String sourceA = SOURCE_TASK_NODE.getName();
+		String sourceB = other.getSourceNode().getName();
+
+		// parent must be the same
+		if (!sourceA.equals(sourceB)) return false;
+
+		// data transfer time must be the same
+		if (DATA_TRANSFER_TIME != other.getDataTransferTime()) return false;
+
+		return true;
+	}
 }
