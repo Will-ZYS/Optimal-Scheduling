@@ -10,6 +10,7 @@ import java.io.IOException;
 public class Scheduler {
 	private static String _outputName;
 	private static int _numOfProcessor = 1;
+	private static SolutionNode _bestSolution = null;
 
 	public static void main(String[] args) {
 
@@ -29,6 +30,7 @@ public class Scheduler {
 			String graphName = inputFile.getGraphName();
 
 			SolutionNode bestSolution = solutionTree.findOptimalSolution();
+			_bestSolution = bestSolution;
 
 			// Generating output
 			OutputGenerator outputGenerator = new OutputGenerator(bestSolution, _outputName,
@@ -99,5 +101,9 @@ public class Scheduler {
 					break;
 			}
 		}
+	}
+
+	public SolutionNode getBestSolution() {
+		return _bestSolution;
 	}
 }
