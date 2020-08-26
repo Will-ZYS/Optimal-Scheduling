@@ -180,4 +180,21 @@ _Reason for change:_
   However, it is possible for c to be scheduled directly after "a" in processor 1. The end time doesn't necessarily 
   need to be larger than 5.
   
- 
+<hr/>
+  
+**26/08/2020**
+  
+- Optimisations by Martin, Tommy and Kevin
+
+_Changes made to the design:_
+- Made two optimisation tweaks, reducing the solution space
+    
+_Reason for change:_
+- The two tweaks solve two problems:
+- Problem 1: If we have multiple empty processors (processors with no task allocated to them), we allocate a task A to
+             all empty processors, resulting in exploring more states than we need to. 
+             Peer programmed this solution with Tommy and Kevin.
+- Problem 2: For two identical tasks A and B, we used to explore two states such that they were a permutation of each other. 
+             For example, State 1 has Processor 1: A, B (in that order). There will be another state,
+             State 2 has Processor 1: B, A. We don't need to explore State 2. Thus, this improvement reduces the
+             number of states we explore. 
