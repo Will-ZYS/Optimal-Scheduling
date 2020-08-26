@@ -109,6 +109,9 @@ public class InputReader {
 				DataTransferEdge edge = new DataTransferEdge(sourceNode, weight);
 				destinationNode.addIncomingEdge(edge);
 
+				DataTransferEdge outgoingEdge = new DataTransferEdge(destinationNode, weight);
+				sourceNode.addOutgoingEdge(outgoingEdge);
+
 			} else {
 				// process the current line as a task node
 				// Store as an node in LinkedMap (preserved order)
