@@ -137,8 +137,8 @@ public class SolutionNode {
 
 		for (Processor processor : PROCESSORS) {
 			totalIdleTime += processor.getIdleTime();
-			if (processor.getCriticalPath() > potentialLowerBoundOne) {
-				potentialLowerBoundOne = processor.getCriticalPath();
+			if (processor.getMaxStartTimePlusBottomLevel() > potentialLowerBoundOne) {
+				potentialLowerBoundOne = processor.getMaxStartTimePlusBottomLevel();
 			}
 		}
 
