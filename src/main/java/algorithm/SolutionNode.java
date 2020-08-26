@@ -137,13 +137,8 @@ public class SolutionNode {
 
 		for (Processor processor : PROCESSORS) {
 			totalIdleTime += processor.getIdleTime();
-			Map<TaskNode, Integer> allocatedTasksAndItsStartTime = processor.getTasks();
-			for (Map.Entry<TaskNode, Integer> entry : allocatedTasksAndItsStartTime.entrySet()) {
-				TaskNode taskNode = entry.getKey();
-				int startTime = entry.getValue();
-				if (startTime + taskNode.getBottomLevel() > potentialLowerBoundOne) {
-					potentialLowerBoundOne = startTime + taskNode.getBottomLevel();
-				}
+			if (processor.getMaxStartTimePlusBottomLevel() > potentialLowerBoundOne) {
+				potentialLowerBoundOne = processor.getMaxStartTimePlusBottomLevel();
 			}
 		}
 
