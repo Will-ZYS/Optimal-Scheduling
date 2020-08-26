@@ -109,6 +109,9 @@ public class InputReader {
 				DataTransferEdge edge = new DataTransferEdge(sourceNode, weight);
 				destinationNode.addIncomingEdge(edge);
 
+				DataTransferEdge outgoingEdge = new DataTransferEdge(destinationNode, weight);
+				sourceNode.addOutgoingEdge(outgoingEdge);
+
 			} else {
 				// process the current line as a task node
 				// Store as an node in LinkedMap (preserved order)
@@ -129,8 +132,36 @@ public class InputReader {
 		// list of tasks
 		List<TaskNode> taskList = new ArrayList<>(taskNodeMap.values());
 
+		// get all tasks without incoming edges
+		for (TaskNode taskNode : taskList) {
+			if (taskNode.getIncomingEdges().isEmpty()) {
+				calculateBottomLevel(taskNode);
+			}
+		}
+
 		// new a solution tree object which will be used later
 		return new SolutionTree(taskList, generateProcessors());
+	}
+
+	private int calculateBottomLevel(TaskNode taskNode) {
+		List<DataTransferEdge> outgoingEdges = taskNode.getOutgoingEdges();
+		int weightOfTask = taskNode.getWeight();
+		if (outgoingEdges.isEmpty()) {
+			// leaf task node reached, update the maximum bottom level
+			taskNode.setBottomLevel(weightOfTask);
+			return weightOfTask;
+		} else {
+			int bottomLevel = weightOfTask;
+			for (DataTransferEdge outgoingEdge : outgoingEdges) {
+				TaskNode destinationTask = outgoingEdge.getSourceNode();
+				int weightOfChildrenTasks = calculateBottomLevel(destinationTask);
+				if (weightOfChildrenTasks + weightOfTask > bottomLevel) {
+					bottomLevel = weightOfChildrenTasks + weightOfTask;
+				}
+			}
+			taskNode.setBottomLevel(bottomLevel);
+			return bottomLevel;
+		}
 	}
 
 	/**

@@ -8,10 +8,12 @@ public class Processor {
 	private final Map<TaskNode, Integer> TASKS;
 	private int _endTime;
 	private final int PROCESSOR_ID;
+	private int _idleTime;
 
 	public Processor(int id) {
 		TASKS = new HashMap<>();
 		_endTime = 0;
+		_idleTime = 0;
 		PROCESSOR_ID = id;
 	}
 
@@ -32,6 +34,7 @@ public class Processor {
 
 	public void addTask(TaskNode task, int startTime) {
 		TASKS.put(task, startTime);
+		_idleTime += startTime - _endTime;
 		_endTime = startTime + task.getWeight();
 	}
 
@@ -45,5 +48,9 @@ public class Processor {
 
 	public int getID() {
 		return PROCESSOR_ID;
+	}
+
+	public int getIdleTime() {
+		return _idleTime;
 	}
 }

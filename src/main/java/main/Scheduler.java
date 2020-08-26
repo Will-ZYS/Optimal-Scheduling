@@ -9,6 +9,7 @@ import java.io.IOException;
 
 public class Scheduler {
 	private static String _outputName;
+	private static int _numOfProcessor = 1;
 
 	public static void main(String[] args) {
 
@@ -20,7 +21,7 @@ public class Scheduler {
 			// the current branch and bound algorithm cannot handle more than 22 tasks, therefore,
 			// all tasks are put into the same processor for milestone 1
 			// @todo refactor the algorithm to increase its efficiency
-			InputReader inputFile = new InputReader(args[0], 1);
+			InputReader inputFile = new InputReader(args[0], _numOfProcessor);
 
 			SolutionTree solutionTree = inputFile.readInputFile();
 
@@ -44,6 +45,7 @@ public class Scheduler {
 	 * @param args user inputs
 	 */
 	private void readUserInput(String[] args) {
+
 		// Check the number of command line argument is greater than 2
 		if (args.length < 2) {
 			System.err.println("Usage: java -jar scheduler.jar INPUT.dot P [-p N] [-v] [-o OUTPUT]");
@@ -62,8 +64,8 @@ public class Scheduler {
 		// check if the second argument is a positive integer
 		boolean isPositiveInt = false;
 		try {
-			int numOfProcessor = Integer.parseInt(args[1]);
-			isPositiveInt = numOfProcessor > 0;
+			_numOfProcessor  = Integer.parseInt(args[1]);
+			isPositiveInt = _numOfProcessor > 0;
 		} catch (NumberFormatException ignored) {
 
 		}
@@ -97,6 +99,5 @@ public class Scheduler {
 					break;
 			}
 		}
-
 	}
 }

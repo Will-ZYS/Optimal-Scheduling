@@ -160,3 +160,24 @@ _Changes made to the design:_
 _Reason for change:_
 - To make the InputReader more robust
 - Improve user experience on error handling
+
+<hr/>
+
+**26/08/2020**
+- Bug fix in algorithm by Emily 
+
+_Changes made to the design:_
+- Change the heuristic equation to be (weight of all tasks + total idle time) / number of processors.   
+This equation calculates the end time when there is perfect balance loading across all processors.
+- Add another equation - max(start time of each allocated task + its bottom level).  
+  The final lower bound is the maximum between the result of two heuristic equations.
+
+_Reason for change:_
+- The original heuristic equation used - (Endtime + weight/number of processors) doesn't necessarily give a lower bound.  
+    - For example, consider task "a" in processor 1 which ends at 2, and task "b" in processor 2 which ends at 5.  
+  If we still have a third task "c", based on the current equation, it will calculate the lower bound as 
+  (5 + weight of c / 2), which is definitely larger than 5.  
+  However, it is possible for c to be scheduled directly after "a" in processor 1. The end time doesn't necessarily 
+  need to be larger than 5.
+  
+ 

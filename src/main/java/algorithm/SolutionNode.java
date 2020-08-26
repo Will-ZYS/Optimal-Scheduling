@@ -24,10 +24,14 @@ public class SolutionNode {
 	 * @param taskNode the task to be scheduled
 	 */
 	public void calculateStartTime(TaskNode taskNode) {
+		_latestProcessor = null;
+		_maxEndTime = 0;
+		_secondMaxEndTime = 0;
 
 		// Put all the values of parents to the hashmap
 		for (Processor lastProcessor : PROCESSORS) {
 			int time = 0;
+
 
 			// loop through all its parents on a specific processor
 			// find out the earliest start time based on its parents on this processor
@@ -127,18 +131,26 @@ public class SolutionNode {
 	 *
 	 * @return the estimated earliest end time
 	 */
-	public int getLowerBound() {
-		int sumOfUnvisitedNodeWeight = 0;
-		for (TaskNode unvisitedNode : UNVISITED_TASK_NODES) {
-			sumOfUnvisitedNodeWeight += unvisitedNode.getWeight();
-		}
-		int maxEndTime = 0;
+	public int getLowerBound(int totalTaskWeight) {
+		int totalIdleTime = 0;
+		int potentialLowerBoundOne = 0; //heuristic equation 1: max((start time + bottom level) of each allocated task)
+
 		for (Processor processor : PROCESSORS) {
-			if (processor.getEndTime() > maxEndTime) {
-				maxEndTime = processor.getEndTime();
+			totalIdleTime += processor.getIdleTime();
+			Map<TaskNode, Integer> allocatedTasksAndItsStartTime = processor.getTasks();
+			for (Map.Entry<TaskNode, Integer> entry : allocatedTasksAndItsStartTime.entrySet()) {
+				TaskNode taskNode = entry.getKey();
+				int startTime = entry.getValue();
+				if (startTime + taskNode.getBottomLevel() > potentialLowerBoundOne) {
+					potentialLowerBoundOne = startTime + taskNode.getBottomLevel();
+				}
 			}
 		}
-		return (maxEndTime + (sumOfUnvisitedNodeWeight / PROCESSORS.size()));
+
+		// heuristic equation 2: (total weight of all tasks + total idle time) / number of processors
+		int potentialLowerBoundTwo = ((totalTaskWeight + totalIdleTime) / PROCESSORS.size());
+
+		return (Math.max(potentialLowerBoundOne, potentialLowerBoundTwo));
 	}
 
 	public int getEndTime() {
