@@ -132,15 +132,25 @@ public class SolutionNode {
 	 * @return the estimated earliest end time
 	 */
 	public int getLowerBound(int totalTaskWeight) {
-		// heuristic equation one: (total weight of all tasks + total idle time) / number of processors
 		int totalIdleTime = 0;
+		int potentialLowerBoundOne = 0; //heuristic equation 1: max((start time + bottom level) of each allocated task)
+
 		for (Processor processor : PROCESSORS) {
 			totalIdleTime += processor.getIdleTime();
+			Map<TaskNode, Integer> allocatedTasksAndIsStartTime = processor.getTasks();
+			for (Map.Entry<TaskNode, Integer> entry : allocatedTasksAndIsStartTime.entrySet()) {
+				TaskNode taskNode = entry.getKey();
+				int startTime = entry.getValue();
+				if (startTime + taskNode.getBottomLevel() > potentialLowerBoundOne) {
+					potentialLowerBoundOne = startTime + taskNode.getBottomLevel();
+				}
+			}
 		}
 
-		//@todo heuristic equation 2: max((start time + bottom level) of each allocated task)
+		// heuristic equation 2: (total weight of all tasks + total idle time) / number of processors
+		int potentialLowerBoundTwo = ((totalTaskWeight + totalIdleTime) / PROCESSORS.size());
 
-		return ((totalTaskWeight + totalIdleTime)/ PROCESSORS.size());
+		return (Math.max(potentialLowerBoundOne, potentialLowerBoundTwo));
 	}
 
 	public int getEndTime() {
