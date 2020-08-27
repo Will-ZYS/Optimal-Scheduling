@@ -57,7 +57,7 @@ public class SolutionTree {
 			List<TaskNode> unvisitedTaskNodes = solutionNode.getUnvisitedTaskNodes();
 
 			// if this solutionNode still has unvisited task node
-			if (! unvisitedTaskNodes.isEmpty()) {
+			if (!unvisitedTaskNodes.isEmpty()) {
 				// loop through all the unvisited task nodes
 				for (TaskNode taskNode : unvisitedTaskNodes) {
 
@@ -78,8 +78,9 @@ public class SolutionTree {
 					boolean hasSeenEmpty = false;
 
 					// if this task node can be used to create a partial solution
-					if (solutionNode.canCreateNode(taskNode)) {
-
+					if (!solutionNode.canCreateNode(taskNode)) {
+						break;
+					} else {
 						// find the possible start time for this taskNode
 						solutionNode.calculateStartTime(taskNode);
 
