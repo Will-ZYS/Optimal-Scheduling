@@ -132,15 +132,59 @@ public class InputReader {
 		// list of tasks
 		List<TaskNode> taskList = new ArrayList<>(taskNodeMap.values());
 
+		// sort all tasks in topological order
+		taskList = topologicalSort(taskList);
+
 		// get all tasks without incoming edges
 		for (TaskNode taskNode : taskList) {
 			if (taskNode.getIncomingEdges().isEmpty()) {
 				calculateBottomLevel(taskNode);
+			} else {
+				break;
 			}
 		}
 
 		// new a solution tree object which will be used later
 		return new SolutionTree(taskList, generateProcessors());
+	}
+
+	/**
+	 * Sort all taskNodes into its topological order
+	 * @param taskNodes original list of taskNodes
+	 * @return a list of sorted taskNodes
+	 */
+	private List<TaskNode> topologicalSort(List<TaskNode> taskNodes) {
+		int totalNumberOfTasks = taskNodes.size();
+		List<TaskNode> taskListInTopologicalOrder = new ArrayList<>();
+		Map<TaskNode, Integer> tasks = new HashMap<>(); // Integer represents the number of incoming edges of a task
+
+		for (TaskNode taskNode : taskNodes) {
+			if (taskNode.getIncomingEdges().isEmpty()) {
+				taskListInTopologicalOrder.add(taskNode);
+			} else {
+				tasks.put(taskNode, taskNode.getIncomingEdges().size());
+			}
+		}
+
+		for (int i = 0; i < totalNumberOfTasks; i++) {
+			TaskNode taskNode = taskListInTopologicalOrder.get(i);
+
+			List<DataTransferEdge> outgoingEdges = taskNode.getOutgoingEdges();
+			for (DataTransferEdge outgoingEdge : outgoingEdges) {
+				// find all its child taskNodes
+				TaskNode childTaskNode = outgoingEdge.getSourceNode();
+				int numberOfIncomingEdges = tasks.get(childTaskNode) - 1;
+
+				if (numberOfIncomingEdges == 0) {
+					taskListInTopologicalOrder.add(childTaskNode);
+					tasks.remove(childTaskNode);
+				} else {
+					// update the number of incoming edges
+					tasks.replace(childTaskNode, numberOfIncomingEdges);
+				}
+			}
+		}
+		return taskListInTopologicalOrder;
 	}
 
 	private int calculateBottomLevel(TaskNode taskNode) {
