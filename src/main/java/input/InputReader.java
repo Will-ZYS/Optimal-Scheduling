@@ -187,24 +187,34 @@ public class InputReader {
 		return taskListInTopologicalOrder;
 	}
 
-	private int calculateBottomLevel(TaskNode taskNode) {
+	private int[] calculateBottomLevel(TaskNode taskNode) {
 		List<DataTransferEdge> outgoingEdges = taskNode.getOutgoingEdges();
 		int weightOfTask = taskNode.getWeight();
 		if (outgoingEdges.isEmpty()) {
 			// leaf task node reached, update the maximum bottom level
 			taskNode.setBottomLevel(weightOfTask);
-			return weightOfTask;
+			taskNode.setBottomLoad(0);
+			return new int[]{weightOfTask, 0};
 		} else {
 			int bottomLevel = weightOfTask;
+			int weightOfAllDescendants = 0;
+
+			// int array is in the format of [bottomLevel, weight of all descendants]
+			int[] bottomLevelAndBottomLoad = new int[2];
 			for (DataTransferEdge outgoingEdge : outgoingEdges) {
 				TaskNode destinationTask = outgoingEdge.getSourceNode();
-				int weightOfChildrenTasks = calculateBottomLevel(destinationTask);
-				if (weightOfChildrenTasks + weightOfTask > bottomLevel) {
-					bottomLevel = weightOfChildrenTasks + weightOfTask;
+
+				bottomLevelAndBottomLoad = calculateBottomLevel(destinationTask);
+				weightOfAllDescendants += destinationTask.getWeight() + bottomLevelAndBottomLoad[1];
+				if (bottomLevelAndBottomLoad[0] + weightOfTask > bottomLevel) {
+					bottomLevel = bottomLevelAndBottomLoad[0] + weightOfTask;
 				}
 			}
 			taskNode.setBottomLevel(bottomLevel);
-			return bottomLevel;
+			taskNode.setBottomLoad((int) Math.ceil((double) weightOfAllDescendants / NUM_OF_PROCESSOR));
+			bottomLevelAndBottomLoad[0] = bottomLevel;
+			bottomLevelAndBottomLoad[1] = weightOfAllDescendants;
+			return bottomLevelAndBottomLoad;
 		}
 	}
 

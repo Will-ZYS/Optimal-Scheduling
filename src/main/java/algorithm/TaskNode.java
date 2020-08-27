@@ -11,11 +11,13 @@ public class TaskNode {
 	private final List<DataTransferEdge> INCOMING_EDGES;
 	private final List<DataTransferEdge> OUTGOING_EDGES;
 	private int _bottomLevel;
+	private int _bottomLoad;    // weight of all descendants / number of processors
 	private final HashMap<TaskNode, Boolean> IDENTICAL_TO; // allows for O(1) checking if the TaskNode is identical to another
 
 	public TaskNode(String name) {
 		NAME = name;
 		_bottomLevel = 0;
+		_bottomLoad = 0;
 		INCOMING_EDGES = new ArrayList<>();
 		OUTGOING_EDGES = new ArrayList<>();
 		IDENTICAL_TO = new HashMap<>();
@@ -25,6 +27,7 @@ public class TaskNode {
 		_weight = weight;
 		NAME = name;
 		_bottomLevel = 0;
+		_bottomLoad = 0;
 		INCOMING_EDGES = new ArrayList<>();
 		OUTGOING_EDGES = new ArrayList<>();
 		IDENTICAL_TO = new HashMap<>();
@@ -117,5 +120,13 @@ public class TaskNode {
 
 	public void setIdenticalNode(TaskNode identicalNode) {
 		IDENTICAL_TO.put(identicalNode, true);
+	}
+
+	public void setBottomLoad(int bottomLoad) {
+		_bottomLoad = bottomLoad;
+	}
+
+	public int getBottomLoad() {
+		return _bottomLoad;
 	}
 }
