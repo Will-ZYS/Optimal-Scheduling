@@ -7,6 +7,7 @@ public class SolutionTree {
 	private SolutionNode _bestSolution;
 	private final List<TaskNode> TASKS;
 	private final SolutionNode ROOT;
+	private final boolean IDENTICAL_TASKS;
 	private final int NUMBER_OF_PROCESSORS;
 	private final int TOTAL_TASK_WEIGHT;
 
@@ -19,7 +20,7 @@ public class SolutionTree {
 			total_task_weight += taskNode.getWeight();
 		}
 		TOTAL_TASK_WEIGHT = total_task_weight;
-		markIdenticalTasks();
+		IDENTICAL_TASKS = markIdenticalTasks();
 	}
 
 	/**
@@ -59,16 +60,19 @@ public class SolutionTree {
 			if (! unvisitedTaskNodes.isEmpty()) {
 				// loop through all the unvisited task nodes
 				for (TaskNode taskNode : unvisitedTaskNodes) {
-					// check in the hashmap if an identical tasknode has been allocated
-					boolean isIdenticalToTask = false;
-					for (TaskNode other : taskToProcessor.keySet()) {
-						if (taskNode.isIdenticalTo(other)) {
-							System.out.println(taskNode.getName() + " is identical to " + other.getName());
-							isIdenticalToTask = true;
-							break;
+
+					// only go through this loop if there is at least one pair of identical tasks
+					if (IDENTICAL_TASKS) {
+						// check in the hashmap if an identical tasknode has been allocated
+						boolean isIdenticalToTask = false;
+						for (TaskNode other : taskToProcessor.keySet()) {
+							if (taskNode.isIdenticalTo(other)) {
+								isIdenticalToTask = true;
+								break;
+							}
 						}
+						if (isIdenticalToTask) continue; // if identical, skip this task
 					}
-					if (isIdenticalToTask) continue; // if identical, skip this task
 
 					// optimisation: if more than one empty processor, only allocate a task to one
 					boolean hasSeenEmpty = false;
@@ -127,7 +131,8 @@ public class SolutionTree {
 	 * This will set a Hashmap in each task with the key of the identical task, allowing for
 	 * O(1) lookups.
 	 */
-	private void markIdenticalTasks() {
+	private boolean markIdenticalTasks() {
+		boolean identicalTasksFound = false;
 		for (TaskNode taskA : TASKS) {
 			for (TaskNode taskB : TASKS) {
 				if (taskA == taskB) continue; // don't compare task A with task A
@@ -137,7 +142,9 @@ public class SolutionTree {
 				// task A and B are identical
 				taskA.setIdenticalNode(taskB);
 				taskB.setIdenticalNode(taskA);
+				identicalTasksFound = true;
 			}
 		}
+		return identicalTasksFound;
 	}
 }
