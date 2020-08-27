@@ -143,7 +143,7 @@ public class SolutionNode {
 		}
 
 		// heuristic equation 2: (total weight of all tasks + total idle time) / number of processors
-		int potentialLowerBoundTwo = ((totalTaskWeight + totalIdleTime) / PROCESSORS.size());
+		int potentialLowerBoundTwo = (int) Math.ceil(((double)totalTaskWeight + totalIdleTime) / PROCESSORS.size());
 
 		return (Math.max(potentialLowerBoundOne, potentialLowerBoundTwo));
 	}
