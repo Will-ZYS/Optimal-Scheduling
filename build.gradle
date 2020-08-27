@@ -1,6 +1,5 @@
 plugins {
     id 'java'
-    id 'org.openjfx.javafxplugin' version '0.0.9'
     id 'application'
 }
 
@@ -24,13 +23,7 @@ dependencies {
     compile 'com.jfoenix:jfoenix:9.0.10'
 }
 
-mainClassName = 'JavaFX.Homepage'
-
-javafx {
-    modules = [ 'javafx.controls', 'javafx.fxml' ]
-    version = '11.0.2'
-}
-
+mainClassName = 'main.Schedular'
 
 sourceSets {
     main {

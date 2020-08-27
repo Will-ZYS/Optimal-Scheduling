@@ -10,6 +10,5 @@
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="JavaFX.Homepage"
             prefHeight="400.0" prefWidth="600.0">
-    <Label> welcome </Label>
-
+    <Label>welcome </Label>
 </AnchorPane>

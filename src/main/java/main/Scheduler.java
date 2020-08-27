@@ -3,14 +3,20 @@ package main;
 import algorithm.SolutionNode;
 import algorithm.SolutionTree;
 import input.InputReader;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import output.OutputGenerator;
 
 import java.io.IOException;
 
-public class Scheduler {
+public class Scheduler extends Application {
 	private static String _outputName;
 	private static int _numOfProcessor = 1;
 	private static SolutionNode _bestSolution = null;
+	private static boolean openVisualization = false;
 
 	public static void main(String[] args) {
 
@@ -23,6 +29,10 @@ public class Scheduler {
 			// all tasks are put into the same processor for milestone 1
 			// @todo refactor the algorithm to increase its efficiency
 			InputReader inputFile = new InputReader(args[0], _numOfProcessor);
+
+			if(openVisualization){
+				launch();
+			}
 
 			SolutionTree solutionTree = inputFile.readInputFile();
 
@@ -82,8 +92,9 @@ public class Scheduler {
 		for (int i = 2; i < args.length; i++) {
 			switch (args[i]) {
 				case "-v":
-					System.out.println("Sorry, the visualiser has not been implemented yet, you can find the " +
-                                       "result in the output file");
+
+					openVisualization = true;
+
 					break;
 				case "-p":
 					System.out.println("Sorry, the parallel version has not been implemented yet, " +
@@ -105,5 +116,30 @@ public class Scheduler {
 
 	public SolutionNode getBestSolution() {
 		return _bestSolution;
+	}
+
+	@Override
+	public void start(Stage primaryStage) {
+//        Parent root = new Label("welcome");
+//        Scene scene = new Scene(root);
+//        primaryStage.setScene(scene);
+//        primaryStage.show();
+
+		Parent root = null;
+		try {
+			//root = FXMLLoader.load(getClass().getClassLoader().getResource("/Homepage.fxml"));
+			root = FXMLLoader.load(getClass().getResource("/JavaFX/Homepage.fxml"));
+
+		} catch (IOException e) {
+			throw new RuntimeException();
+		}
+
+		//Parent root = new JFXButton("aaa");
+		Scene scene = new Scene(root);
+		primaryStage.setScene(scene);
+		primaryStage.show();
+
+
+
 	}
 }
