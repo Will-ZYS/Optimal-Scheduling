@@ -19,6 +19,7 @@ import javafx.scene.Node;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Stop;
@@ -30,7 +31,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.ResourceBundle;
-
+import javafx.scene.image.Image ;
 import static javafx.scene.paint.Color.rgb;
 
 public class Controller implements Initializable {
@@ -55,7 +56,7 @@ public class Controller implements Initializable {
 
         setUpMemoryTile();
 
-        setUpGanttBox();
+//        setUpGanttBox();
 
         autoUpdate();
 
