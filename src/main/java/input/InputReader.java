@@ -141,7 +141,7 @@ public class InputReader {
 		// new a solution tree object which will be used later
 		if (NUM_CORES == 1) {
 			// sequential
-			return new SolutionTree(taskList, generateProcessors());
+			return new SequentialSolutionTree(taskList, generateProcessors());
 		} else {
 			// parallel - if the user inputted the optional argument "-p N" where N is an integer for the number of cores
 			return new ParallelSolutionTree(taskList, generateProcessors(), NUM_CORES);
