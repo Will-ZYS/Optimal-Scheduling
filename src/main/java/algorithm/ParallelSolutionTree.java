@@ -24,7 +24,7 @@ public class ParallelSolutionTree extends SolutionTree {
 		stack.push(ROOT);
 
 		_forkJoinPool = new ForkJoinPool(NUM_CORES);
-		ScheduleRecursiveAction schedule = new ScheduleRecursiveAction(stack, this);
+		SolutionRecursiveAction schedule = new SolutionRecursiveAction(stack, this);
 		_forkJoinPool.invoke(schedule);
 	}
 
