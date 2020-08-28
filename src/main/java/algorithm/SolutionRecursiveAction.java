@@ -1,20 +1,18 @@
 package algorithm;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
-import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveAction;
 
-public class ScheduleRecursiveAction extends RecursiveAction {
+public class SolutionRecursiveAction extends RecursiveAction {
 	private Stack<SolutionNode> _workload;
 	private static final int THRESHOLD = 4;
 	private final ParallelSolutionTree PARALLEL_SOLUTION_TREE;
 	private final int TOTAL_TASK_WEIGHT;
 
-	public ScheduleRecursiveAction(Stack<SolutionNode> workload, ParallelSolutionTree parallelSolutionTree) {
+	public SolutionRecursiveAction(Stack<SolutionNode> workload, ParallelSolutionTree parallelSolutionTree) {
 		_workload = workload;
 		PARALLEL_SOLUTION_TREE = parallelSolutionTree;
 		TOTAL_TASK_WEIGHT = PARALLEL_SOLUTION_TREE.getTotalTaskWeight();
@@ -23,22 +21,27 @@ public class ScheduleRecursiveAction extends RecursiveAction {
 	@Override
 	protected void compute() {
 		if (_workload.size() > THRESHOLD) {
-			ForkJoinTask.invokeAll(createSubtasks());
+			ForkJoinTask.invokeAll(createSubtasks()); // create sub tasks if the stack size is beyond the threshold
 		} else {
 			doParallelDFS();
 		}
 	}
 
-	private List<ScheduleRecursiveAction> createSubtasks() {
-		List<ScheduleRecursiveAction> subtasks = new ArrayList<>();
+	/**
+	 * This method splits up the tasks into two subtasks.
+	 * The first subtask contains only the head of the stack, while the second subtask contains the rest of the elements.
+	 * @return list of subtasks to perform parallel processing on.
+	 */
+	private List<SolutionRecursiveAction> createSubtasks() {
+		List<SolutionRecursiveAction> subtasks = new ArrayList<>();
 
 		// remove one SolutionNode from the stack and split it from the rest
 		SolutionNode node = _workload.pop();
 		Stack<SolutionNode> subWorkload = new Stack<>();
 		subWorkload.push(node);
 
-		subtasks.add(new ScheduleRecursiveAction(subWorkload, PARALLEL_SOLUTION_TREE));
-		subtasks.add(new ScheduleRecursiveAction(_workload, PARALLEL_SOLUTION_TREE));
+		subtasks.add(new SolutionRecursiveAction(subWorkload, PARALLEL_SOLUTION_TREE));
+		subtasks.add(new SolutionRecursiveAction(_workload, PARALLEL_SOLUTION_TREE));
 
 		return subtasks;
 	}
