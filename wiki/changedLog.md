@@ -216,7 +216,7 @@ all children tasks can only be allocated after its parent finishes.
  <hr/>
  
 **28/08/2020**
-- Implemented Parallelisation  
+- Implemented Parallelisation by Tommy and Martin 
  
 _Changes made to the design:_
  - InputReader now takes in an extra argument, numCores which is the number of cores the user inputs. It is defaulted to 1.
