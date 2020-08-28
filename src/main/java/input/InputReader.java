@@ -229,7 +229,6 @@ public class InputReader {
 		if (outgoingEdges.isEmpty()) {
 			// leaf task node reached, update the maximum bottom level
 			taskNode.setBottomLevel(weightOfTask);
-			taskNode.setBottomLoad(0);
 			return weightOfTask;
 		} else {
 			int bottomLevel = 0;
