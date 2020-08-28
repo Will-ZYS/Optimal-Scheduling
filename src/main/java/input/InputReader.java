@@ -1,9 +1,6 @@
 package input;
 
-import algorithm.DataTransferEdge;
-import algorithm.Processor;
-import algorithm.SolutionTree;
-import algorithm.TaskNode;
+import algorithm.*;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -18,13 +15,15 @@ public class InputReader {
 	private final String PATH_TO_DOT_FILE;
 	private final int NUM_OF_PROCESSOR;
 	private String _graphName = "exampleGraph";
+	private final int NUM_CORES;
 
 	// storing the order of lines of the input file into a linked hash map for output
 	private final LinkedHashMap<String, String> INPUT_ROWS_RAW = new LinkedHashMap<>();
 
-	public InputReader(String path, int processors) {
+	public InputReader(String path, int processors, int numCores) {
 		PATH_TO_DOT_FILE = path;
 		NUM_OF_PROCESSOR = processors;
+		NUM_CORES = numCores;
 	}
 
 	/**
@@ -140,7 +139,14 @@ public class InputReader {
 		}
 
 		// new a solution tree object which will be used later
-		return new SolutionTree(taskList, generateProcessors());
+		if (NUM_CORES == 1) {
+			// sequential
+			return new SolutionTree(taskList, generateProcessors());
+		} else {
+			// parallel - if the user inputted the optional argument "-p N" where N is an integer for the number of cores
+			return new ParallelSolutionTree(taskList, generateProcessors(), NUM_CORES);
+		}
+
 	}
 
 	private int calculateBottomLevel(TaskNode taskNode) {

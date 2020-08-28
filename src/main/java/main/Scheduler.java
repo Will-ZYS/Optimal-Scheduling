@@ -11,6 +11,7 @@ public class Scheduler {
 	private static String _outputName;
 	private static int _numOfProcessor = 1;
 	private static SolutionNode _bestSolution = null;
+	private static int _numCores = 1;
 
 	public static void main(String[] args) {
 
@@ -19,10 +20,7 @@ public class Scheduler {
 
 		// read the input file and return it as a solutionTree object
 		try {
-			// the current branch and bound algorithm cannot handle more than 22 tasks, therefore,
-			// all tasks are put into the same processor for milestone 1
-			// @todo refactor the algorithm to increase its efficiency
-			InputReader inputFile = new InputReader(args[0], _numOfProcessor);
+			InputReader inputFile = new InputReader(args[0], _numOfProcessor, _numCores);
 
 			SolutionTree solutionTree = inputFile.readInputFile();
 
@@ -86,8 +84,7 @@ public class Scheduler {
                                        "result in the output file");
 					break;
 				case "-p":
-					System.out.println("Sorry, the parallel version has not been implemented yet, " +
-							           "the algorithm will be run in sequential");
+					_numCores = Integer.parseInt(args[i+1]);
 					i++;
 					break;
 				case "-o":
