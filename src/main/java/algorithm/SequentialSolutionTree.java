@@ -9,23 +9,6 @@ public class SequentialSolutionTree extends SolutionTree {
 	}
 
 	/**
-	 * Find the optimal solution by using the DFS branch and bound algorithm
-	 *
-	 * @return the optimal solution
-	 */
-	@Override
-	public SolutionNode findOptimalSolution() {
-
-		if (! TASKS.isEmpty()) {
-			DFSBranchAndBoundAlgorithm(ROOT);
-		} else {
-			_bestTime = 0;
-			_bestSolution = ROOT;
-		}
-		return _bestSolution;
-	}
-
-	/**
 	 * DFS branch and bound algorithm
 	 *
 	 * @param solutionNode the node to perform DFS branch and bound

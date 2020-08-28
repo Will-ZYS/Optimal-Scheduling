@@ -13,22 +13,12 @@ public class ParallelSolutionTree extends SolutionTree {
 		NUM_CORES = numCores;
 	}
 
-	@Override
-	public SolutionNode findOptimalSolution() {
-		if (! TASKS.isEmpty()) {
-			DFSBranchAndBoundAlgorithm(ROOT);
-		} else {
-			_bestTime = 0;
-			_bestSolution = ROOT;
-		}
-		return _bestSolution;
-	}
-
 	/**
 	 * DFS branch and bound algorithm
 	 *
 	 * @param solutionNode the node to perform DFS branch and bound
 	 */
+	@Override
 	protected void DFSBranchAndBoundAlgorithm(SolutionNode solutionNode) {
 		Stack<SolutionNode> stack = new Stack<>();
 		stack.push(ROOT);
