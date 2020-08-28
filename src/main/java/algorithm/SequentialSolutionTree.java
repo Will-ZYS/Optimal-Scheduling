@@ -2,48 +2,14 @@ package algorithm;
 
 import java.util.*;
 
-public class SequentialSolutionTree implements SolutionTree {
-	private int _bestTime = Integer.MAX_VALUE; // best time
-	private SolutionNode _bestSolution;
-	private final List<TaskNode> TASKS;
-	private final SolutionNode ROOT;
-	private final int NUMBER_OF_PROCESSORS;
-	private final int TOTAL_TASK_WEIGHT;
+public class SequentialSolutionTree extends SolutionTree {
 
 	public SequentialSolutionTree(List<TaskNode> allTasks, List<Processor> processors) {
-		ROOT = new SolutionNode(processors, allTasks);
-		TASKS = allTasks;
-		NUMBER_OF_PROCESSORS = processors.size();
-		int total_task_weight = 0;
-		for (TaskNode taskNode : allTasks) {
-			total_task_weight += taskNode.getWeight();
-		}
-		TOTAL_TASK_WEIGHT = total_task_weight;
+		super(allTasks, processors);
 	}
 
-	/**
-	 * Find the optimal solution by using the DFS branch and bound algorithm
-	 *
-	 * @return the optimal solution
-	 */
 	@Override
-	public SolutionNode findOptimalSolution() {
-
-		if (! TASKS.isEmpty()) {
-			DFSBranchAndBoundAlgorithm(ROOT);
-		} else {
-			_bestTime = 0;
-			_bestSolution = ROOT;
-		}
-		return _bestSolution;
-	}
-
-	/**
-	 * DFS branch and bound algorithm
-	 *
-	 * @param solutionNode the node to perform DFS branch and bound
-	 */
-	private void DFSBranchAndBoundAlgorithm(SolutionNode solutionNode) {
+	protected void DFSBranchAndBoundAlgorithm(SolutionNode solutionNode) {
 
 		// check the lower bound (estimation) of this node
 		if (solutionNode.getLowerBound(TOTAL_TASK_WEIGHT) < _bestTime) {
