@@ -84,6 +84,23 @@ public class Scheduler {
                                        "result in the output file");
 					break;
 				case "-p":
+					// check if the string is an integer
+					if (!(args[i+1].matches("\\d+"))) {
+						System.err.println("Usage: java -jar scheduler.jar INPUT.dot P [-p N] [-v] [-o OUTPUT]");
+						System.err.println("Please enter a positive integer for N");
+						System.exit(1);
+					}
+					// check if the integer is between 1 to 32767 (limit for ForkJoinPool)
+					if (Integer.parseInt(args[i+1]) <= 0) {
+						System.err.println("Usage: java -jar scheduler.jar INPUT.dot P [-p N] [-v] [-o OUTPUT]");
+						System.err.println("Please enter a positive integer for N");
+						System.exit(1);
+					} else if (Integer.parseInt(args[i+1]) > 32767) {
+						System.err.println("Usage: java -jar scheduler.jar INPUT.dot P [-p N] [-v] [-o OUTPUT]");
+						System.err.println("Please enter a smaller positive integer for N");
+						System.exit(1);
+					}
+
 					_numCores = Integer.parseInt(args[i+1]);
 					i++;
 					break;
