@@ -11,18 +11,19 @@ public class Scheduler {
 	private static String _outputName;
 	private static int _numOfProcessor = 1;
 	private static SolutionNode _bestSolution = null;
+	private static SolutionTree _solutionTree = null;
 	private static int _numCores = 1;
 
 	public static void main(String[] args) {
 
-		Scheduler scheduler = new Scheduler();
-		scheduler.readUserInput(args);
+		readUserInput(args);
 
 		// read the input file and return it as a solutionTree object
 		try {
 			InputReader inputFile = new InputReader(args[0], _numOfProcessor, _numCores);
 
 			SolutionTree solutionTree = inputFile.readInputFile();
+			_solutionTree = solutionTree;
 
 			// get the graphName from the input file
 			String graphName = inputFile.getGraphName();
@@ -44,7 +45,7 @@ public class Scheduler {
 	 *
 	 * @param args user inputs
 	 */
-	private void readUserInput(String[] args) {
+	private static void readUserInput(String[] args) {
 
 		// Check the number of command line argument is greater than 2
 		if (args.length < 2) {
@@ -119,5 +120,9 @@ public class Scheduler {
 
 	public SolutionNode getBestSolution() {
 		return _bestSolution;
+	}
+
+	public SolutionTree getSolutionTree() {
+		return _solutionTree;
 	}
 }
