@@ -198,3 +198,17 @@ _Reason for change:_
              For example, State 1 has Processor 1: A, B (in that order). There will be another state,
              State 2 has Processor 1: B, A. We don't need to explore State 2. Thus, this improvement reduces the
              number of states we explore. 
+
+<hr/>
+  
+**26/08/2020**
+  
+- Optimisations of heuristic equation by Martin and Emily 
+
+_Changes made to the design:_
+- change critical path heuristic equation to be max(start time + bottom level, end time + bottom load)
+    
+_Reason for change:_
+- The new heuristic equation provides a tighter lower bound, end time + bottom load still gives a lower bound because 
+all children tasks can only be allocated after its parent finishes. 
+- bottom load: weight of all children tasks / number of processors 
