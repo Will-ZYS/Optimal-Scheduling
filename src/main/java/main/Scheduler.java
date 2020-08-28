@@ -18,6 +18,7 @@ public class Scheduler extends Application {
 	private static int _numOfProcessor;
 	private static SolutionNode _bestSolution = null;
 	private static boolean openVisualization = false;
+	private static SolutionTree solutionTree;
 
 	public static void main(String[] args) {
 
@@ -36,7 +37,7 @@ public class Scheduler extends Application {
 				launch();
 			}
 
-			SolutionTree solutionTree = inputFile.readInputFile();
+			solutionTree = inputFile.readInputFile();
 
 			// get the graphName from the input file
 			String graphName = inputFile.getGraphName();
@@ -137,26 +138,31 @@ public class Scheduler extends Application {
 //		} catch (IOException e) {
 //			e.printStackTrace();
 //		}
-
-
-		Parent root = null;
-
 		try {
-			//root = FXMLLoader.load(getClass().getClassLoader().getResource("/Homepage.fxml"));
-			root = FXMLLoader.load(getClass().getResource("/JavaFX/Homepage.fxml"));
 
-		} catch (IOException e) {
-			throw new RuntimeException();
-		}
-//
-//		Controller controller = new Controller();
-//
-//		controller.initialize();
-
-		//Parent root = new JFXButton("aaa");
+		Controller controller = new Controller();
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(getClass().getResource("/JavaFX/Homepage.fxml"));
+		loader.setController(controller);
+		controller.setSolutionTree(solutionTree);
+		Parent root = loader.load();
 		Scene scene = new Scene(root);
 		primaryStage.setScene(scene);
 		primaryStage.show();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+//		try {
+//			//root = FXMLLoader.load(getClass().getClassLoader().getResource("/Homepage.fxml"));
+//			root = FXMLLoader.load(getClass().getResource("/JavaFX/Homepage.fxml"));
+//
+//		} catch (IOException e) {
+//			throw new RuntimeException();
+//		}
+
+
 
 	}
 

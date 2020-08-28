@@ -1,10 +1,16 @@
 package JavaFX;
 
 
+import algorithm.SolutionNode;
+import algorithm.SolutionTree;
+import algorithm.TaskNode;
 import eu.hansolo.tilesfx.Tile;
 import eu.hansolo.tilesfx.TileBuilder;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
@@ -16,6 +22,7 @@ import eu.hansolo.tilesfx.colors.Dark;
 import eu.hansolo.tilesfx.tools.FlowGridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Stop;
+import javafx.util.Duration;
 import main.Scheduler;
 
 import java.util.Arrays;
@@ -34,10 +41,13 @@ public class Controller {
     private VBox memBox;
 
     @FXML
-    private VBox ganttBox;
+    private VBox ganttChartBox;
 
 
     private Tile memoryTile;
+
+    private SolutionTree bestSolution;
+
 
     public void initialize() {
 
@@ -100,48 +110,98 @@ public class Controller {
         chart.setBlockHeight(280/numberPro);
 
         //chart.getStylesheets().add(getClass().getResource("/GanttChart.css").toExternalForm());
-        chart.setMaxHeight(ganttBox.getPrefHeight());
-        ganttBox.getChildren().add(chart);
-        ganttBox.setStyle("-fx-background-color: WHITE");
+        chart.setMaxHeight(ganttChartBox.getPrefHeight());
+        ganttChartBox.getChildren().add(chart);
+        ganttChartBox.setStyle("-fx-background-color: WHITE");
 
     }
 
-//    private void updateGannt(Schedule bestSchedule){
+    private void startGanttChart() {
+        Timeline start = new Timeline(new KeyFrame(Duration.millis(50), event -> {
+//            if(bestSolution.getCurrentBestSolution()){
+//                runningText.setStyle("-fx-fill: rgb(15,157,88);");
+//                runningText.setText("Done!");
+//                stopTimer();
 //
-//        int numProcessers = Scheduler.get_numOfProcessor();
+//                if(pollingRanOnce) {
+//                    return;
+//                }
+//            }
+//            double memoryUsage = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())/(1000000d);
+//            memoryTile.setValue(memoryUsage);
+
+            if(bestSolution.getCurrentBestSolution() != null){
+                updateGanttChart(bestSolution.getCurrentBestSolution());
+            }
+
+
+//            currentBestText.setText("" + monitor.getCurrentBest().getFinishTime());
+//            updateNumSchedules(monitor.getCompleteSchedules());
 //
-//        // new array of series to write onto
-//        XYChart.Series[] seriesArray = new XYChart.Series[numProcessers];
+//            ObservableList<ChartData> allocData = allocationTile.getChartData();
+//            ObservableList<ChartData> orderData = orderTile.getChartData();
 //
-//        // initializing series obj
-//        for (int i=0;i<numProcessers;i++){
-//            seriesArray[i]=new XYChart.Series();
-//        }
+//            // Randomly remove data points to not overload GUI
+//            if (allocData.size() >= CHART_MAX_ELEMENTS) {
+//                allocData.remove((int) (Math.random() * allocData.size()));
+//            }
 //
-//        // for every task in schedule, write its data onto the specific series
-//        for (ScheduledTask scTask:bestSchedule.getTasks()){
-//            int idOfTask = scTask.getProcessorId();
+//            if (orderData.size() >= CHART_MAX_ELEMENTS) {
+//                orderData.remove((int) (Math.random() * orderData.size()));
+//            }
 //
-//            XYChart.Data newData = new XYChart.Data(scTask.getStartTime(), "Processor "+ String.valueOf(idOfTask),
-//                    new ExtraData(scTask, "task-style"));
+//            allocationTile.addChartData(new ChartData(monitor.getAllocationsExpanded()));
+//            orderTile.addChartData(new ChartData(monitor.getOrderingsExpanded()));
 //
-//            seriesArray[idOfTask].getData().add(newData);
+//            pollingRanOnce = true;
+        }));
+        poller.setCycleCount(Animation.INDEFINITE);
+        poller.play();
+    }
 //
-//        }
 //
-//        //clear and rewrite series onto the chart
-//        chart.getData().clear();
-//        for (XYChart.Series series: seriesArray){
-//            chart.getData().add(series);
-//        }
-//
-//        // update the best text
-//        currentBestText.setText(""+bestSchedule.getFinishTime());
-//    }
+    private void updateGanttChart(SolutionNode bestSolution){
+
+        int numProcessers = Scheduler.get_numOfProcessor();
+
+        // new array of series to write onto
+        XYChart.Series[] seriesArray = new XYChart.Series[numProcessers];
+
+        // initializing series obj
+        for (int i=0;i<numProcessers;i++){
+            seriesArray[i]=new XYChart.Series();
+        }
+
+
+        // for every task in schedule, write its data onto the specific series
+        for (TaskNode task: bestSolution.getTasks()){
+            int idOfTask = scTask.getProcessorId();
+
+            XYChart.Data newData = new XYChart.Data(scTask.getStartTime(), "Processor "+ String.valueOf(idOfTask),
+                    new ExtraData(scTask, "task-style"));
+
+            seriesArray[idOfTask].getData().add(newData);
+
+        }
+
+        //clear and rewrite series onto the chart
+        chart.getData().clear();
+        for (XYChart.Series series: seriesArray){
+            chart.getData().add(series);
+        }
+
+        // update the best text
+        currentBestText.setText(""+bestSchedule.getFinishTime());
+    }
+
+
+
 
     private FlowGridPane buildFlowGridPane(Tile tile) {
         return new FlowGridPane(1, 1, tile);
     }
 
-
+    public void setSolutionTree(SolutionTree solution){
+        this.bestSolution = solution;
+    }
 }
