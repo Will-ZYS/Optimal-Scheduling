@@ -133,17 +133,19 @@ public class SolutionNode {
 	 */
 	public int getLowerBound(int totalTaskWeight) {
 		int totalIdleTime = 0;
-		int potentialLowerBoundOne = 0; //heuristic equation 1: max((start time + bottom level) of each allocated task)
+
+		//heuristic equation 1: max((start time + max(bottom level, bottom load) of each allocated task)
+		int potentialLowerBoundOne = 0;
 
 		for (Processor processor : PROCESSORS) {
 			totalIdleTime += processor.getIdleTime();
-			if (processor.getMaxStartTimePlusBottomLevel() > potentialLowerBoundOne) {
-				potentialLowerBoundOne = processor.getMaxStartTimePlusBottomLevel();
+			if (processor.getWeightOfCriticalPath() > potentialLowerBoundOne) {
+				potentialLowerBoundOne = processor.getWeightOfCriticalPath();
 			}
 		}
 
 		// heuristic equation 2: (total weight of all tasks + total idle time) / number of processors
-		int potentialLowerBoundTwo = ((totalTaskWeight + totalIdleTime) / PROCESSORS.size());
+		int potentialLowerBoundTwo = (int) Math.ceil(((double)totalTaskWeight + totalIdleTime) / PROCESSORS.size());
 
 		return (Math.max(potentialLowerBoundOne, potentialLowerBoundTwo));
 	}

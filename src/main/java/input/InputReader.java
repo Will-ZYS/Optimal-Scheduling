@@ -106,8 +106,8 @@ public class InputReader {
 				}
 
 				// create the DataTransferEdge and write to adjacency list
-				DataTransferEdge edge = new DataTransferEdge(sourceNode, weight);
-				destinationNode.addIncomingEdge(edge);
+				DataTransferEdge incomingEdge = new DataTransferEdge(sourceNode, weight);
+				destinationNode.addIncomingEdge(incomingEdge);
 
 				DataTransferEdge outgoingEdge = new DataTransferEdge(destinationNode, weight);
 				sourceNode.addOutgoingEdge(outgoingEdge);
@@ -132,31 +132,114 @@ public class InputReader {
 		// list of tasks
 		List<TaskNode> taskList = new ArrayList<>(taskNodeMap.values());
 
+		// sort all tasks in topological order
+		taskList = topologicalSort(taskList);
+
 		// get all tasks without incoming edges
 		for (TaskNode taskNode : taskList) {
 			if (taskNode.getIncomingEdges().isEmpty()) {
+				// perform a DFS search on each tree to calculate bottom level
 				calculateBottomLevel(taskNode);
+			} else {
+				break;
 			}
+			calculateBottomLoad(taskNode);
 		}
 
 		// new a solution tree object which will be used later
 		return new SolutionTree(taskList, generateProcessors());
 	}
 
+	private void calculateBottomLoad(TaskNode root) {
+		Set<TaskNode> visitedChildrenTaskNodes = new HashSet<>();
+		int bottomLoad = 0;
+
+		// Create a queue for BFS
+		LinkedList<TaskNode> queue = new LinkedList<>();
+
+		// Mark the current node as visited and enqueue it
+		visitedChildrenTaskNodes.add(root);
+		queue.add(root);
+
+		while (queue.size() != 0)
+		{
+			// Dequeue a vertex from queue and print it
+			TaskNode taskNode = queue.poll();
+
+			// Get all adjacent vertices of the dequeued vertex s
+			// If a adjacent has not been visited, then mark it
+			// visited and enqueue it
+			List<DataTransferEdge> outgoingEdges = taskNode.getOutgoingEdges();
+			for (DataTransferEdge outgoingEdge :outgoingEdges) {
+				TaskNode childTaskNode = outgoingEdge.getSourceNode();
+				if (!visitedChildrenTaskNodes.contains(childTaskNode)) {
+					visitedChildrenTaskNodes.add(childTaskNode);
+					bottomLoad += childTaskNode.getWeight();
+					queue.add(childTaskNode);
+				}
+			}
+		}
+
+		root.setBottomLoad((int) Math.ceil((double)bottomLoad / NUM_OF_PROCESSOR));
+	}
+
+	/**
+	 * Sort all taskNodes into its topological order
+	 * @param taskNodes original list of taskNodes
+	 * @return a list of sorted taskNodes
+	 */
+	private List<TaskNode> topologicalSort(List<TaskNode> taskNodes) {
+		int totalNumberOfTasks = taskNodes.size();
+		List<TaskNode> taskListInTopologicalOrder = new ArrayList<>();
+		Map<TaskNode, Integer> tasks = new HashMap<>(); // Integer represents the number of incoming edges of a task
+
+		for (TaskNode taskNode : taskNodes) {
+			if (taskNode.getIncomingEdges().isEmpty()) {
+				taskListInTopologicalOrder.add(taskNode);
+			} else {
+				tasks.put(taskNode, taskNode.getIncomingEdges().size());
+			}
+		}
+
+		for (int i = 0; i < totalNumberOfTasks; i++) {
+			TaskNode taskNode = taskListInTopologicalOrder.get(i);
+
+			List<DataTransferEdge> outgoingEdges = taskNode.getOutgoingEdges();
+			for (DataTransferEdge outgoingEdge : outgoingEdges) {
+				// find all its child taskNodes
+				TaskNode childTaskNode = outgoingEdge.getSourceNode();
+				int numberOfIncomingEdges = tasks.get(childTaskNode) - 1;
+
+				if (numberOfIncomingEdges == 0) {
+					taskListInTopologicalOrder.add(childTaskNode);
+					tasks.remove(childTaskNode);
+				} else {
+					// update the number of incoming edges
+					tasks.replace(childTaskNode, numberOfIncomingEdges);
+				}
+			}
+		}
+		return taskListInTopologicalOrder;
+	}
+
 	private int calculateBottomLevel(TaskNode taskNode) {
 		List<DataTransferEdge> outgoingEdges = taskNode.getOutgoingEdges();
 		int weightOfTask = taskNode.getWeight();
+
 		if (outgoingEdges.isEmpty()) {
 			// leaf task node reached, update the maximum bottom level
 			taskNode.setBottomLevel(weightOfTask);
 			return weightOfTask;
 		} else {
-			int bottomLevel = weightOfTask;
+			int bottomLevel = 0;
+			int weightOfChildren = 0;
+
 			for (DataTransferEdge outgoingEdge : outgoingEdges) {
 				TaskNode destinationTask = outgoingEdge.getSourceNode();
-				int weightOfChildrenTasks = calculateBottomLevel(destinationTask);
-				if (weightOfChildrenTasks + weightOfTask > bottomLevel) {
-					bottomLevel = weightOfChildrenTasks + weightOfTask;
+
+				weightOfChildren = calculateBottomLevel(destinationTask);
+				if (weightOfChildren + weightOfTask > bottomLevel) {
+					bottomLevel = weightOfChildren + weightOfTask;
 				}
 			}
 			taskNode.setBottomLevel(bottomLevel);

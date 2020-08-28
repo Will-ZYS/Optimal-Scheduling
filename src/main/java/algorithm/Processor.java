@@ -9,13 +9,13 @@ public class Processor {
 	private int _endTime;
 	private final int PROCESSOR_ID;
 	private int _idleTime;
-	private int _maxStartTimePlusBottomLevel;
+	private int _weightOfCriticalPath;
 
 	public Processor(int id) {
 		TASKS = new HashMap<>();
 		_endTime = 0;
 		_idleTime = 0;
-		_maxStartTimePlusBottomLevel = 0;
+		_weightOfCriticalPath = 0;
 		PROCESSOR_ID = id;
 	}
 
@@ -29,7 +29,7 @@ public class Processor {
 		TASKS = new HashMap<>(processor.getTasks());
 		_endTime = processor.getEndTime();
 		_idleTime = processor.getIdleTime();
-		_maxStartTimePlusBottomLevel = processor.getMaxStartTimePlusBottomLevel();
+		_weightOfCriticalPath = processor.getWeightOfCriticalPath();
 	}
 
 	public Map<TaskNode, Integer> getTasks() {
@@ -40,13 +40,17 @@ public class Processor {
 		TASKS.put(task, startTime);
 		_idleTime += startTime - _endTime;
 		_endTime = startTime + task.getWeight();
-		if (startTime + task.getBottomLevel() > _maxStartTimePlusBottomLevel) {
-			_maxStartTimePlusBottomLevel = startTime + task.getBottomLevel();
+
+		int bottomLevel = task.getBottomLevel();
+		int bottomLoad = task.getBottomLoad();
+
+		if (Math.max(startTime + bottomLevel, _endTime + bottomLoad) > _weightOfCriticalPath) {
+			_weightOfCriticalPath = Math.max(startTime + bottomLevel, _endTime + bottomLoad);
 		}
 	}
 
-	public int getMaxStartTimePlusBottomLevel() {
-		return _maxStartTimePlusBottomLevel;
+	public int getWeightOfCriticalPath() {
+		return _weightOfCriticalPath;
 	}
 
 	public int getEndTime() {
