@@ -1,5 +1,6 @@
 package main;
 
+import JavaFX.Controller;
 import algorithm.SolutionNode;
 import algorithm.SolutionTree;
 import input.InputReader;
@@ -14,11 +15,12 @@ import java.io.IOException;
 
 public class Scheduler extends Application {
 	private static String _outputName;
-	private static int _numOfProcessor = 1;
+	private static int _numOfProcessor;
 	private static SolutionNode _bestSolution = null;
 	private static boolean openVisualization = false;
 
 	public static void main(String[] args) {
+
 
 		Scheduler scheduler = new Scheduler();
 		scheduler.readUserInput(args);
@@ -125,7 +127,20 @@ public class Scheduler extends Application {
 //        primaryStage.setScene(scene);
 //        primaryStage.show();
 
+//		Controller controller = new Controller();
+//		FXMLLoader loader = new FXMLLoader();
+//		loader.setLocation(getClass().getResource("/JavaFX/Homepage.fxml"));
+//		loader.setController(controller);
+//		Parent root = null;
+//		try {
+//			root = loader.load();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+
+
 		Parent root = null;
+
 		try {
 			//root = FXMLLoader.load(getClass().getClassLoader().getResource("/Homepage.fxml"));
 			root = FXMLLoader.load(getClass().getResource("/JavaFX/Homepage.fxml"));
@@ -133,13 +148,20 @@ public class Scheduler extends Application {
 		} catch (IOException e) {
 			throw new RuntimeException();
 		}
+//
+//		Controller controller = new Controller();
+//
+//		controller.initialize();
 
 		//Parent root = new JFXButton("aaa");
 		Scene scene = new Scene(root);
 		primaryStage.setScene(scene);
 		primaryStage.show();
 
-
-
 	}
+
+	public static int get_numOfProcessor(){
+		return _numOfProcessor;
+	}
+
 }
