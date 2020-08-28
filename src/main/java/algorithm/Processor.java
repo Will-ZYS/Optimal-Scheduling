@@ -43,7 +43,8 @@ public class Processor {
 
 		int bottomLevel = task.getBottomLevel();
 		int bottomLoad = task.getBottomLoad();
-		if (startTime + Math.max(bottomLevel, bottomLoad) > _weightOfCriticalPath) {
+
+		if (Math.max(startTime + bottomLevel, _endTime + bottomLoad) > _weightOfCriticalPath) {
 			_weightOfCriticalPath = startTime + Math.max(bottomLevel, bottomLoad);
 		}
 	}

@@ -138,14 +138,49 @@ public class InputReader {
 		// get all tasks without incoming edges
 		for (TaskNode taskNode : taskList) {
 			if (taskNode.getIncomingEdges().isEmpty()) {
+				// perform a DFS search on each tree to calculate bottom level
 				calculateBottomLevel(taskNode);
 			} else {
 				break;
 			}
+			calculateBottomLoad(taskNode);
 		}
 
 		// new a solution tree object which will be used later
 		return new SolutionTree(taskList, generateProcessors());
+	}
+
+	private void calculateBottomLoad(TaskNode root) {
+		Set<TaskNode> visitedChildrenTaskNodes = new HashSet<>();
+		int bottomLoad = 0;
+
+		// Create a queue for BFS
+		LinkedList<TaskNode> queue = new LinkedList<>();
+
+		// Mark the current node as visited and enqueue it
+		visitedChildrenTaskNodes.add(root);
+		queue.add(root);
+
+		while (queue.size() != 0)
+		{
+			// Dequeue a vertex from queue and print it
+			TaskNode taskNode = queue.poll();
+
+			// Get all adjacent vertices of the dequeued vertex s
+			// If a adjacent has not been visited, then mark it
+			// visited and enqueue it
+			List<DataTransferEdge> outgoingEdges = taskNode.getOutgoingEdges();
+			for (DataTransferEdge outgoingEdge :outgoingEdges) {
+				TaskNode childTaskNode = outgoingEdge.getSourceNode();
+				if (!visitedChildrenTaskNodes.contains(childTaskNode)) {
+					visitedChildrenTaskNodes.add(childTaskNode);
+					bottomLoad += childTaskNode.getWeight();
+					queue.add(childTaskNode);
+				}
+			}
+		}
+
+		root.setBottomLoad((int) Math.ceil((double)bottomLoad / NUM_OF_PROCESSOR));
 	}
 
 	/**
@@ -187,34 +222,29 @@ public class InputReader {
 		return taskListInTopologicalOrder;
 	}
 
-	private int[] calculateBottomLevel(TaskNode taskNode) {
+	private int calculateBottomLevel(TaskNode taskNode) {
 		List<DataTransferEdge> outgoingEdges = taskNode.getOutgoingEdges();
 		int weightOfTask = taskNode.getWeight();
+
 		if (outgoingEdges.isEmpty()) {
 			// leaf task node reached, update the maximum bottom level
 			taskNode.setBottomLevel(weightOfTask);
 			taskNode.setBottomLoad(0);
-			return new int[]{weightOfTask, 0};
+			return weightOfTask;
 		} else {
-			int bottomLevel = weightOfTask;
-			int weightOfAllDescendants = 0;
+			int bottomLevel = 0;
+			int weightOfChildren = 0;
 
-			// int array is in the format of [bottomLevel, weight of all descendants]
-			int[] bottomLevelAndBottomLoad = new int[2];
 			for (DataTransferEdge outgoingEdge : outgoingEdges) {
 				TaskNode destinationTask = outgoingEdge.getSourceNode();
 
-				bottomLevelAndBottomLoad = calculateBottomLevel(destinationTask);
-				weightOfAllDescendants += destinationTask.getWeight() + bottomLevelAndBottomLoad[1];
-				if (bottomLevelAndBottomLoad[0] + weightOfTask > bottomLevel) {
-					bottomLevel = bottomLevelAndBottomLoad[0] + weightOfTask;
+				weightOfChildren = calculateBottomLevel(destinationTask);
+				if (weightOfChildren + weightOfTask > bottomLevel) {
+					bottomLevel = weightOfChildren + weightOfTask;
 				}
 			}
 			taskNode.setBottomLevel(bottomLevel);
-			taskNode.setBottomLoad((int) Math.ceil((double) weightOfAllDescendants / NUM_OF_PROCESSOR));
-			bottomLevelAndBottomLoad[0] = bottomLevel;
-			bottomLevelAndBottomLoad[1] = weightOfAllDescendants;
-			return bottomLevelAndBottomLoad;
+			return bottomLevel;
 		}
 	}
 
