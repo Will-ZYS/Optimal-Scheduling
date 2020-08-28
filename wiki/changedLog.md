@@ -180,4 +180,18 @@ _Reason for change:_
   However, it is possible for c to be scheduled directly after "a" in processor 1. The end time doesn't necessarily 
   need to be larger than 5.
   
+ <hr/>
  
+**28/08/2020**
+- Implemented Parallelisation  
+ 
+_Changes made to the design:_
+ - InputReader now takes in an extra argument, numCores which is the number of cores the user inputs. It is defaulted to 1.
+ - InputReader creates either a SequentialSolutionTree or a ParallelSolutionTree depending on if the user created
+ - A ParallelSolution tree creates a SolutionRecursiveAction that a ForkJoinPool executes.
+ - A SolutionRecursiveAction contains the tasks the threads operate DFS Branch and Bound on. If the task size is too
+ large, then the SolutionRecursiveAction recursively makes new instances, with the tasks being split into smaller chunks. 
+ 
+_Reason for change:_
+ - The project brief required the search to support parallelisation.
+ - ForkJoinPool is the best choice for our DFS because it allows for work to be easily split up into smaller tasks.   
