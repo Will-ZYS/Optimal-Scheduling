@@ -138,7 +138,7 @@ public class Scheduler extends Application {
         try {
 
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("/Homepage.fxml"));
+            loader.setLocation(getClass().getResource("/Visualization.fxml"));
             Controller controller = new Controller();
             loader.setController(controller);
             Parent root = loader.load();
@@ -157,16 +157,6 @@ public class Scheduler extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-//		try {
-//			//root = FXMLLoader.load(getClass().getClassLoader().getResource("/Homepage.fxml"));
-//			root = FXMLLoader.load(getClass().getResource("/JavaFX/Homepage.fxml"));
-//
-//		} catch (IOException e) {
-//			throw new RuntimeException();
-//		}
-
-
     }
 
     public static int get_numOfProcessor() {

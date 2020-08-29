@@ -69,6 +69,7 @@ public class Controller implements Initializable {
         processorAxis.setLabel("");
         timeAxis.setTickLabelFill(Color.rgb(254,89,21));
         processorAxis.setTickLabelGap(1);
+        processorAxis.setTickLabelRotation(270);
         processorAxis.setCategories(FXCollections.observableArrayList(Arrays.asList(processors)));
 
         // Setting up chart
@@ -77,9 +78,10 @@ public class Controller implements Initializable {
         chart.setBlockHeight(280/numberPro);
 
         chart.getStylesheets().add(getClass().getResource("/GanttChart.css").toExternalForm());
-        chart.setMaxHeight(this.ganttChartBox.getPrefHeight());
-        this.ganttChartBox.getChildren().add(chart);
-        this.ganttChartBox.setStyle("-fx-background-color: WHITE");
+        chart.setMaxHeight(ganttChartBox.getPrefHeight());
+        ganttChartBox.getChildren().add(chart);
+        ganttChartBox.setStyle("-fx-background-color: WHITE");
+        ganttChartBox.setRotate(90);
 
     }
 

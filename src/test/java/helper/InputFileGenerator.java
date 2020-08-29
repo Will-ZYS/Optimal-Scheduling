@@ -40,7 +40,7 @@ public class InputFileGenerator {
 
 		for (String input : inputs) {
 			// Formatted to align the columns
-			myWriter.write(String.format("\t%-15s%-15s%n", input, "[Weight=" + (rand.nextInt(weightLimit) + 1) + "];"));
+			myWriter.write(String.format("\t%-9s%-9s%n", input, "[Weight=" + (rand.nextInt(weightLimit) + 1) + "];"));
 		}
 		myWriter.write("}");
 		myWriter.close();
