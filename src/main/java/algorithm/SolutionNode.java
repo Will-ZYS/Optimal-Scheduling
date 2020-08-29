@@ -68,7 +68,7 @@ public class SolutionNode {
 		int time;
 
 		// deep copy of the list of processors
-		Queue<Processor> processors = new PriorityQueue<>(new ProcessorComparator());
+		Queue<Processor> processors = new PriorityQueue<>(ProcessorComparator.getProcessorComparator());
 		Processor allocatedProcessor = null;
 		for (Processor processor : PROCESSORS) {
 			Processor copiedProcessor = new Processor(processor);

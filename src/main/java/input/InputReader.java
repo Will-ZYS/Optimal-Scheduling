@@ -260,7 +260,7 @@ public class InputReader {
 	 */
 	private Queue<Processor> generateProcessors() {
 
-		Queue<Processor> processorQueue = new PriorityQueue<>(new ProcessorComparator());
+		Queue<Processor> processorQueue = new PriorityQueue<>(ProcessorComparator.getProcessorComparator());
 
 		for (int i = 1; i <= NUM_OF_PROCESSOR; i++) {
 			processorQueue.add(new Processor(i));
