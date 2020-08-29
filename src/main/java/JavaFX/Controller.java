@@ -157,7 +157,7 @@ public class Controller implements Initializable {
             if(_solutionTree.getCurrentBestSolution() != null){
                 updateGanttChart(_solutionTree.getCurrentBestSolution());
             }
-            if(_solutionTree.isCompleted()){
+            if(_solutionTree.getIsCompleted()){
                 if(pollingRanOnce) {
                     return;
                 }

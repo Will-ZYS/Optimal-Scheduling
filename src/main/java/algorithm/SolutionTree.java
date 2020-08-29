@@ -11,6 +11,7 @@ public abstract class SolutionTree {
 	protected final boolean IDENTICAL_TASKS; // if any identical tasks have been detected
 	protected final int NUMBER_OF_PROCESSORS;
 	protected final int TOTAL_TASK_WEIGHT;
+	protected boolean _isCompleted=false;
 
 
 	public SolutionTree(List<TaskNode> allTasks, Queue<Processor> processors) {
@@ -38,6 +39,7 @@ public abstract class SolutionTree {
 			_bestTime = 0;
 			_bestSolution = ROOT;
 		}
+		_isCompleted = true;
 		return _bestSolution;
 	}
 
@@ -75,5 +77,10 @@ public abstract class SolutionTree {
 	public SolutionNode getCurrentBestSolution() {
 		return _bestSolution;
 	}
+
+	public boolean getIsCompleted(){
+		return  _isCompleted;
+	}
+
 
 }
