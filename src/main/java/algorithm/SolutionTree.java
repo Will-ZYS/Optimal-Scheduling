@@ -12,6 +12,7 @@ public abstract class SolutionTree {
 	protected final int NUMBER_OF_PROCESSORS;
 	protected final int TOTAL_TASK_WEIGHT;
 
+
 	public SolutionTree(List<TaskNode> allTasks, Queue<Processor> processors) {
 		ROOT = new SolutionNode(processors, allTasks);
 		TASKS = allTasks;
@@ -70,4 +71,9 @@ public abstract class SolutionTree {
 		}
 		return identicalTasksFound;
 	}
+
+	public SolutionNode getCurrentBestSolution() {
+		return _bestSolution;
+	}
+
 }

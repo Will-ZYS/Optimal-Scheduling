@@ -1,40 +1,47 @@
 package main;
 
+import JavaFX.Controller;
 import algorithm.SolutionNode;
 import algorithm.SolutionTree;
 import input.InputReader;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import output.OutputGenerator;
 
 import java.io.IOException;
 
-public class Scheduler {
+public class Scheduler extends Application {
 	private static String _outputName;
 	private static int _numOfProcessor = 1;
 	private static SolutionNode _bestSolution = null;
 	private static SolutionTree _solutionTree = null;
 	private static int _numCores = 1;
+    private static boolean openVisualization = false;
+    private static InputReader _inputFile;
+    private static String _graphName;
 
 	public static void main(String[] args) {
 
-		readUserInput(args);
+		Scheduler scheduler = new Scheduler();
+		scheduler.readUserInput(args);
 
 		// read the input file and return it as a solutionTree object
 		try {
-			InputReader inputFile = new InputReader(args[0], _numOfProcessor, _numCores);
-
-			SolutionTree solutionTree = inputFile.readInputFile();
-			_solutionTree = solutionTree;
+			_inputFile = new InputReader(args[0], _numOfProcessor, _numCores);
 
 			// get the graphName from the input file
-			String graphName = inputFile.getGraphName();
+			_graphName = _inputFile.getGraphName();
 
-			SolutionNode bestSolution = solutionTree.findOptimalSolution();
-			_bestSolution = bestSolution;
+            if (openVisualization) {
+                launch();
+            } else {
+                _solutionTree = _inputFile.readInputFile();
+                runAlgorithm();
+            }
 
-			// Generating output
-			OutputGenerator outputGenerator = new OutputGenerator(bestSolution, _outputName,
-					                                              inputFile.getInputRowsRaw(), graphName);
-			outputGenerator.writeOutput();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -81,8 +88,9 @@ public class Scheduler {
 		for (int i = 2; i < args.length; i++) {
 			switch (args[i]) {
 				case "-v":
-					System.out.println("Sorry, the visualiser has not been implemented yet, you can find the " +
-                                       "result in the output file");
+
+                    openVisualization = true;
+
 					break;
 				case "-p":
 					// check if the string is an integer
@@ -118,6 +126,21 @@ public class Scheduler {
 		}
 	}
 
+    private static void runAlgorithm() {
+
+        try {
+            SolutionNode bestSolution = _solutionTree.findOptimalSolution();
+            _bestSolution = bestSolution;
+
+            // Generating output
+            OutputGenerator outputGenerator = new OutputGenerator(bestSolution, _outputName,
+                    _inputFile.getInputRowsRaw(), _graphName);
+            outputGenerator.writeOutput();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 	public SolutionNode getBestSolution() {
 		return _bestSolution;
 	}
@@ -125,4 +148,36 @@ public class Scheduler {
 	public SolutionTree getSolutionTree() {
 		return _solutionTree;
 	}
+
+    public static int get_numOfProcessor() {
+        return _numOfProcessor;
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+        try {
+
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/Visualization.fxml"));
+            Controller controller = new Controller();
+            loader.setController(controller);
+            Parent root = loader.load();
+
+            _solutionTree = _inputFile.readInputFile();
+            controller.setSolutionTree(_solutionTree);
+
+            // Run the algorithm on another thread
+            new Thread(Scheduler::runAlgorithm).start();
+
+            Scene scene = new Scene(root);
+            primaryStage.setScene(scene);
+            primaryStage.setTitle("Scheduler");
+            primaryStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
