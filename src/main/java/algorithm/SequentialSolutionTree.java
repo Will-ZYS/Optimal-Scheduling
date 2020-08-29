@@ -13,6 +13,7 @@ public class SequentialSolutionTree extends SolutionTree {
 	 *
 	 * @param solutionNode the node to perform DFS branch and bound
 	 */
+	@Override
 	protected void DFSBranchAndBoundAlgorithm(SolutionNode solutionNode) {
 		// Optimisation: HashMap of Tasks to Processors that are to be allocated this round.
 		// If we have two or more TaskNodes that are identical then we only have to schedule them to a processor once.

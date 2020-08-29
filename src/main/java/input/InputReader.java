@@ -153,7 +153,6 @@ public class InputReader {
 			// parallel - if the user inputted the optional argument "-p N" where N is an integer for the number of cores
 			return new ParallelSolutionTree(taskList, generateProcessors(), NUM_CORES);
 		}
-
 	}
 
 	private void calculateBottomLoad(TaskNode root) {
