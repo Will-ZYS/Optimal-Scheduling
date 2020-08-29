@@ -11,7 +11,6 @@ public class Scheduler {
 	private static String _outputName;
 	private static int _numOfProcessor = 1;
 	private static SolutionNode _bestSolution = null;
-	private static SolutionTree _solutionTree = null;
 	private static int _numCores = 1;
 
 	public static void main(String[] args) {
@@ -23,7 +22,6 @@ public class Scheduler {
 			InputReader inputFile = new InputReader(args[0], _numOfProcessor, _numCores);
 
 			SolutionTree solutionTree = inputFile.readInputFile();
-			_solutionTree = solutionTree;
 
 			// get the graphName from the input file
 			String graphName = inputFile.getGraphName();
@@ -85,6 +83,13 @@ public class Scheduler {
                                        "result in the output file");
 					break;
 				case "-p":
+					// check if user has specified number of cores
+					if (i == args.length - 1 || isOptionalFlag(args[i + 1])) {
+						System.err.println("Usage: java -jar scheduler.jar INPUT.dot P [-p N] [-v] [-o OUTPUT]");
+						System.err.println("You need to specify the number of cores to run in parallel");
+						System.exit(1);
+					}
+
 					// check if the string is an integer
 					if (!(args[i+1].matches("\\d+"))) {
 						System.err.println("Usage: java -jar scheduler.jar INPUT.dot P [-p N] [-v] [-o OUTPUT]");
@@ -106,7 +111,7 @@ public class Scheduler {
 					i++;
 					break;
 				case "-o":
-					if (i == args.length - 1) {
+					if (i == args.length - 1 || isOptionalFlag(args[i + 1])) {
 						System.err.println("Usage: java -jar scheduler.jar INPUT.dot P [-p N] [-v] [-o OUTPUT]");
 						System.err.println("You need to specify the output file name");
 						System.exit(1);
@@ -114,15 +119,19 @@ public class Scheduler {
 					_outputName = args[i + 1];
 					i++;
 					break;
+				default:
+					System.err.println("Usage: java -jar scheduler.jar INPUT.dot P [-p N] [-v] [-o OUTPUT]");
+					System.err.println("Invalid optional flag: " + args[i]);
+					System.exit(1);
 			}
 		}
 	}
 
-	public SolutionNode getBestSolution() {
-		return _bestSolution;
+	private static boolean isOptionalFlag(String s) {
+		return s.equals("-v") || s.equals("-p") || s.equals("-o");
 	}
 
-	public SolutionTree getSolutionTree() {
-		return _solutionTree;
+	public SolutionNode getBestSolution() {
+		return _bestSolution;
 	}
 }
