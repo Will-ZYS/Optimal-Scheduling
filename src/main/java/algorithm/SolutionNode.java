@@ -7,6 +7,8 @@ import helper.ProcessorComparator;
 public class SolutionNode {
 	private final Queue<Processor> PROCESSORS;
 	private final List<TaskNode> UNVISITED_TASK_NODES;
+	private final List<SolutionNode> CHILDREN;
+	private SolutionNode PARENT;
 	private int _endTime;   // maximum end time for this partial solution
 
 	// these three fields below are used to find the possible start time of a new taskNode
@@ -17,6 +19,7 @@ public class SolutionNode {
 	public SolutionNode(Queue<Processor> processors, List<TaskNode> unvisitedTaskNodes) {
 		PROCESSORS = processors;
 		UNVISITED_TASK_NODES = unvisitedTaskNodes;
+		CHILDREN = new ArrayList<>();
 		_endTime = - 1;
 	}
 
@@ -177,6 +180,8 @@ public class SolutionNode {
 		return UNVISITED_TASK_NODES;
 	}
 
+	public List<SolutionNode> getChildren() { return CHILDREN; }
+
 	/**
 	 * This function print out the details of a given SolutionNode in the terminal for testing purpose
 	 *
@@ -230,4 +235,9 @@ public class SolutionNode {
 		return true;
 	}
 
+	public SolutionNode getParent() {
+		return PARENT;
+	}
+
+	public void setParent(SolutionNode parent) {PARENT = parent;}
 }
