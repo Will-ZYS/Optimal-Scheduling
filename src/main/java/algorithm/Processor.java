@@ -68,4 +68,37 @@ public class Processor {
 	public int getIdleTime() {
 		return _idleTime;
 	}
+
+	public boolean isDuplicateOf(Processor other) {
+		if (PROCESSOR_ID != other.getID()) return false;
+//		System.out.println("In Processor: Comparing " + PROCESSOR_ID + " with " + other.getID());
+//		System.out.println(_endTime + " " + other.getEndTime());
+		if (_endTime != other.getEndTime()) return false;
+
+//		System.out.println(_idleTime + " " + other.getIdleTime());
+		if (_idleTime != other.getIdleTime()) return false;
+
+//		System.out.println(_weightOfCriticalPath + " " + other.getWeightOfCriticalPath());
+		if (_weightOfCriticalPath != other.getWeightOfCriticalPath()) return false;
+
+		// if the TaskNodes are different
+		if (!(TASKS.keySet().equals(other.getTasks().keySet()))) return false;
+//		System.out.println("Tasks are the same");
+
+		// if the start time is different
+		for (Map.Entry<TaskNode, Integer> entryA : TASKS.entrySet()) {
+			for (Map.Entry<TaskNode, Integer> entryB : TASKS.entrySet()) {
+				// check if tasks match
+//				System.out.println("Task comparison: " + entryA.getKey().getName() + ":" + entryB.getKey().getName());
+				if (entryA.getKey().getName().equals(entryB.getKey().getName())) {
+//					System.out.println("Start time: " + entryA.getValue() + ":" + entryB.getValue());
+					if (entryA.getValue() != entryB.getValue()) return false; // the start time is not the same
+				}
+			}
+		}
+
+//		System.out.println("Processor are the same");
+
+		return true;
+	}
 }
