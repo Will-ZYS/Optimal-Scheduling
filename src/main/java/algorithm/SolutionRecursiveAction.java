@@ -97,11 +97,11 @@ public class SolutionRecursiveAction extends RecursiveAction {
 									// put new child into the stack
 									if (childSolutionNode.getLowerBound(TOTAL_TASK_WEIGHT) < PARALLEL_SOLUTION_TREE.getBestTime()) {
 										_workload.push(childSolutionNode);
-									}
 
-									// now that we have allocated a task to an empty processor, there is no need
-									// to allocate to another empty processor - eliminating identical states
-									hasSeenEmpty = true;
+										// now that we have allocated a task to an empty processor, there is no need
+										// to allocate to another empty processor - eliminating identical states
+										hasSeenEmpty = true;
+									}
 								}
 							} else {
 								// call create child nodes by giving the id of processor as a parameter
