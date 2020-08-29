@@ -7,36 +7,38 @@ import algorithm.SolutionTree;
 import algorithm.TaskNode;
 import eu.hansolo.tilesfx.Tile;
 import eu.hansolo.tilesfx.TileBuilder;
+import eu.hansolo.tilesfx.chart.ChartData;
 import eu.hansolo.tilesfx.colors.Bright;
 import eu.hansolo.tilesfx.colors.Dark;
+import eu.hansolo.tilesfx.tools.Helper;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Stop;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import main.Scheduler;
 
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Map;
+import java.util.Random;
 import java.util.ResourceBundle;
 import javafx.scene.image.Image ;
 import static javafx.scene.paint.Color.rgb;
 
 public class Controller implements Initializable {
 
+    private static final Random RND = new Random();;
     private GanttChart<Number,String> chart;
     private Timeline timerHandler;
     private double startTime;
@@ -46,26 +48,32 @@ public class Controller implements Initializable {
 
     @FXML
     private VBox memBox;
-
+    @FXML
+    private VBox searchSpaceBox;
     @FXML
     private VBox ganttChartBox;
 
     private Tile memoryTile;
-
+    private Tile circularPercentageTile;
     private Tile imageTile;
+    private int TILE_WIDTH = 200;
+    private int TILE_HEIGHT = 200;
+
+    private ChartData chartData1 = new ChartData("Item 1", 100); // waiquan
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         setUpMemoryTile();
-        setUpImageTile();
+//        setUpImageTile();
         setUpGanttBox();
-
+        setUpCircularPercentageTile();
         autoUpdate();
 
 
         memoryTile.setValue(0);
 
+        circularPercentageTile.setValue(25);
     }
 
     public void initialize() {
@@ -74,31 +82,25 @@ public class Controller implements Initializable {
 
     private void setUpMemoryTile() {
         this.memoryTile = TileBuilder.create().skinType(Tile.SkinType.GAUGE_SPARK_LINE)
+
+                .skinType(Tile.SkinType.GAUGE)
+                .prefSize(TILE_WIDTH, TILE_HEIGHT)
+//                .title("Gauge Tile")
                 .unit("MB")
-                .prefSize(600,500)
+                // Customized Colours
+                .backgroundColor(Color.WHITE)
+                .valueColor(Color.BLACK)
+                .unitColor(Color.BLACK)
+                // ====
                 .maxValue(Runtime.getRuntime().maxMemory() / (1024 * 1024))
                 .threshold(Runtime.getRuntime().maxMemory() * 0.8 / (1024 * 1024))
-                .gradientStops(new Stop(0, rgb(244,160,0)),
-                        new Stop(0.8, Bright.RED),
-                        new Stop(1.0, Dark.RED))
-                .animated(true)
-                .decimals(0)
-                .strokeWithGradient(true)
-                .thresholdVisible(true)
-                .backgroundColor(Color.WHITE)
-                .valueColor(rgb(244,160,0))
-                .unitColor(rgb(244,160,0))
-                .barBackgroundColor(rgb(242, 242, 242))
-                .thresholdColor(rgb(128, 84, 1))
-                .needleColor(rgb(244,160,0))
                 .build();
-
         memBox.getChildren().addAll(this.memoryTile);
     }
 
     private void setUpImageTile() {
         this.imageTile = TileBuilder.create().skinType(Tile.SkinType.IMAGE)
-                .prefSize(600,500)
+                .prefSize(TILE_WIDTH,TILE_HEIGHT)
                 .title("ImageCounter Tile")
                 .text("Whatever text")
                 .description("Whatever\nnumbers")
@@ -110,6 +112,41 @@ public class Controller implements Initializable {
         memBox.getChildren().addAll(this.imageTile);
 //        Image image = new Image("/background.jpg");
 //        memBox.getChildren().add(new ImageView(image));
+    }
+
+    private void setUpCircularPercentageTile(){
+        circularPercentageTile = TileBuilder.create()
+//                .skinType(Tile.SkinType.CIRCULAR_PROGRESS)
+//                .prefSize(TILE_WIDTH, TILE_HEIGHT)
+//                // Customized Colours
+//                .backgroundColor(Color.WHITE)
+//                // ====
+//                .unit("searched")
+//                .build();
+
+
+                .skinType(Tile.SkinType.RADIAL_PERCENTAGE)
+                .prefSize(TILE_WIDTH, TILE_HEIGHT)
+                //.backgroundColor(Color.web("#26262D"))
+                .maxValue(100)
+//                .title("RadialPercentage Tile")
+//                // Customized Colours
+                .backgroundColor(Color.WHITE)
+                .valueColor(Color.BLACK)
+                .unitColor(Color.BLACK)
+//                // ====
+                .description("Searched")
+                .textVisible(false)
+                .chartData(chartData1)
+                .animated(true)
+                .referenceValue(2)
+                .value(chartData1.getValue())
+                .descriptionColor(Tile.GRAY)
+                .barColor(Tile.BLUE)
+
+                .decimals(0)
+                .build();
+        searchSpaceBox.getChildren().addAll(this.circularPercentageTile);
     }
 
     private void setUpGanttBox(){
@@ -206,6 +243,22 @@ public class Controller implements Initializable {
 
     public void setSolutionTree(SolutionTree solutionTree){
         this._solutionTree = solutionTree;
+    }
+
+    /**
+     * Set up listeners that listen to the stage
+     * 1. Make the rotated Gantt Chart height=currentWidth+grownWidth width=currentHeight+grownHeight
+     *
+     * @param stage The stage of the current Visualization
+     */
+    public void setStageAndSetupListeners(Stage stage){
+        stage.widthProperty().addListener((obs, oldVal, newVal) -> {
+            // Do whatever you want
+        });
+
+        stage.heightProperty().addListener((obs, oldVal, newVal) -> {
+            // Do whatever you want
+        });
     }
 
 }
