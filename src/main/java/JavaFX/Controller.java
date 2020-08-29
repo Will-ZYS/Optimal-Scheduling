@@ -23,6 +23,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Stop;
+import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 import main.Scheduler;
 
@@ -50,12 +51,14 @@ public class Controller implements Initializable {
     private VBox ganttChartBox;
 
     private Tile memoryTile;
-    
+
+    private Tile imageTile;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         setUpMemoryTile();
-
+        setUpImageTile();
 //        setUpGanttBox();
 
         autoUpdate();
@@ -90,6 +93,22 @@ public class Controller implements Initializable {
                 .build();
 
         memBox.getChildren().addAll(this.memoryTile);
+    }
+
+    private void setUpImageTile() {
+        this.imageTile = TileBuilder.create().skinType(Tile.SkinType.IMAGE)
+                .prefSize(600,500)
+                .title("ImageCounter Tile")
+                .text("Whatever text")
+                .description("Whatever\nnumbers")
+                .image(new Image("https://static.thenounproject.com/png/688062-200.png"))
+                .imageMask(Tile.ImageMask.ROUND)
+                .text("Whatever text")
+                .textAlignment(TextAlignment.CENTER)
+                .build();
+        memBox.getChildren().addAll(this.imageTile);
+//        Image image = new Image("/background.jpg");
+//        memBox.getChildren().add(new ImageView(image));
     }
 
     private void setUpGanttBox(){
