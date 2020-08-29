@@ -66,7 +66,8 @@ public class SolutionTree {
 				// loop through all the unvisited task nodes
 				for (TaskNode taskNode : unvisitedTaskNodes) {
 
-					if (hasSeenIndependentTask) {
+					if (hasSeenIndependentTask && taskNode.getIncomingEdges().isEmpty()
+											   && taskNode.getOutgoingEdges().isEmpty()) {
 						continue;
 					} else if (taskNode.getIncomingEdges().isEmpty() && taskNode.getOutgoingEdges().isEmpty()) {
 						// this task is independent
