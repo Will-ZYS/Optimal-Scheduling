@@ -58,8 +58,22 @@ public class SolutionRecursiveAction extends RecursiveAction {
 
 			// if this solutionNode still has unvisited task node
 			if (!unvisitedTaskNodes.isEmpty()) {
+
+				// optimisation: for independent tasks, the order of scheduling doesn't matter
+				// e.g. if "a" and "b" are independent tasks (without parents and children),
+				// then schedule a first or b first doesn't matter
+				boolean hasSeenIndependentTask = false;
+
 				// loop through all the unvisited task nodes
 				for (TaskNode taskNode : unvisitedTaskNodes) {
+
+					if (hasSeenIndependentTask && taskNode.getIncomingEdges().isEmpty()
+							&& taskNode.getOutgoingEdges().isEmpty()) {
+						continue;
+					} else if (taskNode.getIncomingEdges().isEmpty() && taskNode.getOutgoingEdges().isEmpty()) {
+						// this task is independent
+						hasSeenIndependentTask = true;
+					}
 
 					// only go through this loop if there is at least one pair of identical tasks
 					if (PARALLEL_SOLUTION_TREE.getIsIdenticalTask()) {
