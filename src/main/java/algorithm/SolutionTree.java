@@ -7,7 +7,7 @@ public class SolutionTree {
 	private SolutionNode _bestSolution;
 	private final List<TaskNode> TASKS;
 	private final SolutionNode ROOT;
-	private final boolean IDENTICAL_TASKS;
+	private final boolean IDENTICAL_TASKS; // if any identical tasks have been detected
 	private final int NUMBER_OF_PROCESSORS;
 	private final int TOTAL_TASK_WEIGHT;
 
@@ -89,25 +89,20 @@ public class SolutionTree {
 							// if the processor is empty
 							if (solutionNode.getProcessors().get(i).getEndTime() == 0) {
 								if (!hasSeenEmpty) { // first instance of a processor with no tasks
-									// call create child nodes by giving the id of processor as a parameter
-									// get the returned child solutionNodes
-									SolutionNode childSolutionNode = solutionNode.createChildNode(taskNode, i);
-
-									// call algorithm based on this child solutionNodes
-									DFSBranchAndBoundAlgorithm(childSolutionNode);
-
 									// now that we have allocated a task to an empty processor, there is no need
 									// to allocate to another empty processor - eliminating identical states
 									hasSeenEmpty = true;
+								} else {
+									// we've already allocated the task to an empty processor, no need to do it again
+									continue;
 								}
-							} else {
-								// call create child nodes by giving the id of processor as a parameter
-								// get the returned child solutionNodes
-								SolutionNode childSolutionNode = solutionNode.createChildNode(taskNode, i);
-
-								// call algorithm based on this child solutionNodes
-								DFSBranchAndBoundAlgorithm(childSolutionNode);
 							}
+							// call create child nodes by giving the id of processor as a parameter
+							// get the returned child solutionNodes
+							SolutionNode childSolutionNode = solutionNode.createChildNode(taskNode, i);
+
+							// call algorithm based on this child solutionNodes
+							DFSBranchAndBoundAlgorithm(childSolutionNode);
 
 							taskToProcessor.put(taskNode, i);
 						}
