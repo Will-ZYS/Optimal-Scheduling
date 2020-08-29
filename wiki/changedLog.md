@@ -228,3 +228,19 @@ _Changes made to the design:_
 _Reason for change:_
  - The project brief required the search to support parallelisation.
  - ForkJoinPool is the best choice for our DFS because it allows for work to be easily split up into smaller tasks.   
+
+**26/08/2020**
+  
+- Optimisations made by Emily 
+
+_Changes made to the design:_
+- for independent tasks "a" and "b", once we explore all possibilities with scheduling "a" first, ignore all possibilities 
+of scheduling "b" first
+- sort processors based on end time when scheduling a new task 
+    
+_Reason for change:_
+- for independent tasks "a" and "b", schedule "ab" and "ba" have no difference 
+- Instead of trying to put all tasks on processor 1 to gain an upper bond, sort processor based on end time and always 
+schedule a new task to the processor with the least end time. This helps achieve a more balanced load and hopefully 
+gets a better upper bond. 
+
