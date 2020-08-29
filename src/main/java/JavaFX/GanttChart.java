@@ -1,5 +1,6 @@
 package JavaFX;
 
+import algorithm.TaskNode;
 import javafx.beans.NamedArg;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,9 +21,9 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
         public String styleClass;
 
 
-        public ExtraData(long lengthMs, String styleClass) {
+        public ExtraData(TaskNode task, String styleClass) {
             super();
-            this.length = lengthMs;
+            this.length = task.getWeight();
             this.styleClass = styleClass;
         }
         public long getLength() {

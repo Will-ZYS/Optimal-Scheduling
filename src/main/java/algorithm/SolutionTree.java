@@ -9,6 +9,7 @@ public class SolutionTree {
 	private final SolutionNode ROOT;
 	private final int NUMBER_OF_PROCESSORS;
 	private final int TOTAL_TASK_WEIGHT;
+	private boolean _completed = false;
 
 
 	public SolutionTree(List<TaskNode> allTasks, List<Processor> processors) {
@@ -35,6 +36,7 @@ public class SolutionTree {
 			_bestTime = 0;
 			_bestSolution = ROOT;
 		}
+		_completed = true;
 		return _bestSolution;
 	}
 
@@ -87,5 +89,9 @@ public class SolutionTree {
 
 	public SolutionNode getCurrentBestSolution() {
 		return _bestSolution;
+	}
+
+	public boolean isCompleted() {
+		return _completed;
 	}
 }

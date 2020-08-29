@@ -4,7 +4,8 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<?import java.net.URL?>
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <Label>welcome </Label>
    <VBox fx:id="memBox" layoutX="401.0" layoutY="18.0" prefHeight="200.0" prefWidth="188.0" />
    <VBox fx:id="ganttChartBox" layoutX="32.0" layoutY="47.0" prefHeight="258.0" prefWidth="310.0" />
