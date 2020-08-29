@@ -1,9 +1,11 @@
 package algorithm;
 
+import helper.ProcessorComparator;
+
 import java.util.*;
 
 public class SolutionNode {
-	private final List<Processor> PROCESSORS;
+	private final Queue<Processor> PROCESSORS;
 	private final List<TaskNode> UNVISITED_TASK_NODES;
 	private int _endTime;   // maximum end time for this partial solution
 
@@ -12,7 +14,7 @@ public class SolutionNode {
 	int _maxEndTime = 0;
 	int _secondMaxEndTime = 0;
 
-	public SolutionNode(List<Processor> processors, List<TaskNode> unvisitedTaskNodes) {
+	public SolutionNode(Queue<Processor> processors, List<TaskNode> unvisitedTaskNodes) {
 		PROCESSORS = processors;
 		UNVISITED_TASK_NODES = unvisitedTaskNodes;
 		_endTime = - 1;
@@ -58,33 +60,42 @@ public class SolutionNode {
 	 * This function creates a SolutionNode for a single given task on a given processor
 	 *
 	 * @param taskNode       The task to be allocated to processors to create SolutionNodes
-	 * @param processorIndex the position of the processor that this task is going to be put on
+	 * @param processorID the ID of the processor that this task is going to be put on
 	 * @return the solution node created which represents a partial solution
 	 */
-	public SolutionNode createChildNode(TaskNode taskNode, int processorIndex) {
+	public SolutionNode createChildNode(TaskNode taskNode, int processorID) {
 
 		int time;
 
 		// deep copy of the list of processors
-		List<Processor> processors = new ArrayList<>();
+		Queue<Processor> processors = new PriorityQueue<>(new ProcessorComparator());
+		Processor allocatedProcessor = null;
 		for (Processor processor : PROCESSORS) {
-			processors.add(new Processor(processor));
+			Processor copiedProcessor = new Processor(processor);
+			if (copiedProcessor.getID() == processorID) {
+				// only add the allocatedProcessor to the priority queue after updating its end time
+				allocatedProcessor = copiedProcessor;
+			} else {
+				processors.add(copiedProcessor);
+			}
 		}
 
-		Processor processor = processors.get(processorIndex);
 		if (_latestProcessor == null) {
-			time = processor.getEndTime();
-		} else if (processor.getID() != _latestProcessor.getID()) {
-			time = Math.max(processor.getEndTime(), _maxEndTime);
+			time = allocatedProcessor.getEndTime();
+		} else if (allocatedProcessor.getID() != _latestProcessor.getID()) {
+			time = Math.max(allocatedProcessor.getEndTime(), _maxEndTime);
 		} else {
-			time = Math.max(processor.getEndTime(), _secondMaxEndTime);
+			time = Math.max(allocatedProcessor.getEndTime(), _secondMaxEndTime);
 		}
 
 		// add task and start time of task to the processor
-		processor.addTask(taskNode, time);
+		allocatedProcessor.addTask(taskNode, time);
 
 		//set end time of the processor
-		processor.setEndTime(time + taskNode.getWeight());
+		allocatedProcessor.setEndTime(time + taskNode.getWeight());
+
+		// add it to the processors queue
+		processors.add(allocatedProcessor);
 
 		// update unvisited task node in the child node by removing
 		// the current task in the child node that is being created
@@ -158,7 +169,7 @@ public class SolutionNode {
 		this._endTime = _endTime;
 	}
 
-	public List<Processor> getProcessors() {
+	public Queue<Processor> getProcessors() {
 		return PROCESSORS;
 	}
 
@@ -181,7 +192,7 @@ public class SolutionNode {
 		}
 		System.out.println();
 
-		List<Processor> processors = solutionNode.getProcessors();
+		Queue<Processor> processors = solutionNode.getProcessors();
 		for (Processor processor : processors) {
 			System.out.println("Processor: " + processor.getID());
 			System.out.println("Tasks :");

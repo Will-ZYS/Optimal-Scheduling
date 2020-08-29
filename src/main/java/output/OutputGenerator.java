@@ -10,10 +10,11 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 public class OutputGenerator {
     private final SolutionNode _bestSolution;
-    private final List<Processor> _processors;
+    private final Queue<Processor> _processors;
     private final String _outputName;
     private final String _graphName;
     private final LinkedHashMap<String, String> _outputRowsRaw;

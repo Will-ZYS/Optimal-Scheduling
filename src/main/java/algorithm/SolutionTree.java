@@ -97,9 +97,9 @@ public class SolutionTree {
 						solutionNode.calculateStartTime(taskNode);
 
 						// loop through all processors
-						for (int i = 0; i < NUMBER_OF_PROCESSORS; i++) {
+						for (Processor processor : solutionNode.getProcessors()) {
 							// if the processor is empty
-							if (solutionNode.getProcessors().get(i).getEndTime() == 0) {
+							if (processor.getEndTime() == 0) {
 								if (!hasSeenEmpty) { // first instance of a processor with no tasks
 									// now that we have allocated a task to an empty processor, there is no need
 									// to allocate to another empty processor - eliminating identical states
@@ -116,7 +116,7 @@ public class SolutionTree {
 							// call algorithm based on this child solutionNodes
 							DFSBranchAndBoundAlgorithm(childSolutionNode);
 
-							taskToProcessor.put(taskNode, i);
+							taskToProcessor.put(taskNode, processor.getID());
 						}
 					}
 				}
