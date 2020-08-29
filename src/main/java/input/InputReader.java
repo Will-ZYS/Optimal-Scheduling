@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import helper.ProcessorComparator;
 
 public class InputReader {
 
@@ -257,15 +258,15 @@ public class InputReader {
 	 *
 	 * @return a list of processors
 	 */
-	private List<Processor> generateProcessors() {
+	private Queue<Processor> generateProcessors() {
 
-		List<Processor> processorList = new ArrayList<>();
+		Queue<Processor> processorQueue = new PriorityQueue<>(new ProcessorComparator());
 
 		for (int i = 1; i <= NUM_OF_PROCESSOR; i++) {
-			processorList.add(new Processor(i));
+			processorQueue.add(new Processor(i));
 		}
 
-		return processorList;
+		return processorQueue;
 	}
 
 	public LinkedHashMap<String, String> getInputRowsRaw() {

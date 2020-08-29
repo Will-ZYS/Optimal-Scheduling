@@ -1,6 +1,7 @@
 package algorithm;
 
 import java.util.List;
+import java.util.Queue;
 
 public abstract class SolutionTree {
 	protected int _bestTime = Integer.MAX_VALUE; // best time
@@ -11,7 +12,7 @@ public abstract class SolutionTree {
 	protected final int NUMBER_OF_PROCESSORS;
 	protected final int TOTAL_TASK_WEIGHT;
 
-	public SolutionTree(List<TaskNode> allTasks, List<Processor> processors) {
+	public SolutionTree(List<TaskNode> allTasks, Queue<Processor> processors) {
 		ROOT = new SolutionNode(processors, allTasks);
 		TASKS = allTasks;
 		NUMBER_OF_PROCESSORS = processors.size();

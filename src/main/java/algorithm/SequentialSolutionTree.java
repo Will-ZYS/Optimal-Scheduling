@@ -4,7 +4,7 @@ import java.util.*;
 
 public class SequentialSolutionTree extends SolutionTree {
 
-	public SequentialSolutionTree(List<TaskNode> allTasks, List<Processor> processors) {
+	public SequentialSolutionTree(List<TaskNode> allTasks, Queue<Processor> processors) {
 		super(allTasks, processors);
 	}
 
@@ -69,9 +69,9 @@ public class SequentialSolutionTree extends SolutionTree {
 						solutionNode.calculateStartTime(taskNode);
 
 						// loop through all processors
-						for (int i = 0; i < NUMBER_OF_PROCESSORS; i++) {
+						for (Processor processor : solutionNode.getProcessors()) {
 							// if the processor is empty
-							if (solutionNode.getProcessors().get(i).getEndTime() == 0) {
+							if (processor.getEndTime() == 0) {
 								if (!hasSeenEmpty) { // first instance of a processor with no tasks
 									// now that we have allocated a task to an empty processor, there is no need
 									// to allocate to another empty processor - eliminating identical states
@@ -83,12 +83,12 @@ public class SequentialSolutionTree extends SolutionTree {
 							}
 							// call create child nodes by giving the id of processor as a parameter
 							// get the returned child solutionNodes
-							SolutionNode childSolutionNode = solutionNode.createChildNode(taskNode, i);
+							SolutionNode childSolutionNode = solutionNode.createChildNode(taskNode, processor.getID());
 
 							// call algorithm based on this child solutionNodes
 							DFSBranchAndBoundAlgorithm(childSolutionNode);
 
-							taskToProcessor.put(taskNode, i);
+							taskToProcessor.put(taskNode, processor.getID());
 						}
 					}
 				}
