@@ -7,7 +7,7 @@ public abstract class SolutionTree {
 	protected SolutionNode _bestSolution;
 	protected final List<TaskNode> TASKS;
 	protected final SolutionNode ROOT;
-	protected final boolean IDENTICAL_TASKS;
+	protected final boolean IDENTICAL_TASKS; // if any identical tasks have been detected
 	protected final int NUMBER_OF_PROCESSORS;
 	protected final int TOTAL_TASK_WEIGHT;
 
