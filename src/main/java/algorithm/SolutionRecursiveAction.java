@@ -1,8 +1,6 @@
 package algorithm;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveAction;
 
@@ -52,35 +50,76 @@ public class SolutionRecursiveAction extends RecursiveAction {
 	private void doParallelDFS() {
 		while (!_workload.isEmpty()) {
 			SolutionNode solutionNode = _workload.pop();
+			Map<TaskNode, Integer> taskToProcessor = new HashMap<>();
+
 
 			// get the unvisited nodes of this solutionNode
 			List<TaskNode> unvisitedTaskNodes = solutionNode.getUnvisitedTaskNodes();
 
 			// if this solutionNode still has unvisited task node
-			if (! unvisitedTaskNodes.isEmpty()) {
+			if (!unvisitedTaskNodes.isEmpty()) {
 				// loop through all the unvisited task nodes
 				for (TaskNode taskNode : unvisitedTaskNodes) {
-					// if this task node can be used to create a partial solution
-					if (solutionNode.canCreateNode(taskNode)) {
 
+					// only go through this loop if there is at least one pair of identical tasks
+					if (PARALLEL_SOLUTION_TREE.getIsIdenticalTask()) {
+						// check in the hashmap if an identical tasknode has been allocated
+						boolean isIdenticalToTask = false;
+						for (TaskNode other : taskToProcessor.keySet()) {
+							if (taskNode.isIdenticalTo(other)) {
+								isIdenticalToTask = true;
+								break;
+							}
+						}
+						if (isIdenticalToTask) continue; // if identical, skip this task
+					}
+
+					// optimisation: if more than one empty processor, only allocate a task to one
+					boolean hasSeenEmpty = false;
+
+					// if this task node can be used to create a partial solution
+					if (!solutionNode.canCreateNode(taskNode)) {
+						break;
+					} else {
 						// find the possible start time for this taskNode
 						solutionNode.calculateStartTime(taskNode);
 
 						// loop through all processors
 						int numProcessors = PARALLEL_SOLUTION_TREE.getNumberOfProcessors();
 						for (int i = 0; i < numProcessors; i++) {
-							// call create child nodes by giving the id of processor as a parameter
-							// get the returned child solutionNodes
-							SolutionNode childSolutionNode = solutionNode.createChildNode(taskNode, i);
+							// if the processor is empty
+							if (solutionNode.getProcessors().get(i).getEndTime() == 0) {
+								if (!hasSeenEmpty) { // first instance of a processor with no tasks
+									// call create child nodes by giving the id of processor as a parameter
+									// get the returned child solutionNodes
+									SolutionNode childSolutionNode = solutionNode.createChildNode(taskNode, i);
 
-							// put new child into the stack
-							if (childSolutionNode.getLowerBound(TOTAL_TASK_WEIGHT) < PARALLEL_SOLUTION_TREE.getBestTime()) {
-								_workload.push(childSolutionNode);
+									// put new child into the stack
+									if (childSolutionNode.getLowerBound(TOTAL_TASK_WEIGHT) < PARALLEL_SOLUTION_TREE.getBestTime()) {
+										_workload.push(childSolutionNode);
+									}
+
+									// now that we have allocated a task to an empty processor, there is no need
+									// to allocate to another empty processor - eliminating identical states
+									hasSeenEmpty = true;
+								}
+							} else {
+								// call create child nodes by giving the id of processor as a parameter
+								// get the returned child solutionNodes
+								SolutionNode childSolutionNode = solutionNode.createChildNode(taskNode, i);
+
+								// put new child into the stack
+								if (childSolutionNode.getLowerBound(TOTAL_TASK_WEIGHT) < PARALLEL_SOLUTION_TREE.getBestTime()) {
+									_workload.push(childSolutionNode);
+								}
 							}
+
+							taskToProcessor.put(taskNode, i);
 						}
 					}
 				}
 			} else {
+
 				// compare the actual time of the leaf to the best time
 				if (solutionNode.getEndTime() < PARALLEL_SOLUTION_TREE.getBestTime()) {
 					PARALLEL_SOLUTION_TREE.setBestTime(solutionNode.getEndTime());

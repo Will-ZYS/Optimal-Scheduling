@@ -47,4 +47,8 @@ public class ParallelSolutionTree extends SolutionTree {
 	public int getNumberOfProcessors() {
 		return NUMBER_OF_PROCESSORS;
 	}
+
+	public boolean getIsIdenticalTask() {
+		return IDENTICAL_TASKS;
+	}
 }
