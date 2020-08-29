@@ -2,17 +2,17 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="600.0" prefWidth="800.0" style="-fx-background-image: url('/images/cpubackground.jpg');" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
-   <padding>
-      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-   </padding>
-   <center>
-      <BorderPane maxHeight="500.0" maxWidth="650.0" prefHeight="500.0" prefWidth="650.0" style="-fx-background-radius: 75;" BorderPane.alignment="CENTER">
+<AnchorPane prefHeight="600.0" prefWidth="800.0" style="-fx-background-image: url('/images/cpubackground.jpg');" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <BorderPane minHeight="540.0" minWidth="680.0" prefHeight="540.0" prefWidth="680.0" style="-fx-background-radius: 75;" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="20.0">
          <top>
             <HBox BorderPane.alignment="CENTER">
                <children>
@@ -33,7 +33,7 @@
          <center>
             <HBox maxWidth="1.7976931348623157E308" style="-fx-background-radius: 0 0 75 75; -fx-background-color: white;" BorderPane.alignment="CENTER">
                <children>
-                  <VBox prefWidth="350.0">
+                  <VBox minWidth="370.0">
                      <children>
                         <HBox>
                            <children>
@@ -77,22 +77,47 @@
                         </HBox>
                         <HBox>
                            <children>
-                              <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="150.0">
+                              <VBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="172.0">
                                  <children>
                                     <Label text="Runtime Elapsed">
                                        <font>
-                                          <Font name="Arial" size="15.0" />
+                                          <Font name="Arial" size="17.0" />
+                                       </font>
+                                    </Label>
+                                    <Label alignment="CENTER" prefHeight="70.0" prefWidth="150.0" text="15.041 mins">
+                                       <font>
+                                          <Font name="Arial Italic" size="19.0" />
                                        </font>
                                     </Label>
                                  </children>
                               </VBox>
-                              <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="150.0">
+                              <VBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="172.0">
                                  <children>
                                     <Label text="Execution Status">
                                        <font>
-                                          <Font name="Arial" size="15.0" />
+                                          <Font name="Arial" size="17.0" />
                                        </font>
                                     </Label>
+                                    <HBox alignment="CENTER" prefHeight="70.0" prefWidth="200.0">
+                                       <children>
+                                          <ImageView fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@images/running.gif" />
+                                             </image>
+                                             <HBox.margin>
+                                                <Insets />
+                                             </HBox.margin>
+                                          </ImageView>
+                                          <Label alignment="CENTER" text="Running">
+                                             <font>
+                                                <Font name="Arial Italic" size="19.0" />
+                                             </font>
+                                             <HBox.margin>
+                                                <Insets />
+                                             </HBox.margin>
+                                          </Label>
+                                       </children>
+                                    </HBox>
                                  </children>
                               </VBox>
                            </children>
@@ -103,16 +128,72 @@
                               <Insets top="10.0" />
                            </VBox.margin>
                         </HBox>
-                        <VBox fx:id="memBox">
-                           <VBox.margin>
+                        <HBox>
+                           <children>
+                              <VBox fx:id="searchSpaceBox" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="172.0">
+                                 <children>
+                                    <Label text="Search Space" textAlignment="CENTER" wrapText="true">
+                                       <font>
+                                          <Font name="Arial" size="17.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </VBox>
+                              <VBox fx:id="memBox" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="172.0">
+                                 <children>
+                                    <Label text="Memory Usage">
+                                       <font>
+                                          <Font name="Arial" size="17.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </VBox>
+                           </children>
+                           <padding>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                           </VBox.margin>
-                        </VBox>
+                           </padding>
+                        </HBox>
+                        <HBox>
+                           <children>
+                              <VBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="172.0">
+                                 <children>
+                                    <Label text="Current Best Time">
+                                       <font>
+                                          <Font name="Arial" size="17.0" />
+                                       </font>
+                                    </Label>
+                                    <Label alignment="CENTER" prefHeight="70.0" prefWidth="150.0" text="16 units">
+                                       <font>
+                                          <Font name="Arial Italic" size="19.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </VBox>
+                              <VBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="172.0">
+                                 <children>
+                                    <Label text="Schedules Checked">
+                                       <font>
+                                          <Font name="Arial" size="17.0" />
+                                       </font>
+                                    </Label>
+                                    <Label alignment="CENTER" prefHeight="70.0" prefWidth="150.0" text="939 ">
+                                       <font>
+                                          <Font name="Arial Italic" size="19.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </VBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </HBox>
                      </children>
                      <padding>
                         <Insets bottom="20.0" left="20.0" right="5.0" top="20.0" />
-                     </padding></VBox>
-                  <VBox prefWidth="300.0">
+                     </padding>
+                  </VBox>
+                  <VBox maxWidth="1.7976931348623157E308" minWidth="310.0" prefHeight="480.0">
                      <children>
                         <VBox fx:id="ganttChartBox" maxHeight="300.0" maxWidth="500.0">
                            <VBox.margin>
@@ -120,8 +201,9 @@
                            </VBox.margin>
                            <padding>
                               <Insets bottom="20.0" top="20.0" />
-                           </padding></VBox>
-                        <HBox>
+                           </padding>
+                        </VBox>
+                        <HBox alignment="CENTER">
                            <children>
                               <Label text="Number of Processors: ">
                                  <font>
@@ -134,12 +216,14 @@
                                  </font>
                                  <HBox.margin>
                                     <Insets left="10.0" />
-                                 </HBox.margin></Label>
+                                 </HBox.margin>
+                              </Label>
                            </children>
                            <padding>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                           </padding></HBox>
-                        <HBox>
+                           </padding>
+                        </HBox>
+                        <HBox alignment="CENTER">
                            <children>
                               <Label text="Number of Tasks:">
                                  <font>
@@ -165,5 +249,8 @@
             </HBox>
          </center>
       </BorderPane>
-   </center>
-</BorderPane>
+   </children>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+</AnchorPane>
