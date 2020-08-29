@@ -59,7 +59,7 @@ public class Controller implements Initializable {
 
         setUpMemoryTile();
         setUpImageTile();
-//        setUpGanttBox();
+        setUpGanttBox();
 
         autoUpdate();
 
@@ -75,6 +75,7 @@ public class Controller implements Initializable {
     private void setUpMemoryTile() {
         this.memoryTile = TileBuilder.create().skinType(Tile.SkinType.GAUGE_SPARK_LINE)
                 .unit("MB")
+                .prefSize(600,500)
                 .maxValue(Runtime.getRuntime().maxMemory() / (1024 * 1024))
                 .threshold(Runtime.getRuntime().maxMemory() * 0.8 / (1024 * 1024))
                 .gradientStops(new Stop(0, rgb(244,160,0)),
