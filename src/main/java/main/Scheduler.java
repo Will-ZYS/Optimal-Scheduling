@@ -11,20 +11,19 @@ public class Scheduler {
 	private static String _outputName;
 	private static int _numOfProcessor = 1;
 	private static SolutionNode _bestSolution = null;
+	private static SolutionTree _solutionTree = null;
+	private static int _numCores = 1;
 
 	public static void main(String[] args) {
 
-		Scheduler scheduler = new Scheduler();
-		scheduler.readUserInput(args);
+		readUserInput(args);
 
 		// read the input file and return it as a solutionTree object
 		try {
-			// the current branch and bound algorithm cannot handle more than 22 tasks, therefore,
-			// all tasks are put into the same processor for milestone 1
-			// @todo refactor the algorithm to increase its efficiency
-			InputReader inputFile = new InputReader(args[0], _numOfProcessor);
+			InputReader inputFile = new InputReader(args[0], _numOfProcessor, _numCores);
 
 			SolutionTree solutionTree = inputFile.readInputFile();
+			_solutionTree = solutionTree;
 
 			// get the graphName from the input file
 			String graphName = inputFile.getGraphName();
@@ -46,7 +45,7 @@ public class Scheduler {
 	 *
 	 * @param args user inputs
 	 */
-	private void readUserInput(String[] args) {
+	private static void readUserInput(String[] args) {
 
 		// Check the number of command line argument is greater than 2
 		if (args.length < 2) {
@@ -86,8 +85,24 @@ public class Scheduler {
                                        "result in the output file");
 					break;
 				case "-p":
-					System.out.println("Sorry, the parallel version has not been implemented yet, " +
-							           "the algorithm will be run in sequential");
+					// check if the string is an integer
+					if (!(args[i+1].matches("\\d+"))) {
+						System.err.println("Usage: java -jar scheduler.jar INPUT.dot P [-p N] [-v] [-o OUTPUT]");
+						System.err.println("Please enter a positive integer for N");
+						System.exit(1);
+					}
+					// check if the integer is between 1 to 32767 (limit for ForkJoinPool)
+					if (Integer.parseInt(args[i+1]) <= 0) {
+						System.err.println("Usage: java -jar scheduler.jar INPUT.dot P [-p N] [-v] [-o OUTPUT]");
+						System.err.println("Please enter a positive integer for N");
+						System.exit(1);
+					} else if (Integer.parseInt(args[i+1]) > 32767) {
+						System.err.println("Usage: java -jar scheduler.jar INPUT.dot P [-p N] [-v] [-o OUTPUT]");
+						System.err.println("Please enter a smaller positive integer for N");
+						System.exit(1);
+					}
+
+					_numCores = Integer.parseInt(args[i+1]);
 					i++;
 					break;
 				case "-o":
@@ -105,5 +120,9 @@ public class Scheduler {
 
 	public SolutionNode getBestSolution() {
 		return _bestSolution;
+	}
+
+	public SolutionTree getSolutionTree() {
+		return _solutionTree;
 	}
 }
