@@ -11,7 +11,7 @@ public class SolutionTree {
 	private final int NUMBER_OF_PROCESSORS;
 	private final int TOTAL_TASK_WEIGHT;
 
-	public SolutionTree(List<TaskNode> allTasks, List<Processor> processors) {
+	public SolutionTree(List<TaskNode> allTasks, Queue<Processor> processors) {
 		ROOT = new SolutionNode(processors, allTasks);
 		TASKS = allTasks;
 		NUMBER_OF_PROCESSORS = processors.size();
@@ -111,7 +111,7 @@ public class SolutionTree {
 							}
 							// call create child nodes by giving the id of processor as a parameter
 							// get the returned child solutionNodes
-							SolutionNode childSolutionNode = solutionNode.createChildNode(taskNode, i);
+							SolutionNode childSolutionNode = solutionNode.createChildNode(taskNode, processor.getID());
 
 							// call algorithm based on this child solutionNodes
 							DFSBranchAndBoundAlgorithm(childSolutionNode);
