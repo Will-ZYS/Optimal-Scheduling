@@ -1,6 +1,7 @@
 package algorithm;
 
 import java.util.List;
+import java.util.Queue;
 import java.util.Stack;
 import java.util.concurrent.ForkJoinPool;
 
@@ -8,7 +9,7 @@ public class ParallelSolutionTree extends SolutionTree {
 	private final int NUM_CORES;
 	public static ForkJoinPool _forkJoinPool;
 
-	public ParallelSolutionTree(List<TaskNode> allTasks, List<Processor> processors, int numCores) {
+	public ParallelSolutionTree(List<TaskNode> allTasks, Queue<Processor> processors, int numCores) {
 		super(allTasks, processors);
 		NUM_CORES = numCores;
 	}

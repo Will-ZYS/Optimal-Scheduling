@@ -58,8 +58,22 @@ public class SolutionRecursiveAction extends RecursiveAction {
 
 			// if this solutionNode still has unvisited task node
 			if (!unvisitedTaskNodes.isEmpty()) {
+
+				// optimisation: for independent tasks, the order of scheduling doesn't matter
+				// e.g. if "a" and "b" are independent tasks (without parents and children),
+				// then schedule a first or b first doesn't matter
+				boolean hasSeenIndependentTask = false;
+
 				// loop through all the unvisited task nodes
 				for (TaskNode taskNode : unvisitedTaskNodes) {
+
+					if (hasSeenIndependentTask && taskNode.getIncomingEdges().isEmpty()
+							&& taskNode.getOutgoingEdges().isEmpty()) {
+						continue;
+					} else if (taskNode.getIncomingEdges().isEmpty() && taskNode.getOutgoingEdges().isEmpty()) {
+						// this task is independent
+						hasSeenIndependentTask = true;
+					}
 
 					// only go through this loop if there is at least one pair of identical tasks
 					if (PARALLEL_SOLUTION_TREE.getIsIdenticalTask()) {
@@ -85,36 +99,28 @@ public class SolutionRecursiveAction extends RecursiveAction {
 						solutionNode.calculateStartTime(taskNode);
 
 						// loop through all processors
-						int numProcessors = PARALLEL_SOLUTION_TREE.getNumberOfProcessors();
-						for (int i = 0; i < numProcessors; i++) {
+						for (Processor processor : solutionNode.getProcessors()) {
 							// if the processor is empty
-							if (solutionNode.getProcessors().get(i).getEndTime() == 0) {
+							if (processor.getEndTime() == 0) {
 								if (!hasSeenEmpty) { // first instance of a processor with no tasks
-									// call create child nodes by giving the id of processor as a parameter
-									// get the returned child solutionNodes
-									SolutionNode childSolutionNode = solutionNode.createChildNode(taskNode, i);
-
-									// put new child into the stack
-									if (childSolutionNode.getLowerBound(TOTAL_TASK_WEIGHT) < PARALLEL_SOLUTION_TREE.getBestTime()) {
-										_workload.push(childSolutionNode);
-
-										// now that we have allocated a task to an empty processor, there is no need
-										// to allocate to another empty processor - eliminating identical states
-										hasSeenEmpty = true;
-									}
-								}
-							} else {
-								// call create child nodes by giving the id of processor as a parameter
-								// get the returned child solutionNodes
-								SolutionNode childSolutionNode = solutionNode.createChildNode(taskNode, i);
-
-								// put new child into the stack
-								if (childSolutionNode.getLowerBound(TOTAL_TASK_WEIGHT) < PARALLEL_SOLUTION_TREE.getBestTime()) {
-									_workload.push(childSolutionNode);
+									// now that we have allocated a task to an empty processor, there is no need
+									// to allocate to another empty processor - eliminating identical states
+									hasSeenEmpty = true;
+								} else {
+									// we've already allocated the task to an empty processor, no need to do it again
+									continue;
 								}
 							}
+							// call create child nodes by giving the id of processor as a parameter
+							// get the returned child solutionNodes
+							SolutionNode childSolutionNode = solutionNode.createChildNode(taskNode, processor.getID());
 
-							taskToProcessor.put(taskNode, i);
+							// put new child into the stack
+							if (childSolutionNode.getLowerBound(TOTAL_TASK_WEIGHT) < PARALLEL_SOLUTION_TREE.getBestTime()) {
+								_workload.push(childSolutionNode);
+							}
+
+							taskToProcessor.put(taskNode, processor.getID());
 						}
 					}
 				}
