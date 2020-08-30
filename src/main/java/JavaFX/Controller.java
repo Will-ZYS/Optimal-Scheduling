@@ -46,7 +46,6 @@ public class Controller implements Initializable {
     private double currentTime;
     private SolutionTree _solutionTree;
     private boolean pollingRanOnce = false;
-    Timeline poller;
 
     @FXML
     private VBox memBox;
