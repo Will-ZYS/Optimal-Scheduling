@@ -67,6 +67,7 @@ public class InputReader {
 			String nodePattern = "\\s*\\w+\\s*\\[Weight=\\d+\\];";
 			String edgePattern = "\\s*\\w+\\s->\\s\\w+\\s*\\[Weight=\\d+\\];";
 			if (!line.matches(nodePattern) && !line.matches(edgePattern)) {
+				INPUT_ROWS_RAW.put(line, line);
 				continue;
 			}
 
