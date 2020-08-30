@@ -279,18 +279,10 @@ public class Controller implements Initializable {
          */
         for (XYChart.Series<Number,String> s : chart.getData()) {
             for (XYChart.Data<Number,String> d : s.getData()) {
-//                Tooltip.install(d.getNode(), new Tooltip(
-//                        d.getXValue().toString() + "\n" +
-//                                "Number Of Events : " + d.getYValue()));
-
-                d.getNode().addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
-                    Tooltip.install(d.getNode(), new Tooltip("Task: " + GanttChart.getID(d.getExtraValue()) + "; Weight: " + GanttChart.getLength(d.getExtraValue())));
-                    d.getNode().getStyleClass().add("onHover");
-//                    System.out.println(GanttChart.getLength(d.getExtraValue()));
-                });
+                Tooltip.install(d.getNode(), new Tooltip("Task: " + GanttChart.getID(d.getExtraValue()) + "; Weight: " + GanttChart.getLength(d.getExtraValue())));
 
                 //Adding class on hover
-//                d.getNode().setOnMouseEntered(event -> d.getNode().getStyleClass().add("onHover"));
+                d.getNode().setOnMouseEntered(event -> d.getNode().getStyleClass().add("onHover"));
 
                 //Removing class on exit
                 d.getNode().setOnMouseExited(event -> d.getNode().getStyleClass().remove("onHover"));
