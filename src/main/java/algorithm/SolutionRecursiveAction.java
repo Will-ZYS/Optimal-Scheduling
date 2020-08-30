@@ -9,6 +9,7 @@ public class SolutionRecursiveAction extends RecursiveAction {
 	private static final int THRESHOLD = 4;
 	private final ParallelSolutionTree PARALLEL_SOLUTION_TREE;
 	private final int TOTAL_TASK_WEIGHT;
+	private static int _checkedSchedule;
 
 	public SolutionRecursiveAction(Stack<SolutionNode> workload, ParallelSolutionTree parallelSolutionTree) {
 		_workload = workload;
@@ -49,6 +50,7 @@ public class SolutionRecursiveAction extends RecursiveAction {
 	 */
 	private void doParallelDFS() {
 		while (!_workload.isEmpty()) {
+			_checkedSchedule++;
 			SolutionNode solutionNode = _workload.pop();
 			Map<TaskNode, Integer> taskToProcessor = new HashMap<>();
 
@@ -139,4 +141,7 @@ public class SolutionRecursiveAction extends RecursiveAction {
 			}
 		}
 	}
+
+	public static int getCheckedSchedule() { return _checkedSchedule; }
+
 }
