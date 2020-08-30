@@ -1,59 +1,45 @@
 package algorithm;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveAction;
 
 public class SolutionRecursiveAction extends RecursiveAction {
-	private Stack<SolutionNode> _workload;
-	private static final int THRESHOLD = 4;
+	private SolutionNode _solutionNode;
+	private int _currentLevel;
 	private final ParallelSolutionTree PARALLEL_SOLUTION_TREE;
 	private final int TOTAL_TASK_WEIGHT;
 	private static int _checkedSchedule;
 
-	public SolutionRecursiveAction(Stack<SolutionNode> workload, ParallelSolutionTree parallelSolutionTree) {
-		_workload = workload;
+	protected Map<Integer, List<SolutionNode>> _visitedPartialSolutions;
+
+	public SolutionRecursiveAction(Map<Integer, List<SolutionNode>> visitedPartialSolutions, ParallelSolutionTree parallelSolutionTree, SolutionNode solutionNode, int currentLevel) {
 		PARALLEL_SOLUTION_TREE = parallelSolutionTree;
 		TOTAL_TASK_WEIGHT = PARALLEL_SOLUTION_TREE.getTotalTaskWeight();
+		_currentLevel = currentLevel;
+		_solutionNode = solutionNode;
+
+		_visitedPartialSolutions = visitedPartialSolutions;
+
 	}
 
 	@Override
 	protected void compute() {
-		if (_workload.size() > THRESHOLD) {
-			ForkJoinTask.invokeAll(createSubtasks()); // create sub tasks if the stack size is beyond the threshold
-		} else {
-			doParallelDFS();
-		}
-	}
-
-	/**
-	 * This method splits up the tasks into two subtasks.
-	 * The first subtask contains only the head of the stack, while the second subtask contains the rest of the elements.
-	 * @return list of subtasks to perform parallel processing on.
-	 */
-	private List<SolutionRecursiveAction> createSubtasks() {
-		List<SolutionRecursiveAction> subtasks = new ArrayList<>();
-
-		// remove one SolutionNode from the stack and split it from the rest
-		SolutionNode node = _workload.pop();
-		Stack<SolutionNode> subWorkload = new Stack<>();
-		subWorkload.push(node);
-
-		subtasks.add(new SolutionRecursiveAction(subWorkload, PARALLEL_SOLUTION_TREE));
-		subtasks.add(new SolutionRecursiveAction(_workload, PARALLEL_SOLUTION_TREE));
-
-		return subtasks;
+		doParallelDFS(_solutionNode);
 	}
 
 	/**
 	 * DFS branch and bound algorithm
 	 */
-	private void doParallelDFS() {
-		while (!_workload.isEmpty()) {
-			incrementCheckedSchedule();
-			SolutionNode solutionNode = _workload.pop();
-			Map<TaskNode, Integer> taskToProcessor = new HashMap<>();
+	private void doParallelDFS(SolutionNode solutionNode) {
+		// Optimisation: HashMap of Tasks to Processors that are to be allocated this round.
+		// If we have two or more TaskNodes that are identical then we only have to schedule them to a processor once.
+		// i.e. if A and B are identical tasks, no need to schedule them on Processor 1.
+		Map<TaskNode, Integer> taskToProcessor = new HashMap<>();
 
+		// check the lower bound (estimation) of this node
+		if (solutionNode.getLowerBound(TOTAL_TASK_WEIGHT) < PARALLEL_SOLUTION_TREE.getBestTime()) {
 
 			// get the unvisited nodes of this solutionNode
 			List<TaskNode> unvisitedTaskNodes = solutionNode.getUnvisitedTaskNodes();
@@ -93,7 +79,7 @@ public class SolutionRecursiveAction extends RecursiveAction {
 					// optimisation: if more than one empty processor, only allocate a task to one
 					boolean hasSeenEmpty = false;
 
-					// if this task node can be used to create a partial solution
+					// check if this task node can be used to create a partial solution
 					if (!solutionNode.canCreateNode(taskNode)) {
 						break;
 					} else {
@@ -101,6 +87,8 @@ public class SolutionRecursiveAction extends RecursiveAction {
 						solutionNode.calculateStartTime(taskNode);
 
 						// loop through all processors
+						List<SolutionRecursiveAction> taskList = new ArrayList<>();
+						boolean makesParallel = _currentLevel <= 1 || getSurplusQueuedTaskCount() < 1;
 						for (Processor processor : solutionNode.getProcessors()) {
 							// if the processor is empty
 							if (processor.getEndTime() == 0) {
@@ -113,31 +101,75 @@ public class SolutionRecursiveAction extends RecursiveAction {
 									continue;
 								}
 							}
+
 							// call create child nodes by giving the id of processor as a parameter
 							// get the returned child solutionNodes
 							SolutionNode childSolutionNode = solutionNode.createChildNode(taskNode, processor.getID());
 
-							// put new child into the stack
-							if (childSolutionNode.getLowerBound(TOTAL_TASK_WEIGHT) < PARALLEL_SOLUTION_TREE.getBestTime()) {
-								_workload.push(childSolutionNode);
+							boolean isDuplicate = false;
+
+							// check for duplicates
+							synchronized (_visitedPartialSolutions) {
+								List<SolutionNode> cousinSolutionNodes = _visitedPartialSolutions.get(_currentLevel + 1);
+								for (SolutionNode cousinSolutionNode : cousinSolutionNodes) {
+									if (cousinSolutionNode.isDuplicateOf(childSolutionNode)) {
+										isDuplicate = true;
+										break;
+									}
+								}
 							}
+
+
+							if (isDuplicate) {
+								continue;
+							}
+
+							// call algorithm based on this child solutionNodes
+							_currentLevel++;
+							if (makesParallel) {
+								taskList.add(new SolutionRecursiveAction(_visitedPartialSolutions, PARALLEL_SOLUTION_TREE, childSolutionNode, _currentLevel));
+							} else {
+								doParallelDFS(childSolutionNode);
+							}
+
+							_currentLevel--;
 
 							taskToProcessor.put(taskNode, processor.getID());
 						}
+						if (makesParallel) {
+							ForkJoinTask.invokeAll(taskList);
+						}
 					}
 				}
+
+				// finished exploring the children of the solutionNode
+				int numberOfLevelCompared = 6;
+				int levelToBeCleared = _currentLevel - 1 + numberOfLevelCompared;
+
+				// add this partial solution node to the hashmap
+				synchronized (_visitedPartialSolutions) {
+					if (solutionNode != PARALLEL_SOLUTION_TREE.getRoot()) {
+						_visitedPartialSolutions.get(_currentLevel).add(solutionNode);
+					}
+					if (_visitedPartialSolutions.containsKey(levelToBeCleared)) {
+						// clear all partial solution nodes stored on this level to reduce memory usage
+						_visitedPartialSolutions.get(levelToBeCleared).clear();
+					}
+				}
+
 			} else {
+				// we have reached the leaf node which is a complete solution
 
 				// compare the actual time of the leaf to the best time
 				if (solutionNode.getEndTime() < PARALLEL_SOLUTION_TREE.getBestTime()) {
-					PARALLEL_SOLUTION_TREE.setBestTime(solutionNode.getEndTime());
 					PARALLEL_SOLUTION_TREE.setBestSolution(solutionNode);
+					PARALLEL_SOLUTION_TREE.setBestTime(solutionNode.getEndTime());
 				}
-			}
 
-			// if the stack size becomes larger, then we split the tasks
-			if (_workload.size() > THRESHOLD) {
-				ForkJoinTask.invokeAll(createSubtasks());
+				// add this partial solution node to the hashmap
+				synchronized (_visitedPartialSolutions) {
+					_visitedPartialSolutions.get(_currentLevel).add(solutionNode);
+				}
 			}
 		}
 	}

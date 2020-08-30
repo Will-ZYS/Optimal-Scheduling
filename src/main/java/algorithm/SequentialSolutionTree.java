@@ -115,7 +115,6 @@ public class SequentialSolutionTree extends SolutionTree {
 							// call algorithm based on this child solutionNodes
 							_currentLevel++;
 							DFSBranchAndBoundAlgorithm(childSolutionNode);
-
 							_currentLevel--;
 
 							taskToProcessor.put(taskNode, processor.getID());

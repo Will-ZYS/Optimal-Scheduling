@@ -26,6 +26,7 @@ import javafx.scene.layout.Pane;
 
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -174,13 +175,12 @@ public class Controller implements Initializable {
         // Setting up time (x) axis
         final NumberAxis timeAxis = new NumberAxis();
         timeAxis.setLabel("");
-        timeAxis.setTickLabelFill(Color.rgb(254,89,21));
+        timeAxis.setTickLabelFill(Color.rgb(42,177,255));
         timeAxis.setMinorTickCount(4);
 
         // Setting up processor (y) axis
         final CategoryAxis processorAxis = new CategoryAxis();
         processorAxis.setLabel("");
-        timeAxis.setTickLabelFill(Color.rgb(254,89,21));
         processorAxis.setTickLabelGap(1);
         processorAxis.setTickLabelRotation(270);
         processorAxis.setCategories(FXCollections.observableArrayList(Arrays.asList(processors)));
@@ -253,52 +253,34 @@ public class Controller implements Initializable {
     private void updateGanttChart(SolutionNode bestSolution){
         int numProcessers = Scheduler.getNumOfProcessor();
 
-        // new array of series to write
-        XYChart.Series[] seriesArray = new XYChart.Series[numProcessers];
+        XYChart.Series[] allSeries = new XYChart.Series[numProcessers];
 
-        // initializing series obj
         for (int i=0;i<numProcessers;i++){
-            seriesArray[i]=new XYChart.Series();
+            allSeries[i] = new XYChart.Series();
         }
 
-        // for every task in schedule, write its data to the specific series
         for (Processor processor: bestSolution.getProcessors()){
-
             Map<TaskNode, Integer> tasks = processor.getTasks();
             for (TaskNode task : tasks.keySet()) {
                 XYChart.Data newData = new XYChart.Data(tasks.get(task), "Processor " + (processor.getID()-1),
                         new GanttChart.ExtraData(task, "task-style"));
-                seriesArray[processor.getID()-1].getData().add(newData);
+                allSeries[processor.getID()-1].getData().add(newData);
             }
         }
 
         //clear and rewrite series onto the chart
         chart.getData().clear();
-        for (XYChart.Series series: seriesArray){
+        for (XYChart.Series series: allSeries){
             chart.getData().add(series);
         }
 
-        /**
-         * Browsing through the Data and applying ToolTip
-         * as well as the class on hover
-         */
-        for (XYChart.Series<Number,String> s : chart.getData()) {
-            for (XYChart.Data<Number,String> d : s.getData()) {
-                Tooltip.install(d.getNode(), new Tooltip("Task: " + GanttChart.getID(d.getExtraValue()) + "; Weight: " + GanttChart.getLength(d.getExtraValue())));
-
-                //Adding class on hover
-                d.getNode().setOnMouseEntered(event -> d.getNode().getStyleClass().add("onHover"));
-
-                //Removing class on exit
-                d.getNode().setOnMouseExited(event -> d.getNode().getStyleClass().remove("onHover"));
-            }
-        }
+        addToolTips();
 
         currentBestTime.setText(_solutionTree.getCurrentBestSolution().getEndTime() + "s");
     }
 
     /**
-     * Get the desired information from Schedular and put it into corresponding location
+     * Get the desired information from Scheduler and put it into corresponding location
      * The information includes: number of processors, number of tasks, input file name, output file name
      *
      */
@@ -321,14 +303,11 @@ public class Controller implements Initializable {
      */
     public void setUpCheckedSchedule(){
 
-        scheduleHandler = new Timeline(new KeyFrame(Duration.millis(100), new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                if(!Scheduler.getOpenParallelization()){
-                    checkedSchedule.setText(String.valueOf(_solutionTree.getCheckedSchedule()));
-                }else{
-                    checkedSchedule.setText(String.valueOf(SolutionRecursiveAction.getCheckedSchedule()));
-                }
+        scheduleHandler = new Timeline(new KeyFrame(Duration.millis(100), event -> {
+            if(!Scheduler.getOpenParallelization()){
+                checkedSchedule.setText(String.valueOf(_solutionTree.getCheckedSchedule()));
+            }else{
+                checkedSchedule.setText(String.valueOf(SolutionRecursiveAction.getCheckedSchedule()));
             }
         }));
         scheduleHandler.setCycleCount(Animation.INDEFINITE);
@@ -348,12 +327,9 @@ public class Controller implements Initializable {
     private void startTimer(){
 
         startTime=System.currentTimeMillis();
-        timerHandler = new Timeline(new KeyFrame(Duration.millis(100), new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                currentTime=System.currentTimeMillis();
-                timeElapsed.setText((currentTime - startTime) / 1000 + "s");
-            }
+        timerHandler = new Timeline(new KeyFrame(Duration.millis(100), event -> {
+            currentTime=System.currentTimeMillis();
+            timeElapsed.setText((currentTime - startTime) / 1000 + "s");
         }));
 
         timerHandler.setCycleCount(Animation.INDEFINITE);
@@ -384,4 +360,23 @@ public class Controller implements Initializable {
         });
     }
 
+    private void addToolTips() {
+        /**
+         * Browsing through the Data and applying ToolTip
+         * as well as the class on hover
+         */
+        for (XYChart.Series<Number,String> s : chart.getData()) {
+            for (XYChart.Data<Number,String> d : s.getData()) {
+                Tooltip tooltip = new Tooltip("Task: " + GanttChart.getID(d.getExtraValue()) + "   Weight: " + GanttChart.getLength(d.getExtraValue()));
+                tooltip.setFont(Font.font(16));
+                Tooltip.install(d.getNode(), tooltip);
+
+                //Adding class on hover
+                d.getNode().setOnMouseEntered(event -> d.getNode().getStyleClass().add("onHover"));
+
+                //Removing class on exit
+                d.getNode().setOnMouseExited(event -> d.getNode().getStyleClass().remove("onHover"));
+            }
+        }
+    }
 }
