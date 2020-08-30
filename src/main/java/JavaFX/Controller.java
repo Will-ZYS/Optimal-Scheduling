@@ -131,38 +131,15 @@ public class Controller implements Initializable {
         memBox.getChildren().addAll(this.memoryTile);
     }
 
-    private void setUpImageTile() {
-        this.imageTile = TileBuilder.create().skinType(Tile.SkinType.IMAGE)
-                .prefSize(TILE_WIDTH,TILE_HEIGHT)
-                .title("ImageCounter Tile")
-                .text("Whatever text")
-                .description("Whatever\nnumbers")
-                .image(new Image("https://static.thenounproject.com/png/688062-200.png"))
-                .imageMask(Tile.ImageMask.ROUND)
-                .text("Whatever text")
-                .textAlignment(TextAlignment.CENTER)
-                .build();
-        memBox.getChildren().addAll(this.imageTile);
-//        Image image = new Image("/background.jpg");
-//        memBox.getChildren().add(new ImageView(image));
-    }
 
     private void setUpCircularPercentageTile(){
         circularPercentageTile = TileBuilder.create()
-//                .skinType(Tile.SkinType.CIRCULAR_PROGRESS)
-//                .prefSize(TILE_WIDTH, TILE_HEIGHT)
-//                // Customized Colours
-//                .backgroundColor(Color.WHITE)
-//                // ====
-//                .unit("searched")
-//                .build();
-
 
                 .skinType(Tile.SkinType.RADIAL_PERCENTAGE)
                 .prefSize(TILE_WIDTH, TILE_HEIGHT)
-                //.backgroundColor(Color.web("#26262D"))
+
                 .maxValue(100)
-//                .title("RadialPercentage Tile")
+
 //                // Customized Colours
                 .backgroundColor(Color.WHITE)
                 .valueColor(Color.BLACK)
