@@ -93,11 +93,15 @@ public class Scheduler extends Application {
 		for (int i = 2; i < args.length; i++) {
 			switch (args[i]) {
 				case "-v":
-
                     openVisualization = true;
-
 					break;
 				case "-p":
+					// check if the next argument is existed
+					if(i+1 == args.length){
+						System.err.println("Usage: java -jar scheduler.jar INPUT.dot P [-p N] [-v] [-o OUTPUT]");
+						System.err.println("Please enter a positive interger after -p");
+						System.exit(1);
+					}
 					// check if the string is an integer
 					if (!(args[i+1].matches("\\d+"))) {
 						System.err.println("Usage: java -jar scheduler.jar INPUT.dot P [-p N] [-v] [-o OUTPUT]");
@@ -114,7 +118,6 @@ public class Scheduler extends Application {
 						System.err.println("Please enter a smaller positive integer for N");
 						System.exit(1);
 					}
-
 					_numCores = Integer.parseInt(args[i+1]);
 					i++;
 					break;
@@ -184,6 +187,7 @@ public class Scheduler extends Application {
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
             primaryStage.setTitle("Scheduler");
+            //controller.setStageAndSetupListeners(primaryStage);
             primaryStage.show();
 
         } catch (IOException e) {

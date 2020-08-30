@@ -14,7 +14,7 @@
    <children>
       <BorderPane minHeight="540.0" minWidth="680.0" prefHeight="540.0" prefWidth="680.0" style="-fx-background-radius: 75;" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="20.0">
          <top>
-            <HBox BorderPane.alignment="CENTER">
+            <HBox fx:id="scheduler" BorderPane.alignment="CENTER">
                <children>
                   <Label alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-background-color: #7E858F; -fx-background-radius: 75 75 0 0;" text="Scheduler" textFill="WHITE" HBox.hgrow="ALWAYS">
                      <font>
