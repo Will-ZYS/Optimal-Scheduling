@@ -135,7 +135,7 @@
                            <children>
                               <VBox fx:id="searchSpaceBox" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="180.0" style="-fx-background-color: #292a2b; -fx-background-radius: 10;" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <Label text="Search Space" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                                    <Label text="Estimation" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                                        <font>
                                           <Font name="Arial" size="19.0" />
                                        </font>

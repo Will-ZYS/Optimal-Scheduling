@@ -48,6 +48,7 @@ public class Controller implements Initializable {
     private double currentTime;
     private SolutionTree _solutionTree;
     private boolean pollingRanOnce = false;
+    Timeline poller;
 
     @FXML
     private VBox memBox;
@@ -103,7 +104,7 @@ public class Controller implements Initializable {
         setUpCircularPercentageTile();
         autoUpdate();
         memoryTile.setValue(0);
-        circularPercentageTile.setValue(25); // inner cycle
+        circularPercentageTile.setValue(0); // inner cycle
         startTimer();
 
     }
@@ -197,7 +198,7 @@ public class Controller implements Initializable {
         // Setting up chart
         chart = new GanttChart<>(timeAxis, processorAxis);
         chart.setLegendVisible(false);
-        chart.setBlockHeight(150/numberPro);
+        chart.setBlockHeight(180/numberPro);
         chart.getStylesheets().add(getClass().getResource("/GanttChart.css").toExternalForm());
 
         // Setting up gantt chart box
@@ -216,7 +217,7 @@ public class Controller implements Initializable {
      *
      */
     private void autoUpdate() {
-        Timeline poller = new Timeline(new KeyFrame(Duration.millis(50), event -> {
+        poller = new Timeline(new KeyFrame(Duration.millis(50), event -> {
             // Updating memory tile
             double memoryUsage = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())/(1000000d);
             memoryTile.setValue(memoryUsage);
@@ -234,9 +235,19 @@ public class Controller implements Initializable {
                     statusImage.setImage(finishImg);
                     statusText.setText("Done");
                     statusText.setTextFill(Color.GREEN);
+                    circularPercentageTile.setValue(100);
+                    poller.stop();
                     return;
                 }
             }
+            else {
+            currentTime=System.currentTimeMillis();
+            double time = (((currentTime - startTime) / 1000)/_solutionTree.getEstimatedCompleteTime()) * 100;
+            if ( time > 99) {
+                time = 99;
+            }
+            circularPercentageTile.setValue(time);
+        }
             pollingRanOnce = true;
         }));
         poller.setCycleCount(Animation.INDEFINITE);
