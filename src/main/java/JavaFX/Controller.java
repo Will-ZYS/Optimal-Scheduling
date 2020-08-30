@@ -337,8 +337,8 @@ public class Controller implements Initializable {
     public void setStageAndSetupListeners(Stage stage){
         stage.widthProperty().addListener((obs, oldVal, newVal) -> {
 
-//            chart.setMinHeight(ganttChartBox.getWidth());
-//            chart.setPrefHeight(ganttChartBox.getWidth());
+            chart.setMinHeight(ganttChartBox.getWidth());
+            chart.setPrefHeight(ganttChartBox.getWidth());
 ////            chart.setMaxHeight(ganttChartBox.getWidth());
 
         });
