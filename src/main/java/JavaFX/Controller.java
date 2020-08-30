@@ -299,7 +299,6 @@ public class Controller implements Initializable {
             public void handle(ActionEvent event) {
                 if(!Scheduler.getOpenParallelization()){
                     checkedSchedule.setText(String.valueOf(_solutionTree.getCheckedSchedule()));
-
                 }else{
                     checkedSchedule.setText(String.valueOf(SolutionRecursiveAction.getCheckedSchedule()));
                 }

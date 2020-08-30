@@ -50,7 +50,7 @@ public class SolutionRecursiveAction extends RecursiveAction {
 	 */
 	private void doParallelDFS() {
 		while (!_workload.isEmpty()) {
-			_checkedSchedule++;
+			incrementCheckedSchedule();
 			SolutionNode solutionNode = _workload.pop();
 			Map<TaskNode, Integer> taskToProcessor = new HashMap<>();
 
@@ -144,4 +144,6 @@ public class SolutionRecursiveAction extends RecursiveAction {
 
 	public static int getCheckedSchedule() { return _checkedSchedule; }
 
+	// keep the attribute synchronized
+	public synchronized void incrementCheckedSchedule() { _checkedSchedule++; }
 }
