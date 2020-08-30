@@ -114,14 +114,24 @@ public class Controller implements Initializable {
      *
      */
     private void setUpMemoryTile() {
-        this.memoryTile = TileBuilder.create().skinType(Tile.SkinType.GAUGE_SPARK_LINE)
+        this.memoryTile = TileBuilder.create()
                 .skinType(Tile.SkinType.GAUGE)
                 .prefSize(TILE_WIDTH, TILE_HEIGHT)
                 .unit("MB")
-                // Customized Colours
-                .backgroundColor(Color.WHITE)
-                .valueColor(Color.BLACK)
-                .unitColor(Color.BLACK)
+//                // Customized Colours
+//                .backgroundColor(Color.WHITE)
+//                .valueColor(Color.BLACK)
+//                .unitColor(Color.BLACK)
+//
+//                .foregroundColor(Color.RED)
+//                .textColor(Color.GREEN)
+//                .barBackgroundColor(Color.PURPLE)
+//                .barColor(Color.PURPLE) // gai le
+//                .unitColor(Color.PURPLE) // gai le
+//                .descriptionColor(Color.PURPLE)
+//                .needleColor(Color.PURPLE)
+//                .trackColor(Tile.TileColor.GREEN)
+
                 .maxValue(Runtime.getRuntime().maxMemory() / (1024 * 1024))
                 .threshold(Runtime.getRuntime().maxMemory() * 0.8 / (1024 * 1024))
                 .build();
@@ -138,9 +148,11 @@ public class Controller implements Initializable {
                 .maxValue(100)
 
 //                // Customized Colours
-                .backgroundColor(Color.WHITE)
-                .valueColor(Color.BLACK)
-                .unitColor(Color.BLACK)
+//                .backgroundColor(Color.TRANSPARENT)
+                .valueColor(Color.WHITE)
+                .unitColor(Color.WHITE)
+                .descriptionColor(Color.LIGHTGREY)
+                .barColor(Tile.BLUE)
 //                // ====
                 .description("Searched")
                 .textVisible(false)
@@ -148,8 +160,7 @@ public class Controller implements Initializable {
                 .animated(true)
                 .referenceValue(2)
                 .value(chartData1.getValue())
-                .descriptionColor(Tile.GRAY)
-                .barColor(Tile.BLUE)
+
 
                 .decimals(0)
                 .build();
@@ -222,6 +233,7 @@ public class Controller implements Initializable {
                     Image finishImg = new Image("/images/finish.png");
                     statusImage.setImage(finishImg);
                     statusText.setText("Done");
+                    statusText.setTextFill(Color.GREEN);
                     return;
                 }
             }
