@@ -17,9 +17,7 @@ public class SequentialSolutionTree extends SolutionTree {
 	 */
 	@Override
 	protected void DFSBranchAndBoundAlgorithm(SolutionNode solutionNode) {
-
 		_checkedSchedule++;
-		//System.out.println(_checkedSchedule);
 
 		// Optimisation: HashMap of Tasks to Processors that are to be allocated this round.
 		// If we have two or more TaskNodes that are identical then we only have to schedule them to a processor once.
@@ -43,6 +41,10 @@ public class SequentialSolutionTree extends SolutionTree {
 				// loop through all the unvisited task nodes
 				for (TaskNode taskNode : unvisitedTaskNodes) {
 
+					if (_currentLevel == 1) {
+						_VisitedSecondLevelSolutionNodes += 2;
+					}
+
 					if (hasSeenIndependentTask && taskNode.getIncomingEdges().isEmpty()
 											   && taskNode.getOutgoingEdges().isEmpty()) {
 						continue;
@@ -61,7 +63,9 @@ public class SequentialSolutionTree extends SolutionTree {
 								break;
 							}
 						}
-						if (isIdenticalToTask) continue; // if identical, skip this task
+						if (isIdenticalToTask) {
+							continue; // if identical, skip this task
+						}
 					}
 
 					// optimisation: if more than one empty processor, only allocate a task to one
@@ -76,6 +80,8 @@ public class SequentialSolutionTree extends SolutionTree {
 
 						// loop through all processors
 						for (Processor processor : solutionNode.getProcessors()) {
+
+
 							// if the processor is empty
 							if (processor.getEndTime() == 0) {
 								if (!hasSeenEmpty) { // first instance of a processor with no tasks
@@ -90,7 +96,6 @@ public class SequentialSolutionTree extends SolutionTree {
 							// call create child nodes by giving the id of processor as a parameter
 							// get the returned child solutionNodes
 							SolutionNode childSolutionNode = solutionNode.createChildNode(taskNode, processor.getID());
-							
 
 							boolean isDuplicate = false;
 

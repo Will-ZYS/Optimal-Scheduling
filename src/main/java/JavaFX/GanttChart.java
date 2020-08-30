@@ -22,6 +22,7 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
 
     public static class ExtraData {
 
+        public String ID;
         public long length;
         public String styleClass;
 
@@ -29,12 +30,16 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
             super();
             this.length = task.getWeight();
             this.styleClass = styleClass;
+            this.ID = task.getName();
         }
         public long getLength() {
             return length;
         }
         public String getStyleClass() {
             return styleClass;
+        }
+        public String getID() {
+            return ID;
         }
 
     }
@@ -57,8 +62,12 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
         return ((ExtraData) obj).getStyleClass();
     }
 
-    private static double getLength( Object obj) {
+    static double getLength(Object obj) {
         return ((ExtraData) obj).getLength();
+    }
+
+    static String getID(Object obj) {
+        return ((ExtraData) obj).getID();
     }
 
     @Override protected void layoutPlotChildren() {

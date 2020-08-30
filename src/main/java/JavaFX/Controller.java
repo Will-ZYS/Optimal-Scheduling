@@ -17,9 +17,11 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 
 import javafx.scene.layout.VBox;
@@ -45,6 +47,7 @@ public class Controller implements Initializable {
     private double startTime;
     private double currentTime;
     private SolutionTree _solutionTree;
+    private SolutionNode _currentBestSolution;
     private boolean pollingRanOnce = false;
 
     @FXML
@@ -199,14 +202,15 @@ public class Controller implements Initializable {
      *
      */
     private void autoUpdate() {
-        poller = new Timeline(new KeyFrame(Duration.millis(50), event -> {
+        poller = new Timeline(new KeyFrame(Duration.millis(100), event -> {
             // Updating memory tile
             double memoryUsage = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())/(1000000d);
             memoryTile.setValue(memoryUsage);
 
             // check if the current best solution is changed
-            if(_solutionTree.getCurrentBestSolution() != null){
-                updateGanttChart(_solutionTree.getCurrentBestSolution());
+            if(_solutionTree.getCurrentBestSolution() != null && _solutionTree.getCurrentBestSolution() != _currentBestSolution){
+                _currentBestSolution = _solutionTree.getCurrentBestSolution();
+                updateGanttChart(_currentBestSolution);
             }
 
             // check if the program finishes working
@@ -224,13 +228,12 @@ public class Controller implements Initializable {
                 }
             }
             else {
-            currentTime=System.currentTimeMillis();
-            double time = (((currentTime - startTime) / 1000)/_solutionTree.getEstimatedCompleteTime()) * 100;
-            if ( time > 99) {
-                time = 99;
+                double percentage = (double) _solutionTree.getVisitedSecondLevelSolutionNodes()/_solutionTree.getSecondLevelSolutionNodes() * 100;
+                if ( percentage > 99) {
+                    percentage = 99;
+                }
+                circularPercentageTile.setValue(percentage);
             }
-            circularPercentageTile.setValue(time);
-        }
             pollingRanOnce = true;
         }));
         poller.setCycleCount(Animation.INDEFINITE);
@@ -262,13 +265,36 @@ public class Controller implements Initializable {
                         new GanttChart.ExtraData(task, "task-style"));
                 seriesArray[processor.getID()-1].getData().add(newData);
             }
-
         }
 
         //clear and rewrite series onto the chart
         chart.getData().clear();
         for (XYChart.Series series: seriesArray){
             chart.getData().add(series);
+        }
+
+        /**
+         * Browsing through the Data and applying ToolTip
+         * as well as the class on hover
+         */
+        for (XYChart.Series<Number,String> s : chart.getData()) {
+            for (XYChart.Data<Number,String> d : s.getData()) {
+//                Tooltip.install(d.getNode(), new Tooltip(
+//                        d.getXValue().toString() + "\n" +
+//                                "Number Of Events : " + d.getYValue()));
+
+                d.getNode().addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
+                    Tooltip.install(d.getNode(), new Tooltip("Task: " + GanttChart.getID(d.getExtraValue()) + "; Weight: " + GanttChart.getLength(d.getExtraValue())));
+                    d.getNode().getStyleClass().add("onHover");
+//                    System.out.println(GanttChart.getLength(d.getExtraValue()));
+                });
+
+                //Adding class on hover
+//                d.getNode().setOnMouseEntered(event -> d.getNode().getStyleClass().add("onHover"));
+
+                //Removing class on exit
+                d.getNode().setOnMouseExited(event -> d.getNode().getStyleClass().remove("onHover"));
+            }
         }
 
         currentBestTime.setText(_solutionTree.getCurrentBestSolution().getEndTime() + "s");
