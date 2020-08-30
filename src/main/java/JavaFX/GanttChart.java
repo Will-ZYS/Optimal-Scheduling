@@ -13,13 +13,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/*
+ * Credit to "Roland" from Stackoverflow
+ * https://stackoverflow.com/questions/27975898/gantt-chart-from-scratch/27978436
+ *
+ */
 public class GanttChart<X,Y> extends XYChart<X,Y> {
 
     public static class ExtraData {
 
         public long length;
         public String styleClass;
-
 
         public ExtraData(TaskNode task, String styleClass) {
             super();
@@ -29,16 +33,9 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
         public long getLength() {
             return length;
         }
-        public void setLength(long length) {
-            this.length = length;
-        }
         public String getStyleClass() {
             return styleClass;
         }
-        public void setStyleClass(String styleClass) {
-            this.styleClass = styleClass;
-        }
-
 
     }
 
@@ -51,7 +48,7 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
     public GanttChart(@NamedArg("xAxis") Axis<X> xAxis, @NamedArg("yAxis") Axis<Y> yAxis, @NamedArg("data") ObservableList<Series<X,Y>> data) {
         super(xAxis, yAxis);
         if (!(xAxis instanceof ValueAxis && yAxis instanceof CategoryAxis)) {
-            throw new IllegalArgumentException("Axis type incorrect, X and Y should both be NumberAxis");
+            throw new IllegalArgumentException("Axis type incorrect, X should be NumberAxis and Y should be CategoryAxis");
         }
         setData(data);
     }
@@ -80,10 +77,6 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
                 }
                 Node block = item.getNode();
 
-
-
-
-
                 Rectangle ellipse;
                 if (block != null) {
                     if (block instanceof StackPane) {
@@ -99,9 +92,6 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
                         ellipse.setHeight(getBlockHeight() * ((getYAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis)getYAxis()).getScale()) : 1));
                         y -= getBlockHeight() / 2.0;
 
-                        // Note: workaround for RT-7689 - saw this in ProgressControlSkin
-                        // The region doesn't update itself when the shape is mutated in place, so we
-                        // null out and then restore the shape in order to force invalidation.
                         region.setShape(null);
                         region.setShape(ellipse);
                         region.setScaleShape(false);

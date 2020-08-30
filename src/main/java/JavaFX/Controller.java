@@ -22,7 +22,9 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
+
+import javafx.scene.layout.Pane;
+
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
@@ -83,10 +85,6 @@ public class Controller implements Initializable {
     @FXML
     private ImageView statusImage;
 
-    @FXML
-    private HBox scheduler;
-
-
     private Tile memoryTile;
     private Tile circularPercentageTile;
     private Tile imageTile;
@@ -130,38 +128,15 @@ public class Controller implements Initializable {
         memBox.getChildren().addAll(this.memoryTile);
     }
 
-    private void setUpImageTile() {
-        this.imageTile = TileBuilder.create().skinType(Tile.SkinType.IMAGE)
-                .prefSize(TILE_WIDTH,TILE_HEIGHT)
-                .title("ImageCounter Tile")
-                .text("Whatever text")
-                .description("Whatever\nnumbers")
-                .image(new Image("https://static.thenounproject.com/png/688062-200.png"))
-                .imageMask(Tile.ImageMask.ROUND)
-                .text("Whatever text")
-                .textAlignment(TextAlignment.CENTER)
-                .build();
-        memBox.getChildren().addAll(this.imageTile);
-//        Image image = new Image("/background.jpg");
-//        memBox.getChildren().add(new ImageView(image));
-    }
 
     private void setUpCircularPercentageTile(){
         circularPercentageTile = TileBuilder.create()
-//                .skinType(Tile.SkinType.CIRCULAR_PROGRESS)
-//                .prefSize(TILE_WIDTH, TILE_HEIGHT)
-//                // Customized Colours
-//                .backgroundColor(Color.WHITE)
-//                // ====
-//                .unit("searched")
-//                .build();
-
 
                 .skinType(Tile.SkinType.RADIAL_PERCENTAGE)
                 .prefSize(TILE_WIDTH, TILE_HEIGHT)
-                //.backgroundColor(Color.web("#26262D"))
+
                 .maxValue(100)
-//                .title("RadialPercentage Tile")
+
 //                // Customized Colours
                 .backgroundColor(Color.WHITE)
                 .valueColor(Color.BLACK)
@@ -213,13 +188,13 @@ public class Controller implements Initializable {
         chart.setLegendVisible(false);
         chart.setBlockHeight(150/numberPro);
         chart.getStylesheets().add(getClass().getResource("/GanttChart.css").toExternalForm());
-        chart.setMaxHeight(ganttChartBox.getPrefHeight());
 
         // Setting up gantt chart box
-        ganttChartBox.setMaxHeight(260);
         ganttChartBox.getChildren().add(chart);
         ganttChartBox.setStyle("-fx-background-color: WHITE");
-        ganttChartBox.setRotate(90);
+
+        // Rotate the chart inside the Gantt Box
+        chart.setRotate(90);
 
     }
 
@@ -362,31 +337,13 @@ public class Controller implements Initializable {
      */
     public void setStageAndSetupListeners(Stage stage){
         stage.widthProperty().addListener((obs, oldVal, newVal) -> {
-            System.out.println("aaaaaa");
-            System.out.println("gantt chart box width: " + ganttChartBox.getWidth());
-            System.out.println("gantt chart box height: " + ganttChartBox.getHeight());
-            System.out.println("chart width: " + chart.getWidth());
-            System.out.println("chart height: " + chart.getHeight());
-
-            ganttChartBox.setPrefWidth(scheduler.getPrefWidth());
 
             chart.setMinHeight(ganttChartBox.getWidth());
             chart.setPrefHeight(ganttChartBox.getWidth());
 
-//            ganttChartBox.setPrefHeight(chart.getPrefHeight());
-//            ganttChartBox.setMaxHeight(chart.getMaxHeight());
-
         });
 
         stage.heightProperty().addListener((obs, oldVal, newVal) -> {
-            // Do whatever you want
-
-            chart.setMinWidth(ganttChartBox.getHeight());
-            chart.setPrefWidth(ganttChartBox.getHeight());
-
-//            ganttChartBox.setPrefWidth(chart.getPrefHeight());
-//            ganttChartBox.setMaxWidth((chart.getMaxHeight()));
-
 
         });
     }
