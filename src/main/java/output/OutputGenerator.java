@@ -76,10 +76,14 @@ public class OutputGenerator {
         myWriter.write(String.format("digraph \""+ _graphName +"\" {"+"%n"));
 
         for (Map.Entry<String, String> entry : _outputRowsRaw.entrySet()) {
+            // the line does not contain node and edge info
+            if (entry.getKey().equals(entry.getValue())) {
+                myWriter.write(entry.getKey() + "\n");
+                continue;
+            }
             // Formatted to align the columns
             myWriter.write(String.format("\t%-15s%-15s%n", entry.getKey(), entry.getValue()));
         }
-        myWriter.write("}");
         myWriter.close();
 
     }

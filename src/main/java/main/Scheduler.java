@@ -17,13 +17,13 @@ public class Scheduler extends Application {
 	private static String _outputName;
 	private static int _numOfProcessor = 1;
 	private static SolutionNode _bestSolution = null;
-	private static SolutionTree _solutionTree = null;
 	private static int _numCores = 1;
     private static boolean openVisualization = false;
     private static InputReader _inputFile;
     private static String _graphName;
     private static int _numOfTasks;
 	private static String _inputFileName;
+	private static SolutionTree _solutionTree = null;
 
 	public static void main(String[] args) {
 
@@ -32,7 +32,9 @@ public class Scheduler extends Application {
 
 		// read the input file and return it as a solutionTree object
 		try {
+
 			_inputFile = new InputReader(args[0], _numOfProcessor, _numCores);
+
 			// get the graphName from the input file
 			_graphName = _inputFile.getGraphName();
 			_solutionTree = _inputFile.readInputFile();
@@ -96,12 +98,14 @@ public class Scheduler extends Application {
                     openVisualization = true;
 					break;
 				case "-p":
-					// check if the next argument is existed
-					if(i+1 == args.length){
+
+					// check if user has specified number of cores
+					if (i == args.length - 1 || isOptionalFlag(args[i + 1])) {
 						System.err.println("Usage: java -jar scheduler.jar INPUT.dot P [-p N] [-v] [-o OUTPUT]");
-						System.err.println("Please enter a positive interger after -p");
+						System.err.println("You need to specify the number of cores to run in parallel");
 						System.exit(1);
 					}
+
 					// check if the string is an integer
 					if (!(args[i+1].matches("\\d+"))) {
 						System.err.println("Usage: java -jar scheduler.jar INPUT.dot P [-p N] [-v] [-o OUTPUT]");
@@ -122,7 +126,7 @@ public class Scheduler extends Application {
 					i++;
 					break;
 				case "-o":
-					if (i == args.length - 1) {
+					if (i == args.length - 1 || isOptionalFlag(args[i + 1])) {
 						System.err.println("Usage: java -jar scheduler.jar INPUT.dot P [-p N] [-v] [-o OUTPUT]");
 						System.err.println("You need to specify the output file name");
 						System.exit(1);
@@ -130,6 +134,10 @@ public class Scheduler extends Application {
 					_outputName = args[i + 1];
 					i++;
 					break;
+				default:
+					System.err.println("Usage: java -jar scheduler.jar INPUT.dot P [-p N] [-v] [-o OUTPUT]");
+					System.err.println("Invalid optional flag: " + args[i]);
+					System.exit(1);
 			}
 		}
 	}
@@ -149,12 +157,13 @@ public class Scheduler extends Application {
         }
     }
 
-	public SolutionNode getBestSolution() {
-		return _bestSolution;
+
+	private static boolean isOptionalFlag(String s) {
+		return s.equals("-v") || s.equals("-p") || s.equals("-o");
 	}
 
-	public SolutionTree getSolutionTree() {
-		return _solutionTree;
+	public SolutionNode getBestSolution() {
+		return _bestSolution;
 	}
 
     public static int getNumOfProcessor() {
@@ -196,4 +205,6 @@ public class Scheduler extends Application {
     }
 
 
+
 }
+
