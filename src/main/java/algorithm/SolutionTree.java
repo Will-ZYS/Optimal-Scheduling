@@ -1,7 +1,6 @@
 package algorithm;
 
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public abstract class SolutionTree {
 	protected int _bestTime = Integer.MAX_VALUE; // best time
@@ -11,6 +10,9 @@ public abstract class SolutionTree {
 	protected final boolean IDENTICAL_TASKS; // if any identical tasks have been detected
 	protected final int NUMBER_OF_PROCESSORS;
 	protected final int TOTAL_TASK_WEIGHT;
+
+	// store partial solutions for five levels, used for checking for duplicates
+	protected Map<Integer, List<SolutionNode>> _visitedPartialSolutions;
 
 	public SolutionTree(List<TaskNode> allTasks, Queue<Processor> processors) {
 		ROOT = new SolutionNode(processors, allTasks);
@@ -22,6 +24,11 @@ public abstract class SolutionTree {
 		}
 		TOTAL_TASK_WEIGHT = total_task_weight;
 		IDENTICAL_TASKS = markIdenticalTasks();
+
+		_visitedPartialSolutions = new HashMap<>();
+		for (int i = 1; i <= TASKS.size(); i++) {
+			_visitedPartialSolutions.put(i, new ArrayList<>());
+		}
 	}
 
 	/**

@@ -3,9 +3,11 @@ package algorithm;
 import java.util.*;
 
 public class SequentialSolutionTree extends SolutionTree {
+	private int _currentLevel;
 
 	public SequentialSolutionTree(List<TaskNode> allTasks, Queue<Processor> processors) {
 		super(allTasks, processors);
+		_currentLevel = 0;
 	}
 
 	/**
@@ -33,22 +35,6 @@ public class SequentialSolutionTree extends SolutionTree {
 				// e.g. if "a" and "b" are independent tasks (without parents and children),
 				// then schedule a first or b first doesn't matter
 				boolean hasSeenIndependentTask = false;
-
-				List<SolutionNode> cousinsForPotentialChild = new ArrayList<>();
-				if (solutionNode != ROOT && solutionNode.getParent() != ROOT) {
-					// 4 levels
-					SolutionNode grandparent = solutionNode.getParent().getParent();
-					List<SolutionNode> parentSiblings = grandparent.getChildren();
-					for (SolutionNode parentSibling : parentSiblings) {
-						List<SolutionNode> siblingsOfSolutionNode = parentSibling.getChildren();
-						for (SolutionNode siblingOfSolutionNode : siblingsOfSolutionNode) {
-							if (solutionNode == siblingOfSolutionNode) continue;
-							for (SolutionNode cousinOfPotentialChild : siblingOfSolutionNode.getChildren()) {
-								cousinsForPotentialChild.add(cousinOfPotentialChild);
-							}
-						}
-					}
-				}
 
 				// loop through all the unvisited task nodes
 				for (TaskNode taskNode : unvisitedTaskNodes) {
@@ -100,43 +86,28 @@ public class SequentialSolutionTree extends SolutionTree {
 							// call create child nodes by giving the id of processor as a parameter
 							// get the returned child solutionNodes
 							SolutionNode childSolutionNode = solutionNode.createChildNode(taskNode, processor.getID());
-
-							childSolutionNode.setParent(solutionNode);
+							
 
 							boolean isDuplicate = false;
 
-//							if (solutionNode != ROOT) {
-								// 3 levels
-//								List<SolutionNode> siblings = solutionNode.getParent().getChildren();
-//								for (SolutionNode sibling : siblings) {
-//									if (solutionNode == sibling) continue;
-//									for (SolutionNode cousin : sibling.getChildren()) {
-//										if (childSolutionNode.isDuplicateOf(cousin)) {
-//											isDuplicate = true;
-//											break;
-//										}
-//									}
-//									if (isDuplicate) break;
-//								}
-
-							for (SolutionNode possibleDuplicate : cousinsForPotentialChild) {
-								if (childSolutionNode.isDuplicateOf(possibleDuplicate)) isDuplicate = true;
+							// check for duplicates
+							List<SolutionNode> cousinSolutionNodes = _visitedPartialSolutions.get(_currentLevel + 1);
+							for (SolutionNode cousinSolutionNode : cousinSolutionNodes) {
+								if (cousinSolutionNode.isDuplicateOf(childSolutionNode)) {
+									isDuplicate = true;
+									break;
+								}
 							}
 
 							if (isDuplicate) {
-								dcount++;
-								break;
+								continue;
 							}
 
-							ccount++;
 							// call algorithm based on this child solutionNodes
+							_currentLevel++;
 							DFSBranchAndBoundAlgorithm(childSolutionNode);
 
-							// we have explored all the children of childSolutionNode, add to parent's children
-							solutionNode.getChildren().add(childSolutionNode);
-
-							// set the child to be null in the parent as well
-							childSolutionNode.setParent(null);
+							_currentLevel--;
 
 							taskToProcessor.put(taskNode, processor.getID());
 						}
@@ -145,27 +116,17 @@ public class SequentialSolutionTree extends SolutionTree {
 
 				// finished exploring the children of the solutionNode
 
-				// we remove the edge from the child and grandchild of the solutionNode
-				// 3 levels
-//				List<SolutionNode> children = solutionNode.getChildren();
-//				for (SolutionNode child : children) {
-//					for (SolutionNode grandchildren : child.getChildren()) {
-//						grandchildren.setParent(null);
-//					}
-//					child.getChildren().clear();
-//				}
-
-				// 4 levels
-				List<SolutionNode> children = solutionNode.getChildren();
-				for (SolutionNode child : children) {
-					for (SolutionNode grandchildren : child.getChildren()) {
-						for (SolutionNode grandgrandchildren : grandchildren.getChildren()) {
-							grandgrandchildren.setParent(null);
-						}
-						grandchildren.getChildren().clear();
-					}
+				// add this partial solution node to the hashmap
+				if (solutionNode != ROOT) {
+					_visitedPartialSolutions.get(_currentLevel).add(solutionNode);
 				}
-				cousinsForPotentialChild.clear();
+
+				int numberOfLevelCompared = 6;
+				int levelToBeCleared = _currentLevel - 1 + numberOfLevelCompared;
+				if (_visitedPartialSolutions.containsKey(levelToBeCleared)) {
+					// clear all partial solution nodes stored on this level to reduce memory usage
+					_visitedPartialSolutions.get(levelToBeCleared).clear();
+				}
 
 			} else {
 				// we have reached the leaf node which is a complete solution
@@ -175,6 +136,9 @@ public class SequentialSolutionTree extends SolutionTree {
 					_bestSolution = solutionNode;
 					_bestTime = solutionNode.getEndTime();
 				}
+
+				// add this partial solution node to the hashmap
+				_visitedPartialSolutions.get(_currentLevel).add(solutionNode);
 			}
 		}
 	}
