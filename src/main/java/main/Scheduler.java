@@ -184,6 +184,8 @@ public class Scheduler extends Application {
 
     public static Boolean getOpenParallelization() { return _openParallelization; }
 
+    public static int getNumCores() { return  _numCores; }
+
     @Override
     public void start(Stage primaryStage) {
         try {

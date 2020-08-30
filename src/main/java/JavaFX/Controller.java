@@ -81,7 +81,12 @@ public class Controller implements Initializable {
     private Label outputFile;
 
     @FXML
+    private Label numOfCores;
+
+    @FXML
     private ImageView statusImage;
+
+
 
     private Tile memoryTile;
     private Tile circularPercentageTile;
@@ -284,7 +289,11 @@ public class Controller implements Initializable {
         numOfTasks.setText(String.valueOf(Scheduler.getNumOfTasks()));
         inputFile.setText(Scheduler.getInputFileName() + ".dot");
         outputFile.setText(Scheduler.getOutputName() + ".dot");
-
+        if(!Scheduler.getOpenParallelization()){
+            numOfCores.setText("1");
+        }else{
+            numOfCores.setText(String.valueOf(Scheduler.getNumCores()));
+        }
     }
 
     /**
