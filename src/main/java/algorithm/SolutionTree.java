@@ -61,8 +61,6 @@ public abstract class SolutionTree {
 			_bestSolution = ROOT;
 		}
 		_isCompleted = true;
-		System.out.println(_secondLevelSolutionNodes);
-		System.out.println(_VisitedSecondLevelSolutionNodes);
 		return _bestSolution;
 	}
 
@@ -113,5 +111,13 @@ public abstract class SolutionTree {
 
 	public long getVisitedSecondLevelSolutionNodes() {
 		return _VisitedSecondLevelSolutionNodes;
+	}
+
+	public List<TaskNode> getTasks() {
+		return TASKS;
+	}
+
+	public SolutionNode getRoot() {
+		return ROOT;
 	}
 }

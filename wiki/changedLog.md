@@ -110,6 +110,19 @@ _Reason for change:_
 <hr/>
 
 **14/08/2020**
+Implement Output Generator by Lucas and Will
+
+_Changes made to the design:_
+- Made a new Class of OutputGenerator
+- Created a LinkedHashMap to contain all raw inputs in their preserved order
+
+_Reason for change:_
+- We need to output the solution into an OUTPUT.dot file containing all the tasks scheduled into the right processor.
+-  This OUTPUT.dot file is essentially a copy of the input as specified in the assignment brief.
+
+<hr/>
+
+**14/08/2020**
 - Bug fix and enhancement of the main method by Tommy
 
 _Changes made to the design:_
@@ -119,6 +132,18 @@ _Changes made to the design:_
 _Reason for change:_
 - The previous default output file name does not match the one in the project description
 - To improve user experience when the users make the error
+
+<hr/>
+
+**15/08/2020**
+Implement Input generator to generate test cases By Will, Lucas and Emily
+
+_Changes made to the design:_
+- Created an InputFileGenerator class to auto-generate test input files with a specific number of tasks.
+
+_Reason for change:_
+- The provided test input files were not sufficient for further testing of the limits of the algorithm. 
+- A way to generator more complex test files were needed.
 
 <hr/>
 
@@ -200,7 +225,19 @@ _Reason for change:_
              number of states we explore. 
 
 <hr/>
-  
+
+**26/08/2020**
+- Frontend Javafx Set up by Lucas
+
+_Changes made to the design:_
+- Made a Visualization class, a VisualizationController class and a Javafx .fxml file
+- Allowing the Visualization class to be executed with a main function to bring up a FXML app
+    
+_Reason for change:_
+- Setting up the file structures for frontend Visualization. 
+
+<hr/>
+
 **26/08/2020**
   
 - Optimisations of heuristic equation by Martin and Emily 
@@ -213,7 +250,36 @@ _Reason for change:_
 all children tasks can only be allocated after its parent finishes. 
 - bottom load: weight of all children tasks / number of processors 
 
- <hr/>
+<hr/>
+
+**26/08/2020**
+- Optimisations made by Emily 
+
+_Changes made to the design:_
+- for independent tasks "a" and "b", once we explore all possibilities with scheduling "a" first, ignore all possibilities 
+of scheduling "b" first
+- sort processors based on end time when scheduling a new task 
+    
+_Reason for change:_
+- for independent tasks "a" and "b", schedule "ab" and "ba" have no difference 
+- Instead of trying to put all tasks on processor 1 to gain an upper bond, sort processor based on end time and always 
+schedule a new task to the processor with the least end time. This helps achieve a more balanced load and hopefully 
+gets a better upper bond. 
+
+<hr/>
+
+**27/08/2020**
+- Allowing the visualization to be ran through CLI by Kevin and Lucas
+
+_Changes made to the design:_
+- Removed the main class of the JavaFX and merged the code into the Scheduler class
+- Changed the gradle.build file to include all resources and fxml files
+    
+_Reason for change:_
+- So that the visualization of JavaFX application can be run when the CLI detects a -v input
+- So that the images, css and fxml files can be found
+
+<hr/>
  
 **28/08/2020**
 - Implemented Parallelisation by Tommy and Martin 
@@ -229,18 +295,33 @@ _Reason for change:_
  - The project brief required the search to support parallelisation.
  - ForkJoinPool is the best choice for our DFS because it allows for work to be easily split up into smaller tasks.   
 
-**26/08/2020**
-  
-- Optimisations made by Emily 
+<hr/>
+
+**29/08/2020**
+- Visualization implemented by Lucas, Kevin and Will
 
 _Changes made to the design:_
-- for independent tasks "a" and "b", once we explore all possibilities with scheduling "a" first, ignore all possibilities 
-of scheduling "b" first
-- sort processors based on end time when scheduling a new task 
+- Changed the tile for the memory to be TileFX of skin type GAUGE_LINE
+- Changed the percentage tile for progress to be TileFX of skin type RadialPercentageTile
+- changed the root element to be of AnchorPane 
     
 _Reason for change:_
-- for independent tasks "a" and "b", schedule "ab" and "ba" have no difference 
-- Instead of trying to put all tasks on processor 1 to gain an upper bond, sort processor based on end time and always 
-schedule a new task to the processor with the least end time. This helps achieve a more balanced load and hopefully 
-gets a better upper bond. 
+- So that the memory can be better displayed
+- So that there aren't distracting lines in the Tile from other Skin Types
+- To preserve responsiveness
 
+ <hr/>
+
+**30/08/2020**
+  
+- Optimisations made by Emily and Martin
+
+_Changes made to the design:_
+- Creating a hashmap to store 6 levels of partial solution nodes.   
+  The hashmap contains the level as the key and a list of partial solutions on that level.   
+  A partial solution is added to the hashmap after all its children have been explored.    
+  The values in the hashmap are frequently updated to avoid a memory leak.   
+    
+_Reason for change:_
+- Detecting duplicates to reduce runtime. 
+- Only store 6 levels to avoid memory leak. Increasing or decreasing this number results in an increase in runtime.
