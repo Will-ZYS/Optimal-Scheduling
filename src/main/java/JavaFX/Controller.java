@@ -1,10 +1,7 @@
 package JavaFX;
 
 
-import algorithm.Processor;
-import algorithm.SolutionNode;
-import algorithm.SolutionTree;
-import algorithm.TaskNode;
+import algorithm.*;
 import eu.hansolo.tilesfx.Tile;
 import eu.hansolo.tilesfx.TileBuilder;
 import eu.hansolo.tilesfx.chart.ChartData;
@@ -44,6 +41,7 @@ public class Controller implements Initializable {
     private GanttChart<Number,String> chart;
     private Timeline timerHandler;
     private Timeline scheduleHandler;
+    private Timeline poller;
     private double startTime;
     private double currentTime;
     private SolutionTree _solutionTree;
@@ -231,6 +229,7 @@ public class Controller implements Initializable {
             if(_solutionTree.getIsCompleted()){
                 if(pollingRanOnce) {
                     stopTimer();
+                    poller.stop();
                     Image finishImg = new Image("/images/finish.png");
                     statusImage.setImage(finishImg);
                     statusText.setText("Done");
@@ -314,7 +313,12 @@ public class Controller implements Initializable {
         scheduleHandler = new Timeline(new KeyFrame(Duration.millis(100), new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                checkedSchedule.setText(String.valueOf(_solutionTree.getCheckedSchedule()));
+                if(!Scheduler.getOpenParallelization()){
+                    checkedSchedule.setText(String.valueOf(_solutionTree.getCheckedSchedule()));
+
+                }else{
+                    checkedSchedule.setText(String.valueOf(SolutionRecursiveAction.getCheckedSchedule()));
+                }
             }
         }));
         scheduleHandler.setCycleCount(Animation.INDEFINITE);

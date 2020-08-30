@@ -24,6 +24,7 @@ public class Scheduler extends Application {
     private static int _numOfTasks;
 	private static String _inputFileName;
 	private static SolutionTree _solutionTree = null;
+	private static boolean _openParallelization = false;
 
 	public static void main(String[] args) {
 
@@ -123,7 +124,12 @@ public class Scheduler extends Application {
 						System.exit(1);
 					}
 					_numCores = Integer.parseInt(args[i+1]);
+
+					if(_numCores!=1){
+						_openParallelization = true;
+					}
 					i++;
+
 					break;
 				case "-o":
 					if (i == args.length - 1 || isOptionalFlag(args[i + 1])) {
@@ -175,6 +181,8 @@ public class Scheduler extends Application {
     public static String getInputFileName() { return _inputFileName; }
 
     public static String getOutputName() { return _outputName; }
+
+    public static Boolean getOpenParallelization() { return _openParallelization; }
 
     @Override
     public void start(Stage primaryStage) {
