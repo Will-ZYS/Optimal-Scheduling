@@ -22,6 +22,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
@@ -57,6 +58,9 @@ public class Controller implements Initializable {
 
     @FXML
     private VBox ganttChartBox;
+
+    @FXML
+    private Pane ganttChartPane;
 
     @FXML
     private Label currentBestTime;
@@ -214,8 +218,10 @@ public class Controller implements Initializable {
 
         chart.getStylesheets().add(getClass().getResource("/GanttChart.css").toExternalForm());
         chart.setMaxHeight(Double.MAX_VALUE);
-        ganttChartBox.getChildren().add(chart);
-        ganttChartBox.setStyle("-fx-background-color: RED");
+//        ganttChartBox.getChildren().add(chart);
+//        ganttChartBox.setStyle("-fx-background-color: RED");
+        ganttChartPane.getChildren().add(chart);
+        ganttChartPane.setStyle("-fx-background-color: RED");
         chart.setRotate(90);
 
     }
@@ -337,17 +343,13 @@ public class Controller implements Initializable {
     public void setStageAndSetupListeners(Stage stage){
         stage.widthProperty().addListener((obs, oldVal, newVal) -> {
 
-            chart.setMinHeight(ganttChartBox.getWidth());
-            chart.setPrefHeight(ganttChartBox.getWidth());
-////            chart.setMaxHeight(ganttChartBox.getWidth());
+            chart.setMinHeight(ganttChartPane.getWidth());
+            chart.setPrefHeight(ganttChartPane.getWidth());
 
         });
 
         stage.heightProperty().addListener((obs, oldVal, newVal) -> {
-//            chart.setMinWidth(ganttChartBox.getHeight());
-//            chart.setPrefWidth(ganttChartBox.getHeight());
-//            System.out.println(ganttChartBox.getHeight());
-//            chart.setMaxWidth(ganttChartBox.getHeight());
+
         });
     }
 
