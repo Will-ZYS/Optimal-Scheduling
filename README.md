@@ -79,3 +79,4 @@ The visualisation shows useful statistics which include:
 * [Project Changelog](https://github.com/SoftEng306-2020/project-1-the-lucky-1/blob/master/wiki/changedLog.md)
 * [Architecture](https://github.com/SoftEng306-2020/project-1-the-lucky-1/blob/master/wiki/architecture.md)
 * [Team Collaboration](https://github.com/SoftEng306-2020/project-1-the-lucky-1/blob/master/wiki/teamCollaboration.md)
+* [Visualization Design](https://github.com/SoftEng306-2020/project-1-the-lucky-1/blob/master/wiki/visualizationDesign.md)
