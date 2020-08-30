@@ -191,7 +191,7 @@ public class Controller implements Initializable {
 
         // Setting up gantt chart box
         ganttChartBox.getChildren().add(chart);
-        ganttChartBox.setStyle("-fx-background-color: red");
+        ganttChartBox.setStyle("-fx-background-color: WHITE");
 
         // Rotate the chart inside the Gantt Box
         chart.setRotate(90);
