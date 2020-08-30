@@ -12,17 +12,19 @@ public abstract class SolutionTree {
 	protected final int TOTAL_TASK_WEIGHT;
 	protected boolean _isCompleted=false;
 	protected int _checkedSchedule=0;
-	protected int _estimatedCompleteTime;
-	protected final int[][] ESTIMATED_COMPLETION_TIMES= {
-			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,15,20,25,30},
-			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,30,40,50,60},
-			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,30,40,50,60},
-			{1,1,1,1,1,1,1,1,1,1,1,30,40,50,60,100,100,100,100},
-			{1,1,1,1,1,1,1,1,1,1,1,30,40,50,60,100,100,100,100},
-			{1,1,1,1,1,1,1,1,1,1,1,30,40,50,100,100,100,100,100},
-			{1,1,1,1,1,1,1,30,40,50,60,100,100,100,100,100,100,100,100,100},};
+//	protected int _estimatedCompleteTime;
+//	protected final int[][] ESTIMATED_COMPLETION_TIMES= {
+//			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+//			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,15,20,25,30},
+//			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,30,40,50,60},
+//			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,30,40,50,60},
+//			{1,1,1,1,1,1,1,1,1,1,1,30,40,50,60,100,100,100,100},
+//			{1,1,1,1,1,1,1,1,1,1,1,30,40,50,60,100,100,100,100},
+//			{1,1,1,1,1,1,1,1,1,1,1,30,40,50,100,100,100,100,100},
+//			{1,1,1,1,1,1,1,30,40,50,60,100,100,100,100,100,100,100,100,100},};
 
+	protected long _secondLevelSolutionNodes = 0;
+	protected long _VisitedSecondLevelSolutionNodes = 0;
 
 
 	// store partial solutions for five levels, used for checking for duplicates
@@ -38,11 +40,22 @@ public abstract class SolutionTree {
 		}
 		TOTAL_TASK_WEIGHT = total_task_weight;
 		IDENTICAL_TASKS = markIdenticalTasks();
-		if (NUMBER_OF_PROCESSORS <= 10 && TASKS.size() <= 20) {
-			_estimatedCompleteTime = ESTIMATED_COMPLETION_TIMES[NUMBER_OF_PROCESSORS - 1][TASKS.size() - 1];
+
+//		if (NUMBER_OF_PROCESSORS <= 10 && TASKS.size() <= 20) {
+//			_estimatedCompleteTime = ESTIMATED_COMPLETION_TIMES[NUMBER_OF_PROCESSORS - 1][TASKS.size() - 1];
+//		}
+//		else {
+//			_estimatedCompleteTime = 600;
+//		}
+
+		List<TaskNode> firstLevel = new ArrayList<>();
+		for (TaskNode task : TASKS) {
+			if (task.getIncomingEdges().size() == 0) {
+				firstLevel.add(task);
+			}
 		}
-		else {
-			_estimatedCompleteTime = 600;
+		for (TaskNode task : firstLevel) {
+			_secondLevelSolutionNodes += (task.getOutgoingEdges().size() + firstLevel.size()-1) * 2;
 		}
 
 		_visitedPartialSolutions = new HashMap<>();
@@ -65,6 +78,8 @@ public abstract class SolutionTree {
 			_bestSolution = ROOT;
 		}
 		_isCompleted = true;
+		System.out.println(_secondLevelSolutionNodes);
+		System.out.println(_VisitedSecondLevelSolutionNodes);
 		return _bestSolution;
 	}
 
@@ -109,7 +124,15 @@ public abstract class SolutionTree {
 
 	public int getCheckedSchedule() { return _checkedSchedule; }
 
-	public int getEstimatedCompleteTime() {
-		return _estimatedCompleteTime;
+//	public int getEstimatedCompleteTime() {
+//		return _estimatedCompleteTime;
+//	}
+
+	public long getSecondLevelSolutionNodes() {
+		return _secondLevelSolutionNodes;
+	}
+
+	public long getVisitedSecondLevelSolutionNodes() {
+		return _VisitedSecondLevelSolutionNodes;
 	}
 }
