@@ -55,7 +55,7 @@ public class InputReader {
 		while ((line = brFile.readLine()) != null) {
 
 			// if the line is the first line which contains the graph name
-			if (line.contains("\"") && line.contains("digraph")) {
+			if (line.contains("digraph")) {
 				Pattern doubleQuotes = Pattern.compile("\"([^\"]*)\"");
 				Matcher findDoubleQuotes = doubleQuotes.matcher(line);
 				while (findDoubleQuotes.find()) {
