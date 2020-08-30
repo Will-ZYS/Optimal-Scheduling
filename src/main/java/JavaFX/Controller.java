@@ -213,10 +213,10 @@ public class Controller implements Initializable {
         chart.setBlockHeight(150/numberPro);
 
         chart.getStylesheets().add(getClass().getResource("/GanttChart.css").toExternalForm());
-        chart.setMaxHeight(ganttChartBox.getPrefHeight());
+        chart.setMaxHeight(Double.MAX_VALUE);
         ganttChartBox.getChildren().add(chart);
         ganttChartBox.setStyle("-fx-background-color: WHITE");
-        ganttChartBox.setRotate(90);
+//        ganttChartBox.setRotate(90);
 
     }
 
@@ -336,11 +336,18 @@ public class Controller implements Initializable {
      */
     public void setStageAndSetupListeners(Stage stage){
         stage.widthProperty().addListener((obs, oldVal, newVal) -> {
-            // Do whatever you want
+
+            chart.setMinHeight(ganttChartBox.getWidth());
+            chart.setPrefHeight(ganttChartBox.getWidth());
+//            chart.setMaxHeight(ganttChartBox.getWidth());
+
         });
 
         stage.heightProperty().addListener((obs, oldVal, newVal) -> {
-            // Do whatever you want
+//            chart.setMinWidth(ganttChartBox.getHeight());
+            chart.setPrefWidth(ganttChartBox.getHeight());
+            System.out.println(ganttChartBox.getHeight());
+//            chart.setMaxWidth(ganttChartBox.getHeight());
         });
     }
 

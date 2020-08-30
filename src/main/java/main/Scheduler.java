@@ -175,10 +175,11 @@ public class Scheduler extends Application {
             loader.setLocation(getClass().getResource("/Visualization.fxml"));
             loader.setController(controller);
             Parent root = loader.load();
+			controller.setStageAndSetupListeners(primaryStage);
 
 
 
-            // Run the algorithm on another thread
+			// Run the algorithm on another thread
             new Thread(Scheduler::runAlgorithm).start();
 
             Scene scene = new Scene(root);
