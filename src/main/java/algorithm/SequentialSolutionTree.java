@@ -3,9 +3,11 @@ package algorithm;
 import java.util.*;
 
 public class SequentialSolutionTree extends SolutionTree {
+	private int _currentLevel;
 
 	public SequentialSolutionTree(List<TaskNode> allTasks, Queue<Processor> processors) {
 		super(allTasks, processors);
+		_currentLevel = 0;
 	}
 
 	/**
@@ -88,21 +90,59 @@ public class SequentialSolutionTree extends SolutionTree {
 							// call create child nodes by giving the id of processor as a parameter
 							// get the returned child solutionNodes
 							SolutionNode childSolutionNode = solutionNode.createChildNode(taskNode, processor.getID());
+							
+
+							boolean isDuplicate = false;
+
+							// check for duplicates
+							List<SolutionNode> cousinSolutionNodes = _visitedPartialSolutions.get(_currentLevel + 1);
+							for (SolutionNode cousinSolutionNode : cousinSolutionNodes) {
+								if (cousinSolutionNode.isDuplicateOf(childSolutionNode)) {
+									isDuplicate = true;
+									break;
+								}
+							}
+
+							if (isDuplicate) {
+								continue;
+							}
 
 							// call algorithm based on this child solutionNodes
+							_currentLevel++;
 							DFSBranchAndBoundAlgorithm(childSolutionNode);
+
+							_currentLevel--;
 
 							taskToProcessor.put(taskNode, processor.getID());
 						}
 					}
 				}
+
+				// finished exploring the children of the solutionNode
+
+				// add this partial solution node to the hashmap
+				if (solutionNode != ROOT) {
+					_visitedPartialSolutions.get(_currentLevel).add(solutionNode);
+				}
+
+				int numberOfLevelCompared = 6;
+				int levelToBeCleared = _currentLevel - 1 + numberOfLevelCompared;
+				if (_visitedPartialSolutions.containsKey(levelToBeCleared)) {
+					// clear all partial solution nodes stored on this level to reduce memory usage
+					_visitedPartialSolutions.get(levelToBeCleared).clear();
+				}
+
 			} else {
+				// we have reached the leaf node which is a complete solution
 
 				// compare the actual time of the leaf to the best time
 				if (solutionNode.getEndTime() < _bestTime) {
 					_bestSolution = solutionNode;
 					_bestTime = solutionNode.getEndTime();
 				}
+
+				// add this partial solution node to the hashmap
+				_visitedPartialSolutions.get(_currentLevel).add(solutionNode);
 			}
 		}
 	}

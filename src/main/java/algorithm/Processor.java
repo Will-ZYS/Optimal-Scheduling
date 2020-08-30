@@ -68,4 +68,30 @@ public class Processor {
 	public int getIdleTime() {
 		return _idleTime;
 	}
+
+	public boolean isDuplicateOf(Processor other) {
+		if (PROCESSOR_ID != other.getID()) return false;
+
+		if (_endTime != other.getEndTime()) return false;
+
+		if (_idleTime != other.getIdleTime()) return false;
+
+		if (_weightOfCriticalPath != other.getWeightOfCriticalPath()) return false;
+
+		// if the TaskNodes are different
+		if (!(TASKS.keySet().equals(other.getTasks().keySet()))) return false;
+
+		// if the start time is different
+		for (Map.Entry<TaskNode, Integer> entryA : TASKS.entrySet()) {
+			for (Map.Entry<TaskNode, Integer> entryB : TASKS.entrySet()) {
+				// check if tasks match
+				if (entryA.getKey().getName().equals(entryB.getKey().getName())) {
+
+					if (entryA.getValue() != entryB.getValue()) return false; // the start time is not the same
+				}
+			}
+		}
+
+		return true;
+	}
 }

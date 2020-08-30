@@ -1,7 +1,6 @@
 package algorithm;
 
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public abstract class SolutionTree {
 	protected int _bestTime = Integer.MAX_VALUE; // best time
@@ -26,6 +25,9 @@ public abstract class SolutionTree {
 
 
 
+	// store partial solutions for five levels, used for checking for duplicates
+	protected Map<Integer, List<SolutionNode>> _visitedPartialSolutions;
+
 	public SolutionTree(List<TaskNode> allTasks, Queue<Processor> processors) {
 		ROOT = new SolutionNode(processors, allTasks);
 		TASKS = allTasks;
@@ -42,7 +44,11 @@ public abstract class SolutionTree {
 		else {
 			_estimatedCompleteTime = 600;
 		}
-		System.out.println(_estimatedCompleteTime);
+
+		_visitedPartialSolutions = new HashMap<>();
+		for (int i = 1; i <= TASKS.size(); i++) {
+			_visitedPartialSolutions.put(i, new ArrayList<>());
+		}
 	}
 
 	/**

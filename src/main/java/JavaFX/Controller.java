@@ -116,19 +116,6 @@ public class Controller implements Initializable {
                 .skinType(Tile.SkinType.GAUGE)
                 .prefSize(TILE_WIDTH, TILE_HEIGHT)
                 .unit("MB")
-//                // Customized Colours
-//                .backgroundColor(Color.WHITE)
-//                .valueColor(Color.BLACK)
-//                .unitColor(Color.BLACK)
-//
-//                .foregroundColor(Color.RED)
-//                .textColor(Color.GREEN)
-//                .barBackgroundColor(Color.PURPLE)
-//                .barColor(Color.PURPLE) // gai le
-//                .unitColor(Color.PURPLE) // gai le
-//                .descriptionColor(Color.PURPLE)
-//                .needleColor(Color.PURPLE)
-//                .trackColor(Tile.TileColor.GREEN)
 
                 .maxValue(Runtime.getRuntime().maxMemory() / (1024 * 1024))
                 .threshold(Runtime.getRuntime().maxMemory() * 0.8 / (1024 * 1024))
@@ -145,13 +132,11 @@ public class Controller implements Initializable {
 
                 .maxValue(100)
 
-//                // Customized Colours
-//                .backgroundColor(Color.TRANSPARENT)
                 .valueColor(Color.WHITE)
                 .unitColor(Color.WHITE)
                 .descriptionColor(Color.LIGHTGREY)
                 .barColor(Tile.BLUE)
-//                // ====
+
                 .description("Searched")
                 .textVisible(false)
                 .chartData(chartData1)    // outer cycle
