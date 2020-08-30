@@ -44,6 +44,7 @@ public class Controller implements Initializable {
     private GanttChart<Number,String> chart;
     private Timeline timerHandler;
     private Timeline scheduleHandler;
+    private Timeline poller;
     private double startTime;
     private double currentTime;
     private SolutionTree _solutionTree;
@@ -216,7 +217,7 @@ public class Controller implements Initializable {
      *
      */
     private void autoUpdate() {
-        Timeline poller = new Timeline(new KeyFrame(Duration.millis(50), event -> {
+        poller = new Timeline(new KeyFrame(Duration.millis(50), event -> {
             // Updating memory tile
             double memoryUsage = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())/(1000000d);
             memoryTile.setValue(memoryUsage);
@@ -230,6 +231,7 @@ public class Controller implements Initializable {
             if(_solutionTree.getIsCompleted()){
                 if(pollingRanOnce) {
                     stopTimer();
+                    poller.stop();
                     Image finishImg = new Image("/images/finish.png");
                     statusImage.setImage(finishImg);
                     statusText.setText("Done");
