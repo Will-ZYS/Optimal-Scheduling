@@ -23,6 +23,7 @@ public class Scheduler extends Application {
     private static InputReader _inputFile;
     private static String _graphName;
     private static int _numOfTasks;
+	private static String _inputFileName;
 
 	public static void main(String[] args) {
 
@@ -71,7 +72,7 @@ public class Scheduler extends Application {
 			System.err.println("INPUT.dot needs to be a valid path to the input file with .dot extension");
 			System.exit(1);
 		}
-		String inputName = args[0].substring(0, args0Length - 4);
+		_inputFileName = args[0].substring(0, args0Length - 4);
 
 		// check if the second argument is a positive integer
 		boolean isPositiveInt = false;
@@ -88,7 +89,7 @@ public class Scheduler extends Application {
 		}
 
 		// loop through option and check stuffs
-		_outputName = inputName + "-output";
+		_outputName = _inputFileName + "-output";
 		for (int i = 2; i < args.length; i++) {
 			switch (args[i]) {
 				case "-v":
@@ -159,18 +160,23 @@ public class Scheduler extends Application {
 
     public static int getNumOfTasks() { return _numOfTasks; }
 
+    public static String getInputFileName() { return _inputFileName; }
+
+    public static String getOutputName() { return _outputName; }
+
     @Override
     public void start(Stage primaryStage) {
         try {
 
+			_solutionTree = _inputFile.readInputFile();
+			Controller controller = new Controller();
+			controller.setSolutionTree(_solutionTree);
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("/Visualization.fxml"));
-            Controller controller = new Controller();
             loader.setController(controller);
             Parent root = loader.load();
 
-            _solutionTree = _inputFile.readInputFile();
-            controller.setSolutionTree(_solutionTree);
+
 
             // Run the algorithm on another thread
             new Thread(Scheduler::runAlgorithm).start();

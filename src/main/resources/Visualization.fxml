@@ -42,7 +42,7 @@
                                     <Font name="Arial" size="15.0" />
                                  </font>
                               </Label>
-                              <Label text="INPUT0.dot">
+                              <Label fx:id="inputFile" text="INPUT0.dot">
                                  <font>
                                     <Font name="Arial Bold" size="15.0" />
                                  </font>
@@ -62,7 +62,7 @@
                                     <Font name="Arial" size="15.0" />
                                  </font>
                               </Label>
-                              <Label text="INPUT0-output.dot">
+                              <Label fx:id="outputFile" text="INPUT0-output.dot">
                                  <font>
                                     <Font name="Arial Bold" size="15.0" />
                                  </font>
@@ -100,7 +100,7 @@
                                     </Label>
                                     <HBox alignment="CENTER" prefHeight="70.0" prefWidth="200.0">
                                        <children>
-                                          <ImageView fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                          <ImageView fx:id="statusImage" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
                                                 <Image url="@images/running.gif" />
                                              </image>

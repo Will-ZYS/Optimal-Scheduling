@@ -5,6 +5,7 @@ import algorithm.Processor;
 import algorithm.SolutionNode;
 import algorithm.SolutionTree;
 import algorithm.TaskNode;
+import com.sun.prism.shader.AlphaOne_LinearGradient_AlphaTest_Loader;
 import eu.hansolo.tilesfx.Tile;
 import eu.hansolo.tilesfx.TileBuilder;
 import eu.hansolo.tilesfx.chart.ChartData;
@@ -20,6 +21,7 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
@@ -74,6 +76,15 @@ public class Controller implements Initializable {
     @FXML
     private Label statusText;
 
+    @FXML
+    private Label inputFile;
+
+    @FXML
+    private Label outputFile;
+
+    @FXML
+    private ImageView statusImage;
+
 
     private Tile memoryTile;
     private Tile circularPercentageTile;
@@ -96,22 +107,19 @@ public class Controller implements Initializable {
 
         memoryTile.setValue(0);
 
-        circularPercentageTile.setValue(25);
+        circularPercentageTile.setValue(25); // inner cycle
 
         startTimer();
 
     }
 
-    public void initialize() {
-
-    }
 
     private void setUpMemoryTile() {
         this.memoryTile = TileBuilder.create().skinType(Tile.SkinType.GAUGE_SPARK_LINE)
 
                 .skinType(Tile.SkinType.GAUGE)
                 .prefSize(TILE_WIDTH, TILE_HEIGHT)
-//                .title("Gauge Tile")
+//               .title("Gauge Tile")
                 .unit("MB")
                 // Customized Colours
                 .backgroundColor(Color.WHITE)
@@ -122,6 +130,7 @@ public class Controller implements Initializable {
                 .threshold(Runtime.getRuntime().maxMemory() * 0.8 / (1024 * 1024))
                 .build();
         memBox.getChildren().addAll(this.memoryTile);
+
     }
 
     private void setUpImageTile() {
@@ -163,7 +172,7 @@ public class Controller implements Initializable {
 //                // ====
                 .description("Searched")
                 .textVisible(false)
-                .chartData(chartData1)
+                .chartData(chartData1)    // outer cycle
                 .animated(true)
                 .referenceValue(2)
                 .value(chartData1.getValue())
@@ -222,6 +231,9 @@ public class Controller implements Initializable {
             }
             if(_solutionTree.getIsCompleted()){
                 if(pollingRanOnce) {
+                    stopTimer();
+                    Image finishImg = new Image("/images/finish.png");
+                    statusImage.setImage(finishImg);
                     statusText.setText("Done");
                     return;
                 }
@@ -273,6 +285,9 @@ public class Controller implements Initializable {
     public void setUpConfigInfo(){
         numOfProcessors.setText(String.valueOf(Scheduler.getNumOfProcessor()));
         numOfTasks.setText(String.valueOf(Scheduler.getNumOfTasks()));
+        inputFile.setText(Scheduler.getInputFileName());
+        outputFile.setText(Scheduler.getOutputName());
+
     }
 
     public void setUpCheckedSchedule(){
@@ -306,6 +321,12 @@ public class Controller implements Initializable {
         timerHandler.setCycleCount(Animation.INDEFINITE);
         timerHandler.play();
     }
+
+    public void stopTimer(){
+
+        timerHandler.stop();
+    }
+
 
     /**
      * Set up listeners that listen to the stage
