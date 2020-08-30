@@ -21,6 +21,7 @@ public class ParallelSolutionTree extends SolutionTree {
 	 */
 	@Override
 	protected void DFSBranchAndBoundAlgorithm(SolutionNode solutionNode) {
+		_checkedSchedule++;
 		Stack<SolutionNode> stack = new Stack<>();
 		stack.push(ROOT);
 

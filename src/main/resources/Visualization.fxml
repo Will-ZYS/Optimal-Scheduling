@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" style="-fx-background-image: url('/images/cpubackground.jpg');" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="600.0" prefWidth="800.0" style="-fx-background-image: url('/images/cpubackground.jpg');" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <BorderPane minHeight="540.0" minWidth="680.0" prefHeight="540.0" prefWidth="680.0" style="-fx-background-radius: 75;" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="20.0">
          <top>
@@ -84,7 +84,7 @@
                                           <Font name="Arial" size="17.0" />
                                        </font>
                                     </Label>
-                                    <Label alignment="CENTER" prefHeight="70.0" prefWidth="150.0" text="15.041 mins">
+                                    <Label fx:id="timeElapsed" alignment="CENTER" prefHeight="70.0" prefWidth="150.0">
                                        <font>
                                           <Font name="Arial Italic" size="19.0" />
                                        </font>
@@ -108,7 +108,7 @@
                                                 <Insets />
                                              </HBox.margin>
                                           </ImageView>
-                                          <Label alignment="CENTER" text="Running">
+                                          <Label fx:id="statusText" alignment="CENTER" text="Running">
                                              <font>
                                                 <Font name="Arial Italic" size="19.0" />
                                              </font>
@@ -162,7 +162,7 @@
                                           <Font name="Arial" size="17.0" />
                                        </font>
                                     </Label>
-                                    <Label alignment="CENTER" prefHeight="70.0" prefWidth="150.0" text="16 units">
+                                    <Label fx:id="currentBestTime" alignment="CENTER" prefHeight="70.0" prefWidth="150.0">
                                        <font>
                                           <Font name="Arial Italic" size="19.0" />
                                        </font>
@@ -176,7 +176,7 @@
                                           <Font name="Arial" size="17.0" />
                                        </font>
                                     </Label>
-                                    <Label alignment="CENTER" prefHeight="70.0" prefWidth="150.0" text="939 ">
+                                    <Label fx:id="checkedSchedule" alignment="CENTER" prefHeight="70.0" prefWidth="150.0" text="939 ">
                                        <font>
                                           <Font name="Arial Italic" size="19.0" />
                                        </font>
@@ -210,7 +210,7 @@
                                     <Font name="Arial" size="15.0" />
                                  </font>
                               </Label>
-                              <Label text="3 Processors">
+                              <Label fx:id="numOfProcessors">
                                  <font>
                                     <Font name="Arial Bold" size="15.0" />
                                  </font>
@@ -230,7 +230,7 @@
                                     <Font name="Arial" size="15.0" />
                                  </font>
                               </Label>
-                              <Label text="15 Tasks">
+                              <Label fx:id="numOfTasks">
                                  <font>
                                     <Font name="Arial Bold" size="15.0" />
                                  </font>

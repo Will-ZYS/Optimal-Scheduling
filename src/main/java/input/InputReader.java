@@ -17,6 +17,7 @@ public class InputReader {
 	private final int NUM_OF_PROCESSOR;
 	private String _graphName = "exampleGraph";
 	private final int NUM_CORES;
+	private int _numOfTasks;
 
 	// storing the order of lines of the input file into a linked hash map for output
 	private final LinkedHashMap<String, String> INPUT_ROWS_RAW = new LinkedHashMap<>();
@@ -128,6 +129,8 @@ public class InputReader {
 
 		}
 		dotFile.close();
+
+		_numOfTasks = taskNodeMap.keySet().size();
 
 		// list of tasks
 		List<TaskNode> taskList = new ArrayList<>(taskNodeMap.values());
@@ -276,5 +279,7 @@ public class InputReader {
 	public String getGraphName() {
 		return _graphName;
 	}
+
+	public int getNumOfTasks() { return _numOfTasks; }
 
 }

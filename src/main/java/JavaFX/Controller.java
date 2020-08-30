@@ -8,21 +8,20 @@ import algorithm.TaskNode;
 import eu.hansolo.tilesfx.Tile;
 import eu.hansolo.tilesfx.TileBuilder;
 import eu.hansolo.tilesfx.chart.ChartData;
-import eu.hansolo.tilesfx.colors.Bright;
-import eu.hansolo.tilesfx.colors.Dark;
-import eu.hansolo.tilesfx.tools.Helper;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Stop;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -34,6 +33,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.ResourceBundle;
 import javafx.scene.image.Image ;
+
 import static javafx.scene.paint.Color.rgb;
 
 public class Controller implements Initializable {
@@ -41,6 +41,7 @@ public class Controller implements Initializable {
     private static final Random RND = new Random();;
     private GanttChart<Number,String> chart;
     private Timeline timerHandler;
+    private Timeline scheduleHandler;
     private double startTime;
     private double currentTime;
     private SolutionTree _solutionTree;
@@ -48,10 +49,31 @@ public class Controller implements Initializable {
 
     @FXML
     private VBox memBox;
+
     @FXML
     private VBox searchSpaceBox;
+
     @FXML
     private VBox ganttChartBox;
+
+    @FXML
+    private Label currentBestTime;
+
+    @FXML
+    private Label timeElapsed;
+
+    @FXML
+    private Label numOfProcessors;
+
+    @FXML
+    private Label numOfTasks;
+
+    @FXML
+    private Label checkedSchedule;
+
+    @FXML
+    private Label statusText;
+
 
     private Tile memoryTile;
     private Tile circularPercentageTile;
@@ -64,8 +86,9 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        setUpConfigInfo();
+        setUpCheckedSchedule();
         setUpMemoryTile();
-//        setUpImageTile();
         setUpGanttBox();
         setUpCircularPercentageTile();
         autoUpdate();
@@ -74,6 +97,9 @@ public class Controller implements Initializable {
         memoryTile.setValue(0);
 
         circularPercentageTile.setValue(25);
+
+        startTimer();
+
     }
 
     public void initialize() {
@@ -152,7 +178,7 @@ public class Controller implements Initializable {
     private void setUpGanttBox(){
 
         // Setting up number of processors and array of their names
-        int numberPro = Scheduler.get_numOfProcessor();
+        int numberPro = Scheduler.getNumOfProcessor();
         String[] processors = new String[numberPro];
         for (int i = 0;i<numberPro;i++){
             processors[i]="Processor "+i;
@@ -175,7 +201,7 @@ public class Controller implements Initializable {
         // Setting up chart
         chart = new GanttChart<>(timeAxis, processorAxis);
         chart.setLegendVisible(false);
-        chart.setBlockHeight(280/numberPro);
+        chart.setBlockHeight(150/numberPro);
 
         chart.getStylesheets().add(getClass().getResource("/GanttChart.css").toExternalForm());
         chart.setMaxHeight(ganttChartBox.getPrefHeight());
@@ -196,6 +222,7 @@ public class Controller implements Initializable {
             }
             if(_solutionTree.getIsCompleted()){
                 if(pollingRanOnce) {
+                    statusText.setText("Done");
                     return;
                 }
             }
@@ -206,7 +233,7 @@ public class Controller implements Initializable {
     }
 
     private void updateGanttChart(SolutionNode bestSolution){
-        int numProcessers = Scheduler.get_numOfProcessor();
+        int numProcessers = Scheduler.getNumOfProcessor();
 
         // new array of series to write onto
         XYChart.Series[] seriesArray = new XYChart.Series[numProcessers];
@@ -225,9 +252,9 @@ public class Controller implements Initializable {
                 XYChart.Data newData = new XYChart.Data(tasks.get(task), "Processor " + (processor.getID()-1),
                         new GanttChart.ExtraData(task, "task-style"));
 
-                System.out.println(tasks.get(task));
-                System.out.println(task.getName());
-                System.out.println(processor.getID());
+//                System.out.println(tasks.get(task));
+//                System.out.println(task.getName());
+//                System.out.println(processor.getID());
 
                 seriesArray[processor.getID()-1].getData().add(newData);
             }
@@ -238,11 +265,46 @@ public class Controller implements Initializable {
         for (XYChart.Series series: seriesArray){
             chart.getData().add(series);
         }
+
+        currentBestTime.setText(String.valueOf(_solutionTree.getCurrentBestSolution().getEndTime()) + "s");
+
+    }
+
+    public void setUpConfigInfo(){
+        numOfProcessors.setText(String.valueOf(Scheduler.getNumOfProcessor()));
+        numOfTasks.setText(String.valueOf(Scheduler.getNumOfTasks()));
+    }
+
+    public void setUpCheckedSchedule(){
+
+        scheduleHandler = new Timeline(new KeyFrame(Duration.millis(100), new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                checkedSchedule.setText(String.valueOf(_solutionTree.getCheckedSchedule()));
+            }
+        }));
+        scheduleHandler.setCycleCount(Animation.INDEFINITE);
+        scheduleHandler.play();
+        System.out.println();
     }
 
 
     public void setSolutionTree(SolutionTree solutionTree){
         this._solutionTree = solutionTree;
+    }
+
+    private void startTimer(){
+
+        startTime=System.currentTimeMillis();
+        timerHandler = new Timeline(new KeyFrame(Duration.millis(100), new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                currentTime=System.currentTimeMillis();
+                timeElapsed.setText(String.valueOf(((currentTime-startTime)/1000)) + "s");
+            }
+        }));
+        timerHandler.setCycleCount(Animation.INDEFINITE);
+        timerHandler.play();
     }
 
     /**

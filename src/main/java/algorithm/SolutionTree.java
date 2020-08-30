@@ -12,6 +12,7 @@ public abstract class SolutionTree {
 	protected final int NUMBER_OF_PROCESSORS;
 	protected final int TOTAL_TASK_WEIGHT;
 	protected boolean _isCompleted=false;
+	protected int _checkedSchedule=0;
 
 
 	public SolutionTree(List<TaskNode> allTasks, Queue<Processor> processors) {
@@ -82,5 +83,5 @@ public abstract class SolutionTree {
 		return  _isCompleted;
 	}
 
-
+	public int getCheckedSchedule() { return _checkedSchedule; }
 }

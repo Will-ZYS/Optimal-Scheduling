@@ -22,6 +22,7 @@ public class Scheduler extends Application {
     private static boolean openVisualization = false;
     private static InputReader _inputFile;
     private static String _graphName;
+    private static int _numOfTasks;
 
 	public static void main(String[] args) {
 
@@ -31,20 +32,23 @@ public class Scheduler extends Application {
 		// read the input file and return it as a solutionTree object
 		try {
 			_inputFile = new InputReader(args[0], _numOfProcessor, _numCores);
-
 			// get the graphName from the input file
 			_graphName = _inputFile.getGraphName();
+			_solutionTree = _inputFile.readInputFile();
+			_numOfTasks = _inputFile.getNumOfTasks();
 
             if (openVisualization) {
                 launch();
             } else {
-                _solutionTree = _inputFile.readInputFile();
                 runAlgorithm();
             }
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		System.exit(0);
+
 	}
 
 	/**
@@ -149,9 +153,11 @@ public class Scheduler extends Application {
 		return _solutionTree;
 	}
 
-    public static int get_numOfProcessor() {
+    public static int getNumOfProcessor() {
         return _numOfProcessor;
     }
+
+    public static int getNumOfTasks() { return _numOfTasks; }
 
     @Override
     public void start(Stage primaryStage) {

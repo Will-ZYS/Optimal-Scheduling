@@ -15,6 +15,10 @@ public class SequentialSolutionTree extends SolutionTree {
 	 */
 	@Override
 	protected void DFSBranchAndBoundAlgorithm(SolutionNode solutionNode) {
+
+		_checkedSchedule++;
+		//System.out.println(_checkedSchedule);
+
 		// Optimisation: HashMap of Tasks to Processors that are to be allocated this round.
 		// If we have two or more TaskNodes that are identical then we only have to schedule them to a processor once.
 		// i.e. if A and B are identical tasks, no need to schedule them on Processor 1.
