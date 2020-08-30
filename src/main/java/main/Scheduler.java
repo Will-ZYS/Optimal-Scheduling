@@ -1,41 +1,58 @@
 package main;
 
+import JavaFX.Controller;
 import algorithm.SolutionNode;
 import algorithm.SolutionTree;
 import input.InputReader;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import output.OutputGenerator;
 
 import java.io.IOException;
 
-public class Scheduler {
+public class Scheduler extends Application {
 	private static String _outputName;
 	private static int _numOfProcessor = 1;
 	private static SolutionNode _bestSolution = null;
 	private static int _numCores = 1;
+    private static boolean openVisualization = false;
+    private static InputReader _inputFile;
+    private static String _graphName;
+    private static int _numOfTasks;
+	private static String _inputFileName;
+	private static SolutionTree _solutionTree = null;
+	private static boolean _openParallelization = false;
 
 	public static void main(String[] args) {
 
-		readUserInput(args);
+		Scheduler scheduler = new Scheduler();
+		scheduler.readUserInput(args);
 
 		// read the input file and return it as a solutionTree object
 		try {
-			InputReader inputFile = new InputReader(args[0], _numOfProcessor, _numCores);
 
-			SolutionTree solutionTree = inputFile.readInputFile();
+			_inputFile = new InputReader(args[0], _numOfProcessor, _numCores);
 
 			// get the graphName from the input file
-			String graphName = inputFile.getGraphName();
+			_graphName = _inputFile.getGraphName();
+			_solutionTree = _inputFile.readInputFile();
+			_numOfTasks = _inputFile.getNumOfTasks();
 
-			SolutionNode bestSolution = solutionTree.findOptimalSolution();
-			_bestSolution = bestSolution;
+            if (openVisualization) {
+                launch();
+            } else {
+                runAlgorithm();
+            }
 
-			// Generating output
-			OutputGenerator outputGenerator = new OutputGenerator(bestSolution, _outputName,
-					                                              inputFile.getInputRowsRaw(), graphName);
-			outputGenerator.writeOutput();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		System.exit(0);
+
 	}
 
 	/**
@@ -58,7 +75,7 @@ public class Scheduler {
 			System.err.println("INPUT.dot needs to be a valid path to the input file with .dot extension");
 			System.exit(1);
 		}
-		String inputName = args[0].substring(0, args0Length - 4);
+		_inputFileName = args[0].substring(0, args0Length - 4);
 
 		// check if the second argument is a positive integer
 		boolean isPositiveInt = false;
@@ -75,14 +92,14 @@ public class Scheduler {
 		}
 
 		// loop through option and check stuffs
-		_outputName = inputName + "-output";
+		_outputName = _inputFileName + "-output";
 		for (int i = 2; i < args.length; i++) {
 			switch (args[i]) {
 				case "-v":
-					System.out.println("Sorry, the visualiser has not been implemented yet, you can find the " +
-                                       "result in the output file");
+                    openVisualization = true;
 					break;
 				case "-p":
+
 					// check if user has specified number of cores
 					if (i == args.length - 1 || isOptionalFlag(args[i + 1])) {
 						System.err.println("Usage: java -jar scheduler.jar INPUT.dot P [-p N] [-v] [-o OUTPUT]");
@@ -106,9 +123,13 @@ public class Scheduler {
 						System.err.println("Please enter a smaller positive integer for N");
 						System.exit(1);
 					}
-
 					_numCores = Integer.parseInt(args[i+1]);
+
+					if(_numCores!=1){
+						_openParallelization = true;
+					}
 					i++;
+
 					break;
 				case "-o":
 					if (i == args.length - 1 || isOptionalFlag(args[i + 1])) {
@@ -127,6 +148,22 @@ public class Scheduler {
 		}
 	}
 
+    private static void runAlgorithm() {
+
+        try {
+            SolutionNode bestSolution = _solutionTree.findOptimalSolution();
+            _bestSolution = bestSolution;
+
+            // Generating output
+            OutputGenerator outputGenerator = new OutputGenerator(bestSolution, _outputName,
+                    _inputFile.getInputRowsRaw(), _graphName);
+            outputGenerator.writeOutput();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 	private static boolean isOptionalFlag(String s) {
 		return s.equals("-v") || s.equals("-p") || s.equals("-o");
 	}
@@ -134,4 +171,49 @@ public class Scheduler {
 	public SolutionNode getBestSolution() {
 		return _bestSolution;
 	}
+
+    public static int getNumOfProcessor() {
+        return _numOfProcessor;
+    }
+
+    public static int getNumOfTasks() { return _numOfTasks; }
+
+    public static String getInputFileName() { return _inputFileName; }
+
+    public static String getOutputName() { return _outputName; }
+
+    public static Boolean getOpenParallelization() { return _openParallelization; }
+
+    public static int getNumCores() { return  _numCores; }
+
+    @Override
+    public void start(Stage primaryStage) {
+        try {
+
+			_solutionTree = _inputFile.readInputFile();
+			Controller controller = new Controller();
+			controller.setSolutionTree(_solutionTree);
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/Visualization.fxml"));
+            loader.setController(controller);
+            Parent root = loader.load();
+			controller.setStageAndSetupListeners(primaryStage);
+
+
+			// Run the algorithm on another thread
+            new Thread(Scheduler::runAlgorithm).start();
+
+            Scene scene = new Scene(root);
+            primaryStage.setScene(scene);
+            primaryStage.setTitle("Scheduler");
+            primaryStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 }
+

@@ -10,6 +10,7 @@ public class SolutionRecursiveAction extends RecursiveAction {
 	private int _currentLevel;
 	private final ParallelSolutionTree PARALLEL_SOLUTION_TREE;
 	private final int TOTAL_TASK_WEIGHT;
+	private static int _checkedSchedule;
 
 	protected Map<Integer, List<SolutionNode>> _visitedPartialSolutions;
 
@@ -172,4 +173,9 @@ public class SolutionRecursiveAction extends RecursiveAction {
 			}
 		}
 	}
+
+	public static int getCheckedSchedule() { return _checkedSchedule; }
+
+	// keep the attribute synchronized
+	public synchronized void incrementCheckedSchedule() { _checkedSchedule++; }
 }

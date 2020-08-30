@@ -20,6 +20,8 @@ public class ParallelSolutionTree extends SolutionTree {
 	 */
 	@Override
 	protected void DFSBranchAndBoundAlgorithm(SolutionNode solutionNode) {
+		_checkedSchedule++;
+
 		Map<Integer, List<SolutionNode>> visitedPartialSolutions = Collections.synchronizedMap(new HashMap<>());
 		for (int i = 1; i <= getTasks().size(); i++) {
 			visitedPartialSolutions.put(i, Collections.synchronizedList(new ArrayList<>()));

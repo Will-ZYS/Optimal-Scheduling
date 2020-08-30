@@ -11,7 +11,7 @@ import java.util.*;
 public class InputFileGenerator {
 	public static void main(String[] args) throws IOException {
 
-		int numOfTasks = 5; // max 26
+		int numOfTasks = 20; // max 26
 		int weightLimit = 4;
 		String[] alphabet = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z" };
 
@@ -40,7 +40,7 @@ public class InputFileGenerator {
 
 		for (String input : inputs) {
 			// Formatted to align the columns
-			myWriter.write(String.format("\t%-3s%-3s%n", input, "[Weight=" + (rand.nextInt(weightLimit) + 1) + "];"));
+			myWriter.write(String.format("\t%-9s%-9s%n", input, "[Weight=" + (rand.nextInt(weightLimit) + 1) + "];"));
 		}
 		myWriter.write("}");
 		myWriter.close();

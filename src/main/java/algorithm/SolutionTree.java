@@ -10,6 +10,12 @@ public abstract class SolutionTree {
 	protected final boolean IDENTICAL_TASKS; // if any identical tasks have been detected
 	protected final int NUMBER_OF_PROCESSORS;
 	protected final int TOTAL_TASK_WEIGHT;
+	protected boolean _isCompleted=false;
+	protected int _checkedSchedule=0;
+
+	protected long _secondLevelSolutionNodes = 0;
+	protected long _VisitedSecondLevelSolutionNodes = 0;
+
 
 	// store partial solutions for five levels, used for checking for duplicates
 	protected Map<Integer, List<SolutionNode>> _visitedPartialSolutions;
@@ -24,6 +30,16 @@ public abstract class SolutionTree {
 		}
 		TOTAL_TASK_WEIGHT = total_task_weight;
 		IDENTICAL_TASKS = markIdenticalTasks();
+
+		List<TaskNode> firstLevel = new ArrayList<>();
+		for (TaskNode task : TASKS) {
+			if (task.getIncomingEdges().size() == 0) {
+				firstLevel.add(task);
+			}
+		}
+		for (TaskNode task : firstLevel) {
+			_secondLevelSolutionNodes += (task.getOutgoingEdges().size() + firstLevel.size()-1) * 2;
+		}
 
 		_visitedPartialSolutions = new HashMap<>();
 		for (int i = 1; i <= TASKS.size(); i++) {
@@ -44,7 +60,7 @@ public abstract class SolutionTree {
 			_bestTime = 0;
 			_bestSolution = ROOT;
 		}
-		System.out.println(_bestTime);
+		_isCompleted = true;
 		return _bestSolution;
 	}
 
@@ -77,6 +93,24 @@ public abstract class SolutionTree {
 			}
 		}
 		return identicalTasksFound;
+	}
+
+	public SolutionNode getCurrentBestSolution() {
+		return _bestSolution;
+	}
+
+	public boolean getIsCompleted(){
+		return  _isCompleted;
+	}
+
+	public int getCheckedSchedule() { return _checkedSchedule; }
+
+	public long getSecondLevelSolutionNodes() {
+		return _secondLevelSolutionNodes;
+	}
+
+	public long getVisitedSecondLevelSolutionNodes() {
+		return _VisitedSecondLevelSolutionNodes;
 	}
 
 	public List<TaskNode> getTasks() {

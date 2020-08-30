@@ -1,0 +1,7 @@
+.task-style {
+    -fx-background-color: #2ab1ff;
+    -fx-border-color: #1664ff;
+}
+.onHover{
+    -fx-background-color: ORANGE;
+}
