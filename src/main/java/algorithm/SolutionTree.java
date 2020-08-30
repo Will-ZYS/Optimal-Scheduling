@@ -44,6 +44,7 @@ public abstract class SolutionTree {
 			_bestTime = 0;
 			_bestSolution = ROOT;
 		}
+		System.out.println(_bestTime);
 		return _bestSolution;
 	}
 
@@ -76,5 +77,13 @@ public abstract class SolutionTree {
 			}
 		}
 		return identicalTasksFound;
+	}
+
+	public List<TaskNode> getTasks() {
+		return TASKS;
+	}
+
+	public SolutionNode getRoot() {
+		return ROOT;
 	}
 }

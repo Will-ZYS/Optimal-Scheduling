@@ -1,8 +1,7 @@
 package algorithm;
 
-import java.util.List;
-import java.util.Queue;
-import java.util.Stack;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinPool;
 
 public class ParallelSolutionTree extends SolutionTree {
@@ -21,11 +20,13 @@ public class ParallelSolutionTree extends SolutionTree {
 	 */
 	@Override
 	protected void DFSBranchAndBoundAlgorithm(SolutionNode solutionNode) {
-		Stack<SolutionNode> stack = new Stack<>();
-		stack.push(ROOT);
+		Map<Integer, List<SolutionNode>> visitedPartialSolutions = Collections.synchronizedMap(new HashMap<>());
+		for (int i = 1; i <= getTasks().size(); i++) {
+			visitedPartialSolutions.put(i, Collections.synchronizedList(new ArrayList<>()));
+		}
 
 		_forkJoinPool = new ForkJoinPool(NUM_CORES);
-		SolutionRecursiveAction schedule = new SolutionRecursiveAction(stack, this);
+		SolutionRecursiveAction schedule = new SolutionRecursiveAction(visitedPartialSolutions, this, ROOT, 0);
 		_forkJoinPool.invoke(schedule);
 	}
 
