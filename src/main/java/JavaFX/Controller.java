@@ -59,9 +59,6 @@ public class Controller implements Initializable {
     private VBox ganttChartBox;
 
     @FXML
-    private Pane ganttChartPane;
-
-    @FXML
     private Label currentBestTime;
 
     @FXML
@@ -192,13 +189,12 @@ public class Controller implements Initializable {
         chart.setBlockHeight(150/numberPro);
         chart.getStylesheets().add(getClass().getResource("/GanttChart.css").toExternalForm());
 
-        chart.setMaxHeight(ganttChartBox.getPrefHeight());
-
         // Setting up gantt chart box
-        ganttChartBox.setMaxHeight(260);
         ganttChartBox.getChildren().add(chart);
-        ganttChartBox.setStyle("-fx-background-color: WHITE");
-        ganttChartBox.setRotate(90);
+        ganttChartBox.setStyle("-fx-background-color: red");
+
+        // Rotate the chart inside the Gantt Box
+        chart.setRotate(90);
 
     }
 
@@ -342,8 +338,8 @@ public class Controller implements Initializable {
     public void setStageAndSetupListeners(Stage stage){
         stage.widthProperty().addListener((obs, oldVal, newVal) -> {
 
-            chart.setMinHeight(ganttChartPane.getWidth());
-            chart.setPrefHeight(ganttChartPane.getWidth());
+            chart.setMinHeight(ganttChartBox.getWidth());
+            chart.setPrefHeight(ganttChartBox.getWidth());
 
         });
 
