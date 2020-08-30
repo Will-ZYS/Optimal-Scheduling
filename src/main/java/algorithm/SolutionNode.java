@@ -205,4 +205,26 @@ public class SolutionNode {
 		}
 		System.out.println("End Time: " + solutionNode.getEndTime());
 	}
+
+	public boolean isDuplicateOf(SolutionNode other) {
+		if (_endTime != other.getEndTime()) return false;
+
+		if (UNVISITED_TASK_NODES.size() != other.getUnvisitedTaskNodes().size()) return false;
+
+		for (int i = 0; i < UNVISITED_TASK_NODES.size(); i++) {
+			TaskNode taskA = UNVISITED_TASK_NODES.get(i);
+			TaskNode taskB = other.getUnvisitedTaskNodes().get(i);
+			if (!(taskA.getName().equals(taskB.getName()))) return false;
+		}
+
+		for (Processor pA : PROCESSORS) {
+			for (Processor pB : other.getProcessors()) {
+				if (pA.getID() == pB.getID()) {
+					if (!(pA.isDuplicateOf(pB))) return false;
+				}
+			}
+		}
+		return true;
+	}
+
 }
