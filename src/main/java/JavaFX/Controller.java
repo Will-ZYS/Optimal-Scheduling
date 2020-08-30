@@ -215,8 +215,8 @@ public class Controller implements Initializable {
         chart.getStylesheets().add(getClass().getResource("/GanttChart.css").toExternalForm());
         chart.setMaxHeight(Double.MAX_VALUE);
         ganttChartBox.getChildren().add(chart);
-        ganttChartBox.setStyle("-fx-background-color: WHITE");
-//        ganttChartBox.setRotate(90);
+        ganttChartBox.setStyle("-fx-background-color: RED");
+        chart.setRotate(90);
 
     }
 
@@ -337,16 +337,16 @@ public class Controller implements Initializable {
     public void setStageAndSetupListeners(Stage stage){
         stage.widthProperty().addListener((obs, oldVal, newVal) -> {
 
-            chart.setMinHeight(ganttChartBox.getWidth());
-            chart.setPrefHeight(ganttChartBox.getWidth());
-//            chart.setMaxHeight(ganttChartBox.getWidth());
+//            chart.setMinHeight(ganttChartBox.getWidth());
+//            chart.setPrefHeight(ganttChartBox.getWidth());
+////            chart.setMaxHeight(ganttChartBox.getWidth());
 
         });
 
         stage.heightProperty().addListener((obs, oldVal, newVal) -> {
 //            chart.setMinWidth(ganttChartBox.getHeight());
-            chart.setPrefWidth(ganttChartBox.getHeight());
-            System.out.println(ganttChartBox.getHeight());
+//            chart.setPrefWidth(ganttChartBox.getHeight());
+//            System.out.println(ganttChartBox.getHeight());
 //            chart.setMaxWidth(ganttChartBox.getHeight());
         });
     }

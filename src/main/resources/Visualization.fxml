@@ -204,7 +204,7 @@
                   </VBox>
                   <AnchorPane maxWidth="1.7976931348623157E308" minWidth="380.0" HBox.hgrow="ALWAYS">
                      <children>
-                        <VBox fx:id="ganttChartBox" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" rotate="90.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                        <VBox fx:id="ganttChartBox" maxHeight="-Infinity" maxWidth="-Infinity" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                         <VBox layoutX="10.0" layoutY="483.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
                            <children>
                               <HBox alignment="CENTER">
